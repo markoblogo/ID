@@ -1,0 +1,29 @@
+name: id-protocol-ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python syntax check
+        run: python -m py_compile scripts/*.py
+
+      - name: Shell syntax check
+        run: bash -n scripts/run_integration_hook.sh
+
+      - name: Publish guard
+        run: python scripts/check_publish_guard.py --all-tracked
+
+      - name: Profile validation
+        run: python scripts/validate_profile.py --allow-stale --check-raw-tracked

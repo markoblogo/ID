@@ -29,6 +29,7 @@ Main idea:
 │   ├── INTEGRATIONS.md
 │   ├── BENCHMARK.md
 │   ├── INTEROP_V1.md
+│   ├── HARDENING.md
 │   └── ROADMAP.md
 ├── integrations/
 │   ├── agentsmd/
@@ -51,6 +52,7 @@ Main idea:
 - Phase 3 (validation automation): done
 - Phase 4 (integrations): done
 - Phase 5 (benchmark + interop): done
+- Phase 6 (hardening): in progress
 
 ## Ingest + Extract
 
@@ -84,5 +86,12 @@ Main idea:
 
 - benchmark guide: `docs/BENCHMARK.md`
 - run aggregation: `python3 scripts/benchmark_report.py --run-id <run-id>`
+- initialize benchmark run: `python3 scripts/benchmark_init_run.py --run-id <run-id> --tool <tool> --owner-id <owner-id> --profile-version <version>`
+- validate benchmark run: `python3 scripts/benchmark_validate_run.py --run-id <run-id>`
 - interop v1 guide: `docs/INTEROP_V1.md`
 - export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`
+
+## Hardening
+
+- hardening guide: `docs/HARDENING.md`
+- CI workflow: `.github/workflows/ci.yml`
