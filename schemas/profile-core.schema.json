@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://id-protocol.local/schemas/profile-core.schema.json",
+  "title": "ID Protocol Core Profile",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "owner_alias",
+    "version",
+    "created_at",
+    "updated_at",
+    "freshness_ttl_days",
+    "trust_level",
+    "communication",
+    "rules"
+  ],
+  "properties": {
+    "profile_id": { "type": "string", "minLength": 1 },
+    "owner_alias": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "created_at": { "type": "string", "format": "date" },
+    "updated_at": { "type": "string", "format": "date" },
+    "freshness_ttl_days": { "type": "integer", "minimum": 1 },
+    "confidence_notes": { "type": "string" },
+    "trust_level": { "type": "string", "enum": ["trusted", "provisional", "archival"] },
+    "communication": {
+      "type": "object",
+      "required": ["language", "tone", "detail_level"],
+      "properties": {
+        "language": { "type": "string" },
+        "tone": { "type": "string" },
+        "detail_level": { "type": "string", "enum": ["brief", "balanced", "deep"] },
+        "formatting": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "object",
+      "required": ["always_do", "never_do"],
+      "properties": {
+        "always_do": { "type": "array", "items": { "type": "string" } },
+        "never_do": { "type": "array", "items": { "type": "string" } },
+        "ask_before": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
