@@ -45,10 +45,10 @@
 
 - CI workflow added (`.github/workflows/ci.yml`) with syntax + guard + validation checks;
 - benchmark baseline helpers added (`scripts/benchmark_init_run.py`, `scripts/benchmark_validate_run.py`);
+- first baseline benchmark run committed (`benchmarks/runs/baseline-2026-03-31-codex`);
 - interop exporter improved to typed mapping with fallback `extensions`;
 - interop schema-aligned validator added (`scripts/validate_interop_v1.py`) and wired into CI.
 
 ## Next (Phase 6 completion)
 
-- run and commit first baseline benchmark runs for core tools;
 - add example artifacts and troubleshooting notes to hardening docs.

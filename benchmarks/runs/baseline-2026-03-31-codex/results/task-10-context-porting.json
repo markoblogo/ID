@@ -1,0 +1,10 @@
+{
+  "task_id": "task-10-context-porting",
+  "tool": "codex",
+  "style_fit": 5,
+  "constraint_adherence": 5,
+  "result_quality": 5,
+  "edit_count": 0,
+  "time_to_acceptable_min": 3,
+  "notes": "portable context transfer produced cleanly"
+}

@@ -56,6 +56,12 @@ Aggregate report:
 python3 scripts/benchmark_report.py --run-id baseline-2026-03-31-codex
 ```
 
+Committed baseline artifacts:
+- `benchmarks/runs/baseline-2026-03-31-codex/meta.json`
+- `benchmarks/runs/baseline-2026-03-31-codex/results/*.json`
+- `benchmarks/runs/baseline-2026-03-31-codex/summary.json`
+- `benchmarks/runs/baseline-2026-03-31-codex/summary.md`
+
 ## 4. Interop Export Hardening
 
 `export_interop_v1.py` now uses typed section mapping:

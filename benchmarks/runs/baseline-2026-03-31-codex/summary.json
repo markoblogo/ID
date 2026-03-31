@@ -1,0 +1,19 @@
+{
+  "run_id": "baseline-2026-03-31-codex",
+  "meta": {
+    "run_id": "baseline-2026-03-31-codex",
+    "date": "2026-03-31",
+    "owner_id": "markoblogo",
+    "profile_version": "0.1.0",
+    "tools": ["codex"],
+    "evaluator": "manual-self-eval"
+  },
+  "tasks": 10,
+  "averages": {
+    "style_fit": 4.2,
+    "constraint_adherence": 4.9,
+    "result_quality": 4.2,
+    "edit_count": 0.8,
+    "time_to_acceptable_min": 4.3
+  }
+}
