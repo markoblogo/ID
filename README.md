@@ -43,21 +43,30 @@ change history proving recency and trust level.
 │   ├── OPERATIONS.md
 │   ├── INTEGRATIONS.md
 │   ├── INGEST_SOURCES.md
+│   ├── PRIVACY.md
 │   └── ROADMAP.md
+├── images/
 ├── profiles/
 │   └── <owner>/
 ├── schemas/
 ├── scripts/
-│   └── extract_profile.py
+│   ├── extract_profile.py
+│   └── redact_for_sharing.py
 ├── templates/
+│   ├── profile.core.md
+│   ├── profile.extended.md
+│   ├── agent.handshake.md
+│   ├── change-log.md
+│   └── safe-share-package.md
 └── README.md
 ```
 
 ## Priority Status
 
 - Phase 0 (bootstrap): done
-- Phase 1 (ingest + extractor MVP): in progress (MVP scaffold added)
-- Next: privacy/redaction, validation automation, adapters, benchmark
+- Phase 1 (ingest + extractor MVP): done
+- Phase 2 (privacy/redaction): in progress
+- Next: validation automation, adapters, benchmark
 
 ## Quick Start
 
@@ -79,6 +88,16 @@ Detailed source flow: `docs/INGEST_SOURCES.md`.
    - `profiles/<owner-id>/draft.from-exports.md`
    - `profiles/<owner-id>/conflicts.from-exports.md`
 5. Merge approved findings into canonical profile files manually.
+
+## Privacy + Safe-Share (MVP)
+
+Policy: `docs/PRIVACY.md`
+
+1. Keep personal exports in `data/raw/` (private only).
+2. Redact normalized layer for sharing:
+   - `python3 scripts/redact_for_sharing.py`
+3. Review `data/processed/redaction-report.json`.
+4. Build sharing package using `templates/safe-share-package.md`.
 
 ## First Integration Targets
 

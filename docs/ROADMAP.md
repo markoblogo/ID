@@ -6,26 +6,32 @@
 - operations playbook drafted;
 - templates and schemas added.
 
-## Phase 1: Real Profile Pilot
+## Phase 1: Ingest + Extractor MVP (done)
 
-- create first real profile under `profiles/markoblogo/`;
-- run 10+ sessions with 2-3 different AI tools;
-- collect mismatch logs and profile corrections.
+- source ingestion contract added (`docs/INGEST_SOURCES.md`);
+- data layers created (`data/raw`, `data/normalized`, `data/processed`);
+- extractor MVP added (`scripts/extract_profile.py`).
 
-## Phase 2: Tooling
+## Phase 2: Privacy + Redaction (in progress)
+
+- privacy policy added (`docs/PRIVACY.md`);
+- redaction script added (`scripts/redact_for_sharing.py`);
+- safe-share package template added (`templates/safe-share-package.md`).
+
+## Phase 3: Validation Automation (next)
 
 - add CLI validation for profile metadata freshness;
-- add JSON export from Markdown profile sections;
-- add redaction command for external sharing.
+- add checks against publishing `data/raw/**`;
+- add post-session changelog helper.
 
-## Phase 3: Integrations
+## Phase 4: Integrations
 
 - `agents.md`: automatic injection of `profile.core.md` at session start;
 - `LAB`: experiment registry for prompt/profile variants;
 - `SET`: orchestration checks for stale profiles and mandatory changelog update.
 
-## Phase 4: Community/Interop
+## Phase 5: Benchmark + Interop
 
-- publish stable `v1` field naming;
-- provide migration notes for `v0` to `v1`;
-- define extension slots for domain-specific profiles.
+- add repeatable benchmark tasks across AI tools;
+- track style-fit, edit count, and time-to-acceptable-result;
+- publish stable `v1` field naming and migration guide.
