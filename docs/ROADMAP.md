@@ -41,14 +41,17 @@
 - interop schema added (`schemas/interop-v1.schema.json`);
 - interop export helper added (`scripts/export_interop_v1.py`).
 
-## Phase 6: Hardening (in progress)
+## Phase 6: Hardening (done)
 
 - CI workflow added (`.github/workflows/ci.yml`) with syntax + guard + validation checks;
 - benchmark baseline helpers added (`scripts/benchmark_init_run.py`, `scripts/benchmark_validate_run.py`);
 - first baseline benchmark run committed (`benchmarks/runs/baseline-2026-03-31-codex`);
 - interop exporter improved to typed mapping with fallback `extensions`;
-- interop schema-aligned validator added (`scripts/validate_interop_v1.py`) and wired into CI.
+- interop schema-aligned validator added (`scripts/validate_interop_v1.py`) and wired into CI;
+- hardening docs extended with concrete examples and troubleshooting notes.
 
-## Next (Phase 6 completion)
+## Phase 7: Expansion (next)
 
-- add example artifacts and troubleshooting notes to hardening docs.
+- add at least one comparative baseline for another tool/model;
+- add lightweight trend report across multiple runs;
+- formalize evaluator protocol to reduce scoring variance.

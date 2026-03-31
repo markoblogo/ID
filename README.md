@@ -52,7 +52,7 @@ Main idea:
 - Phase 3 (validation automation): done
 - Phase 4 (integrations): done
 - Phase 5 (benchmark + interop): done
-- Phase 6 (hardening): in progress
+- Phase 6 (hardening): done
 
 ## Ingest + Extract
 
@@ -96,3 +96,4 @@ Main idea:
 
 - hardening guide: `docs/HARDENING.md`
 - CI workflow: `.github/workflows/ci.yml`
+- baseline example: `benchmarks/runs/baseline-2026-03-31-codex/`
