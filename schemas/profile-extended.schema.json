@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://id-protocol.local/schemas/profile-extended.schema.json",
+  "title": "ID Protocol Extended Profile",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "version",
+    "updated_at",
+    "workflows",
+    "misalignments"
+  ],
+  "properties": {
+    "profile_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "updated_at": { "type": "string", "format": "date" },
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "steps"],
+        "properties": {
+          "name": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "quality_checks": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "misalignments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue", "fix"],
+        "properties": {
+          "issue": { "type": "string" },
+          "fix": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}
