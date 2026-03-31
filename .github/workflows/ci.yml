@@ -27,3 +27,9 @@ jobs:
 
       - name: Profile validation
         run: python scripts/validate_profile.py --allow-stale --check-raw-tracked
+
+      - name: Export interop v1
+        run: python scripts/export_interop_v1.py --owner-id markoblogo
+
+      - name: Validate interop schema
+        run: python scripts/validate_interop_v1.py --owner-id markoblogo

@@ -90,6 +90,7 @@ Main idea:
 - validate benchmark run: `python3 scripts/benchmark_validate_run.py --run-id <run-id>`
 - interop v1 guide: `docs/INTEROP_V1.md`
 - export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`
+- validate interop json: `python3 scripts/validate_interop_v1.py --owner-id <owner-id>`
 
 ## Hardening
 
