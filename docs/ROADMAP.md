@@ -25,14 +25,24 @@
 - post-session changelog helper added (`scripts/session_update.py`);
 - usage doc added (`docs/VALIDATION.md`).
 
-## Phase 4: Integrations (next)
+## Phase 4: Integrations (done)
 
-- `agents.md`: automatic injection of `profile.core.md` at session start;
-- `LAB`: experiment registry for prompt/profile variants;
-- `SET`: orchestration checks for stale profiles and mandatory changelog update.
+- unified hook runner added (`scripts/run_integration_hook.sh`);
+- ecosystem-specific guides added (`integrations/agentsmd`, `integrations/lab`, `integrations/set`);
+- LAB experiment template added (`templates/lab-experiment.md`);
+- integration spec updated (`docs/INTEGRATIONS.md`).
 
-## Phase 5: Benchmark + Interop
+## Phase 5: Benchmark + Interop (done)
 
-- add repeatable benchmark tasks across AI tools;
-- track style-fit, edit count, and time-to-acceptable-result;
-- publish stable `v1` field naming and migration guide.
+- benchmark task suite added (`benchmarks/tasks/*`);
+- benchmark aggregation script added (`scripts/benchmark_report.py`);
+- benchmark result template added (`templates/benchmark-result.json`);
+- interop v1 spec and migration guide added (`docs/INTEROP_V1.md`);
+- interop schema added (`schemas/interop-v1.schema.json`);
+- interop export helper added (`scripts/export_interop_v1.py`).
+
+## Phase 6: Hardening (next)
+
+- execute first full benchmark runs and capture baselines per tool;
+- add CI checks for script lint/format/schema validation;
+- improve interop exporter from section-based parsing to typed mapping.

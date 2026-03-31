@@ -1,0 +1,10 @@
+{
+  "task_id": "task-01",
+  "tool": "model-or-agent-name",
+  "style_fit": 0,
+  "constraint_adherence": 0,
+  "result_quality": 0,
+  "edit_count": 0,
+  "time_to_acceptable_min": 0,
+  "notes": ""
+}

@@ -9,31 +9,13 @@ Main idea:
 - context has depth levels: short, extended, full;
 - using context implies responsibility to keep it updated.
 
-## Why
-
-Model and tool behavior changes over time. Stable productivity comes from a stable user profile and explicit communication protocol, not from a single model version.
-
-## Core Objects
-
-1. `core profile`:
-compact file for quick onboarding (chat, coding agent, image model).
-
-2. `extended profile`:
-deeper context for non-trivial collaboration.
-
-3. `full knowledge base`:
-repository/wiki-level archive for long-term continuity.
-
-4. `handshake`:
-mandatory first-step prompt block that defines how AI should use profile data.
-
-5. `update log`:
-change history proving recency and trust level.
-
 ## Repository Structure
 
 ```text
 .
+├── benchmarks/
+│   ├── tasks/
+│   └── runs/
 ├── data/
 │   ├── raw/
 │   ├── normalized/
@@ -41,89 +23,66 @@ change history proving recency and trust level.
 ├── docs/
 │   ├── PROTOCOL.md
 │   ├── OPERATIONS.md
-│   ├── INTEGRATIONS.md
 │   ├── INGEST_SOURCES.md
 │   ├── PRIVACY.md
 │   ├── VALIDATION.md
+│   ├── INTEGRATIONS.md
+│   ├── BENCHMARK.md
+│   ├── INTEROP_V1.md
 │   └── ROADMAP.md
-├── images/
+├── integrations/
+│   ├── agentsmd/
+│   ├── lab/
+│   └── set/
+├── lab/
+│   └── experiments/
 ├── profiles/
-│   └── <owner>/
 ├── schemas/
 ├── scripts/
-│   ├── extract_profile.py
-│   ├── redact_for_sharing.py
-│   ├── validate_profile.py
-│   ├── check_publish_guard.py
-│   └── session_update.py
 ├── templates/
-│   ├── profile.core.md
-│   ├── profile.extended.md
-│   ├── agent.handshake.md
-│   ├── change-log.md
-│   └── safe-share-package.md
 └── README.md
 ```
 
-## Priority Status
+## Phase Status
 
 - Phase 0 (bootstrap): done
 - Phase 1 (ingest + extractor MVP): done
 - Phase 2 (privacy/redaction): done
 - Phase 3 (validation automation): done
-- Next: adapters and benchmark
+- Phase 4 (integrations): done
+- Phase 5 (benchmark + interop): done
 
-## Quick Start
+## Ingest + Extract
 
-1. Copy `templates/profile.core.md` to `profiles/<person-id>/profile.core.md`.
-2. Fill only stable, high-impact preferences first.
-3. Copy `templates/agent.handshake.md` to `profiles/<person-id>/handshake.md`.
-4. Create `profiles/<person-id>/CHANGELOG.md` from template.
-5. When profile is consumed by AI, update freshness section in changelog.
+- put exports to `data/raw/<source>/`
+- normalize into `data/normalized/<source>/`
+- run: `python3 scripts/extract_profile.py --owner-id <owner-id>`
 
-## Ingest + Extract (MVP)
+## Privacy + Safe-Share
 
-Detailed source flow: `docs/INGEST_SOURCES.md`.
+- policy: `docs/PRIVACY.md`
+- run: `python3 scripts/redact_for_sharing.py`
+- review: `data/processed/redaction-report.json`
 
-1. Place raw exports in `data/raw/<source>/`.
-2. Normalize text/json into `data/normalized/<source>/`.
-3. Run extractor:
-   - `python3 scripts/extract_profile.py --owner-id <owner-id>`
-4. Review generated files:
-   - `profiles/<owner-id>/draft.from-exports.md`
-   - `profiles/<owner-id>/conflicts.from-exports.md`
-5. Merge approved findings into canonical profile files manually.
+## Validation + Changelog Automation
 
-## Privacy + Safe-Share (MVP)
+- validate: `python3 scripts/validate_profile.py --owner-id <owner-id>`
+- publish guard: `python3 scripts/check_publish_guard.py --all-tracked`
+- post-session entry:
+  - `python3 scripts/session_update.py --owner-id <owner-id> --session-context "..." --sections-used "..." --changes-made "..."`
 
-Policy: `docs/PRIVACY.md`
+## Integrations Hooks
 
-1. Keep personal exports in `data/raw/` (private only).
-2. Redact normalized layer for sharing:
-   - `python3 scripts/redact_for_sharing.py`
-3. Review `data/processed/redaction-report.json`.
-4. Build sharing package using `templates/safe-share-package.md`.
+- pre-task:
+  - `scripts/run_integration_hook.sh pre_task --owner-id <owner-id> --target agentsmd`
+- post-task:
+  - `scripts/run_integration_hook.sh post_task --owner-id <owner-id> --session-context "..." --sections-used "..." --changes-made "..."`
+- weekly review:
+  - `scripts/run_integration_hook.sh weekly_review --owner-id <owner-id>`
 
-## Validation + Session Update (MVP)
+## Benchmark + Interop
 
-Details: `docs/VALIDATION.md`
-
-1. Validate profile metadata and freshness:
-   - `python3 scripts/validate_profile.py --owner-id <owner-id>`
-2. Enforce raw-data publish guard before push:
-   - `python3 scripts/check_publish_guard.py --all-tracked`
-3. Append standardized post-session entry:
-   - `python3 scripts/session_update.py --owner-id <owner-id> --session-context "..." --sections-used "..." --changes-made "..."`
-
-## First Integration Targets
-
-- `agents.md` ecosystem: use `profile.core.md` as default context.
-- `LAB`: use `profile.extended.md` for experiments.
-- `SET orchestration`: enforce freshness checks and changelog updates.
-
-## Design Principles
-
-- portability over platform lock-in;
-- explicitness over hidden memory;
-- verifiability over vibes;
-- layered depth over one giant context dump.
+- benchmark guide: `docs/BENCHMARK.md`
+- run aggregation: `python3 scripts/benchmark_report.py --run-id <run-id>`
+- interop v1 guide: `docs/INTEROP_V1.md`
+- export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`
