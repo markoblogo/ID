@@ -54,6 +54,12 @@ Main idea:
 - Phase 5 (benchmark + interop): done
 - Phase 6 (hardening): done
 
+## Ecosystem Links
+
+- SET orchestration: https://github.com/markoblogo/SET
+- Lab catalog: https://github.com/markoblogo/lab.abvx
+- agentsgen toolchain: https://github.com/markoblogo/AGENTS.md_generator
+
 ## Ingest + Extract
 
 - put exports to `data/raw/<source>/`
