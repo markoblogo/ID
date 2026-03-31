@@ -44,6 +44,7 @@ change history proving recency and trust level.
 │   ├── INTEGRATIONS.md
 │   ├── INGEST_SOURCES.md
 │   ├── PRIVACY.md
+│   ├── VALIDATION.md
 │   └── ROADMAP.md
 ├── images/
 ├── profiles/
@@ -51,7 +52,10 @@ change history proving recency and trust level.
 ├── schemas/
 ├── scripts/
 │   ├── extract_profile.py
-│   └── redact_for_sharing.py
+│   ├── redact_for_sharing.py
+│   ├── validate_profile.py
+│   ├── check_publish_guard.py
+│   └── session_update.py
 ├── templates/
 │   ├── profile.core.md
 │   ├── profile.extended.md
@@ -65,8 +69,9 @@ change history proving recency and trust level.
 
 - Phase 0 (bootstrap): done
 - Phase 1 (ingest + extractor MVP): done
-- Phase 2 (privacy/redaction): in progress
-- Next: validation automation, adapters, benchmark
+- Phase 2 (privacy/redaction): done
+- Phase 3 (validation automation): done
+- Next: adapters and benchmark
 
 ## Quick Start
 
@@ -98,6 +103,17 @@ Policy: `docs/PRIVACY.md`
    - `python3 scripts/redact_for_sharing.py`
 3. Review `data/processed/redaction-report.json`.
 4. Build sharing package using `templates/safe-share-package.md`.
+
+## Validation + Session Update (MVP)
+
+Details: `docs/VALIDATION.md`
+
+1. Validate profile metadata and freshness:
+   - `python3 scripts/validate_profile.py --owner-id <owner-id>`
+2. Enforce raw-data publish guard before push:
+   - `python3 scripts/check_publish_guard.py --all-tracked`
+3. Append standardized post-session entry:
+   - `python3 scripts/session_update.py --owner-id <owner-id> --session-context "..." --sections-used "..." --changes-made "..."`
 
 ## First Integration Targets
 

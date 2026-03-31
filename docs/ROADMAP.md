@@ -12,19 +12,20 @@
 - data layers created (`data/raw`, `data/normalized`, `data/processed`);
 - extractor MVP added (`scripts/extract_profile.py`).
 
-## Phase 2: Privacy + Redaction (in progress)
+## Phase 2: Privacy + Redaction (done)
 
 - privacy policy added (`docs/PRIVACY.md`);
 - redaction script added (`scripts/redact_for_sharing.py`);
 - safe-share package template added (`templates/safe-share-package.md`).
 
-## Phase 3: Validation Automation (next)
+## Phase 3: Validation Automation (done)
 
-- add CLI validation for profile metadata freshness;
-- add checks against publishing `data/raw/**`;
-- add post-session changelog helper.
+- profile validator added (`scripts/validate_profile.py`);
+- raw publish guard added (`scripts/check_publish_guard.py`);
+- post-session changelog helper added (`scripts/session_update.py`);
+- usage doc added (`docs/VALIDATION.md`).
 
-## Phase 4: Integrations
+## Phase 4: Integrations (next)
 
 - `agents.md`: automatic injection of `profile.core.md` at session start;
 - `LAB`: experiment registry for prompt/profile variants;
