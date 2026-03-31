@@ -32,19 +32,30 @@ change history proving recency and trust level.
 
 ```text
 .
+├── data/
+│   ├── raw/
+│   ├── normalized/
+│   └── processed/
 ├── docs/
 │   ├── PROTOCOL.md
-│   └── OPERATIONS.md
+│   ├── OPERATIONS.md
+│   ├── INTEGRATIONS.md
+│   ├── INGEST_SOURCES.md
+│   └── ROADMAP.md
+├── profiles/
+│   └── <owner>/
 ├── schemas/
-│   ├── profile-core.schema.json
-│   └── profile-extended.schema.json
+├── scripts/
+│   └── extract_profile.py
 ├── templates/
-│   ├── profile.core.md
-│   ├── profile.extended.md
-│   ├── agent.handshake.md
-│   └── change-log.md
 └── README.md
 ```
+
+## Priority Status
+
+- Phase 0 (bootstrap): done
+- Phase 1 (ingest + extractor MVP): in progress (MVP scaffold added)
+- Next: privacy/redaction, validation automation, adapters, benchmark
 
 ## Quick Start
 
@@ -53,6 +64,19 @@ change history proving recency and trust level.
 3. Copy `templates/agent.handshake.md` to `profiles/<person-id>/handshake.md`.
 4. Create `profiles/<person-id>/CHANGELOG.md` from template.
 5. When profile is consumed by AI, update freshness section in changelog.
+
+## Ingest + Extract (MVP)
+
+Detailed source flow: `docs/INGEST_SOURCES.md`.
+
+1. Place raw exports in `data/raw/<source>/`.
+2. Normalize text/json into `data/normalized/<source>/`.
+3. Run extractor:
+   - `python3 scripts/extract_profile.py --owner-id <owner-id>`
+4. Review generated files:
+   - `profiles/<owner-id>/draft.from-exports.md`
+   - `profiles/<owner-id>/conflicts.from-exports.md`
+5. Merge approved findings into canonical profile files manually.
 
 ## First Integration Targets
 
