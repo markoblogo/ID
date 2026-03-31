@@ -1,5 +1,7 @@
 # ID Protocol
 
+![ID Protocol Logo](images/IDlogo.png)
+
 `ID` is a repository standard for portable human-AI interaction context.
 
 Main idea:
