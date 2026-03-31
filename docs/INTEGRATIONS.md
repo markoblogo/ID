@@ -1,50 +1,38 @@
-# Integrations: agents.md, LAB, SET
+# Validation and Session Automation (MVP)
 
-## 1. agents.md Integration
+## 1. Validate Profiles
 
-Goal: обеспечить стабильный старт взаимодействия с coding/chat агентами.
+Run metadata + freshness checks:
 
-Contract:
-- перед задачей подгружается `profiles/<owner>/profile.core.md`;
-- затем отправляется `profiles/<owner>/handshake.md`;
-- агент обязан подтвердить понимание ограничений до выполнения.
+- `python3 scripts/validate_profile.py --owner-id markoblogo`
 
-Minimal flow:
-1. Load L1 profile.
-2. Run handshake confirmation.
-3. Execute task.
-4. Suggest changelog update.
+Strict publish safety check (recommended before push):
 
-## 2. LAB Integration
+- `python3 scripts/validate_profile.py --check-raw-staged --check-raw-tracked`
 
-Goal: тестировать варианты промптов, профилей и правил оркестрации.
+Allow stale profiles as warnings during transition:
 
-Artifacts to track:
-- experiment id;
-- profile version used;
-- model/tool used;
-- mismatch notes;
-- resulting profile corrections.
+- `python3 scripts/validate_profile.py --allow-stale`
 
-Recommendation:
-- хранить результаты в отдельной папке `lab/` (будущий этап) и ссылаться на них из `profiles/<owner>/CHANGELOG.md`.
+## 2. Raw Publish Guard
 
-## 3. SET Orchestration Integration
+Fast guard for CI/pre-push:
 
-Goal: автоматизировать дисциплину актуализации профиля.
+- staged only: `python3 scripts/check_publish_guard.py`
+- include tracked: `python3 scripts/check_publish_guard.py --all-tracked`
 
-Required checks in pipeline:
-- freshness check for profile files;
-- mandatory handshake step before long tasks;
-- reminder to append changelog entry after profile-backed session.
+## 3. Post-Session CHANGELOG Update
 
-Suggested policy:
-- block non-critical long runs if profile is stale > 2x TTL;
-- allow override with explicit "reduced-confidence" marker.
+Append a standardized changelog entry:
 
-## 4. Unified Protocol Hooks
+```bash
+python3 scripts/session_update.py \
+  --owner-id markoblogo \
+  --session-context "Profile-backed coding session" \
+  --sections-used "Communication Signals, Task Execution Rules" \
+  --changes-made "Refined privacy constraints" \
+  --open-questions "Need image-model preference block"
+```
 
-Common hooks across ecosystems:
-- `pre_task`: load profile + run handshake;
-- `post_task`: append change note;
-- `weekly`: review stale sections and bump `updated_at`.
+This updates:
+- `profiles/<owner-id>/CHANGELOG.md`
