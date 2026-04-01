@@ -97,6 +97,16 @@ Before enabling real publication, configure:
 2. a trusted publisher for `markoblogo/ID`
 3. the `pypi` GitHub environment, ideally with approval protection
 
+Current intended PyPI configuration:
+
+- package name: `id-protocol`
+- GitHub owner: `markoblogo`
+- GitHub repository: `ID`
+- workflow file: `.github/workflows/pypi-publish.yml`
+- environment: `pypi`
+
+As of `2026-04-01`, `id-protocol` returned `404` on the public PyPI JSON endpoint, so it appears available. This still needs to be finalized on PyPI itself.
+
 This separation is intentional:
 - GitHub release remains the canonical first publication step
 - PyPI publication stays auditable and can be approval-gated
