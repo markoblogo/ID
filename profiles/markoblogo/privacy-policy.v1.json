@@ -1,0 +1,68 @@
+{
+  "policy_version": "1.0.0",
+  "owner_id": "markoblogo",
+  "updated_at": "2026-04-01",
+  "default_access": "task_class_scoped",
+  "task_classes": [
+    "coding",
+    "research",
+    "writing",
+    "agent_orchestration",
+    "image_video"
+  ],
+  "rules": [
+    {
+      "field_path": "profiles.core.communication",
+      "access": "always_share",
+      "rationale": "Communication preferences are low-risk operational context and should travel with the profile."
+    },
+    {
+      "field_path": "profiles.core.rules.ask_before",
+      "access": "always_share",
+      "rationale": "Ask-before constraints are safety-critical and should not be dropped in portable contexts."
+    },
+    {
+      "field_path": "profiles.core.priority_domains",
+      "access": "always_share",
+      "rationale": "Priority domains are part of task routing rather than sensitive personal data."
+    },
+    {
+      "field_path": "profiles.extended.environment_assumptions",
+      "access": "local_only",
+      "rationale": "Environment details can expose local paths, infrastructure, or private operational assumptions."
+    },
+    {
+      "field_path": "profiles.extended.domain_workflows",
+      "access": "task_class_scoped",
+      "allowed_task_classes": [
+        "coding",
+        "research",
+        "writing",
+        "agent_orchestration"
+      ],
+      "rationale": "Detailed workflows should be released only when directly relevant to the task class."
+    },
+    {
+      "field_path": "profiles.extended.extensions.image/video generator preferences",
+      "access": "task_class_scoped",
+      "allowed_task_classes": [
+        "image_video"
+      ],
+      "rationale": "Image/video preferences are specialized and should not be exposed to unrelated tools by default."
+    },
+    {
+      "field_path": "data.normalized",
+      "access": "local_only",
+      "rationale": "Normalized source material may still contain sensitive context and should remain private by default."
+    },
+    {
+      "field_path": "data.processed.redacted",
+      "access": "always_share",
+      "rationale": "Redacted safe-share outputs are the intended publication surface."
+    }
+  ],
+  "notes": [
+    "This policy is a machine-readable companion to docs/PRIVACY.md.",
+    "Exporters should default to deny when no explicit allow rule is present for sensitive paths."
+  ]
+}

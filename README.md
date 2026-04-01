@@ -164,6 +164,8 @@ Guide:
 ## Privacy + Safe-Share
 
 - policy: `docs/PRIVACY.md`
+- machine-readable policy: `docs/PRIVACY_POLICY_V1.md`
+- validate policy: `python3 scripts/validate_privacy_policy.py --owner-id <owner-id>`
 - run: `python3 scripts/redact_for_sharing.py`
 - review: `data/processed/redaction-report.json`
 
@@ -204,6 +206,8 @@ Guide:
 - shortcut commands:
   - `make validate`
   - `make interop`
+  - `make compact`
+  - `make privacy-policy`
   - `make trend`
 
 ## Hardening

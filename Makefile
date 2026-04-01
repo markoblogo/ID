@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact metrics metrics-tokenizer drift-check
+.PHONY: validate interop trend compact privacy-policy metrics metrics-tokenizer drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
@@ -39,6 +39,13 @@ compact:
 		echo "==> export compact context for $$owner"; \
 		$(PYTHON) scripts/export_context_compact.py --owner-id "$$owner"; \
 		$(PYTHON) scripts/validate_context_compact.py --owner-id "$$owner"; \
+	done
+
+privacy-policy:
+	@for owner in $(OWNERS); do \
+		test -f "profiles/$$owner/privacy-policy.v1.json" || { echo "missing privacy policy for $$owner"; exit 1; }; \
+		echo "==> validate privacy policy for $$owner"; \
+		$(PYTHON) scripts/validate_privacy_policy.py --owner-id "$$owner"; \
 	done
 
 drift-check:

@@ -106,8 +106,9 @@ If a profile section was operationally used in a meaningful session, user or age
 
 Recommended human-readable source: Markdown.
 
-Optional machine companion:
-- JSON documents validated by provided schemas.
+Optional machine companions:
+- JSON documents validated by provided schemas;
+- `privacy-policy.v1.json` for machine-readable trust/privacy rules.
 
 Recommended onboarding source:
 - start from a minimal markdown profile, then grow into `profile.core.md` and `profile.extended.md` as evidence accumulates.

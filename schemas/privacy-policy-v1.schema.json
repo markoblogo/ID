@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://id-protocol.local/schemas/privacy-policy-v1.schema.json",
+  "title": "ID Privacy Policy v1",
+  "type": "object",
+  "required": [
+    "policy_version",
+    "owner_id",
+    "updated_at",
+    "default_access",
+    "task_classes",
+    "rules"
+  ],
+  "properties": {
+    "policy_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "owner_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "default_access": {
+      "type": "string",
+      "enum": ["always_share", "local_only", "task_class_scoped"]
+    },
+    "task_classes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/rule" }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "required": ["field_path", "access", "rationale"],
+      "properties": {
+        "field_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access": {
+          "type": "string",
+          "enum": ["always_share", "local_only", "task_class_scoped"]
+        },
+        "allowed_task_classes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "access": { "const": "task_class_scoped" }
+            }
+          },
+          "then": {
+            "required": ["allowed_task_classes"]
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

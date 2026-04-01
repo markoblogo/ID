@@ -75,3 +75,15 @@ If sensitive data is committed by mistake:
 2. rotate exposed secrets (if any),
 3. rewrite git history if needed,
 4. document incident and mitigation.
+
+## 8. Machine-Readable Policy Layer
+
+Use `profiles/<owner>/privacy-policy.v1.json` as the machine-readable companion to this document.
+
+Validation command:
+
+```bash
+python3 scripts/validate_privacy_policy.py --owner-id <owner-id>
+```
+
+This layer defines explicit `always_share`, `local_only`, and `task_class_scoped` rules for profile and data paths.
