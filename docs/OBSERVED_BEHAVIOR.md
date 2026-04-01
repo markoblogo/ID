@@ -17,6 +17,10 @@ Validation command:
 python3 scripts/validate_observed_behavior.py
 ```
 
+Freshness policy:
+- evidence notes older than `180` days are treated as stale by default
+- use `docs/EVIDENCE_POLICY.md` for update and confidence rules
+
 ## Reading Rule
 
 Each tool-family note should capture:

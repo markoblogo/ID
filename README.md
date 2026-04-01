@@ -161,6 +161,7 @@ Output:
 - compatibility matrix: `docs/COMPATIBILITY.md`
 - observed behavior notes: `docs/OBSERVED_BEHAVIOR.md`
 - observed behavior evidence: `evidence/observed-behavior/*.json`
+- evidence maintenance policy: `docs/EVIDENCE_POLICY.md`
 - compact target mapping: `docs/CONTEXT_JSON_MAPPING.md`
 
 ## Start Small

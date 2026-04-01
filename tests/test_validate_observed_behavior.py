@@ -62,6 +62,28 @@ class ValidateObservedBehaviorTests(unittest.TestCase):
         self.assertIn("confidence must be one of: low, medium, high", result.stdout)
         self.assertIn("evidence.basis must contain at least 1 item(s)", result.stdout)
 
+    def test_stale_note_fails_default_freshness_hook(self) -> None:
+        payload = valid_note()
+        payload["observed_at"] = "2025-01-01"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "chatgpt.family.v1.json"
+            path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(VALIDATOR),
+                    "--input",
+                    str(path),
+                    "--today",
+                    "2026-04-01",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("observed_at is stale", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

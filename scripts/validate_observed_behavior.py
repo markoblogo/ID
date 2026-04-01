@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -35,7 +36,14 @@ def _validate_string_list(value: Any, field: str, errors: list[str], min_items: 
             errors.append(f"{field}[{index}] must be a non-empty string")
 
 
-def find_errors(document: Any) -> list[str]:
+def parse_date(value: str) -> date | None:
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def find_errors(document: Any, today: date | None = None, max_age_days: int | None = None) -> list[str]:
     errors: list[str] = []
     if not isinstance(document, dict):
         return ["Document must be a JSON object"]
@@ -67,6 +75,16 @@ def find_errors(document: Any) -> list[str]:
         errors.append("summary must be a non-empty string")
     if not _is_non_empty_string(document["observed_at"]) or not DATE_RE.match(document["observed_at"]):
         errors.append("observed_at must be YYYY-MM-DD")
+    elif today is not None and max_age_days is not None:
+        observed_at = parse_date(document["observed_at"])
+        if observed_at is None:
+            errors.append("observed_at must be YYYY-MM-DD")
+        else:
+            age = (today - observed_at).days
+            if age > max_age_days:
+                errors.append(
+                    f"observed_at is stale: {document['observed_at']} is {age} days old > max_age_days={max_age_days}"
+                )
 
     _validate_string_list(document["onboarding_mode"], "onboarding_mode", errors)
     _validate_string_list(document["best_artifacts"], "best_artifacts", errors)
@@ -98,7 +116,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence-root", type=Path, default=Path("evidence/observed-behavior"))
     parser.add_argument("--input", type=Path, help="Validate a single evidence note")
+    parser.add_argument("--today", help="Override current date (YYYY-MM-DD)")
+    parser.add_argument("--max-age-days", type=int, default=180, help="Maximum allowed evidence age in days")
     args = parser.parse_args()
+
+    today = parse_date(args.today) if args.today else date.today()
+    if today is None:
+        print("ERROR: --today must be YYYY-MM-DD")
+        return 2
 
     paths = [args.input] if args.input else sorted(args.evidence_root.glob("*.json"))
     if not paths:
@@ -107,7 +132,7 @@ def main() -> int:
 
     failures = 0
     for path in paths:
-        errors = find_errors(load_json(path))
+        errors = find_errors(load_json(path), today=today, max_age_days=args.max_age_days)
         if errors:
             print(f"INVALID: {path}")
             for error in errors:
