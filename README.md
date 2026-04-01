@@ -27,6 +27,9 @@ Short explainer:
 Golden workflow examples:
 - `docs/EXAMPLES.md`
 
+Proof page:
+- `docs/PROOF.md`
+
 ## End-to-End Scenarios
 
 ### 1. New Coding Agent
@@ -207,6 +210,7 @@ Guide:
 - evaluator protocol: `docs/EVALUATOR_PROTOCOL.md`
 - public utility positioning: `docs/WHY_ID.md`
 - golden examples: `docs/EXAMPLES.md`
+- proof summary: `docs/PROOF.md`
 - run aggregation: `python3 scripts/benchmark_report.py --run-id <run-id>`
 - trend report across runs: `python3 scripts/benchmark_trend_report.py`
 - public metrics report: `python3 scripts/benchmark_public_report.py`
