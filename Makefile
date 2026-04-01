@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer drift-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
@@ -36,6 +36,9 @@ metrics:
 metrics-tokenizer:
 	@$(PYTHON) -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('tiktoken') else 1)" || { echo "Install hint: pip install tiktoken"; exit 1; }
 	$(PYTHON) scripts/benchmark_public_report.py --tokenizer-provider tiktoken --tokenizer-encoding cl100k_base
+
+lint-profile:
+	$(PYTHON) scripts/lint_profile_quality.py
 
 compact:
 	@for owner in $(OWNERS); do \
