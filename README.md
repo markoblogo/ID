@@ -2,7 +2,7 @@
 
 ![ID Protocol Logo](images/IDlogo.png)
 
-`ID` is a repository standard for portable human-AI interaction context.
+`ID` is a protocol and reference repository for portable human-AI interaction context.
 
 Main idea:
 - any AI should quickly understand how to work with a specific person;
@@ -14,6 +14,13 @@ What this gives in practice:
 - less prompt boilerplate repeated by hand;
 - explicit privacy, freshness, and loss boundaries;
 - measurable with-vs-without-ID comparisons instead of ideology-only claims.
+
+Current repo status:
+- versioned protocol surface under `spec/`
+- policy-aware portable artifacts (`interop`, `compact`, `mcp`)
+- benchmark and public proof layer
+- structured observed-behavior evidence
+- lightweight onboarding bootstrap flow
 
 Why this beats ad-hoc prompts or chat memory in some workflows:
 - `system prompts` are fragile and usually copied by hand across tools;
@@ -143,11 +150,56 @@ Output:
 - Phase 6 (hardening): done
 - Phase 7 (expansion): done
 
-## Ecosystem Links
+## Current Maturity
 
-- SET orchestration: https://github.com/markoblogo/SET
-- Lab catalog: https://github.com/markoblogo/lab.abvx
-- agentsgen toolchain: https://github.com/markoblogo/AGENTS.md_generator
+Today this repository functions as:
+- a protocol/spec reference
+- a validated tooling reference
+- a benchmark/evidence reference
+- a lightweight onboarding entrypoint
+
+It is no longer only an internal profile format or documentation experiment.
+
+## Ecosystem Status
+
+### `ID` and `lab.abvx`
+
+- repo: [markoblogo/lab.abvx](https://github.com/markoblogo/lab.abvx)
+- landing: [lab.abvx.xyz](https://lab.abvx.xyz/)
+- current relationship:
+  - `lab.abvx` is the broader experiment/catalog surface
+  - `ID` sits in that ecosystem as a protocol/reference implementation for portable human-AI context
+  - `lab.abvx.xyz` should be treated as an adjacent discovery or catalog surface, not the canonical protocol source of truth
+
+### `ID` and `AGENTS.md Generator`
+
+- repo: [markoblogo/AGENTS.md_generator](https://github.com/markoblogo/AGENTS.md_generator)
+- landing: [agentsmd.abvx.xyz](https://agentsmd.abvx.xyz/)
+- current relationship:
+  - `AGENTS.md Generator` is companion tooling for generating and maintaining agent-facing repo instructions
+  - `ID` is the person/tool interaction protocol layer
+  - they complement each other:
+    - `ID` defines portable human-AI context
+    - `AGENTS.md Generator` helps produce repo-scoped agent guidance
+  - `agentsmd.abvx.xyz` is the landing/product surface for that adjacent toolchain, not the `ID` protocol home
+
+### `ID` and `SET`
+
+- repo: [markoblogo/SET](https://github.com/markoblogo/SET)
+- current relationship:
+  - `SET` is the adjacent orchestration/execution layer
+  - `ID` provides the context/protocol layer that can feed orchestration workflows
+  - practical boundary:
+    - `ID` answers "what context should follow the human across tools?"
+    - `SET` answers "how should agentic or tool workflows be executed/orchestrated?"
+
+### Practical Summary
+
+If you need:
+- protocol and portable context: start with `ID`
+- repo-scoped agent instruction generation: use `AGENTS.md Generator`
+- broader experiment catalog / ecosystem discovery: use `lab.abvx`
+- orchestration/execution workflows: use `SET`
 
 ## Specification
 
@@ -168,6 +220,7 @@ Output:
 
 Recommended onboarding path:
 - bootstrap a starter set with `python3 scripts/bootstrap_owner.py --owner-id <owner-id>`
+- or `make bootstrap-owner OWNER=<owner-id>`
 - start with `templates/profile.minimal.md`
 - then promote stable guidance into `profiles/<owner>/profile.core.md`
 - add `profile.extended.md` only after repeated workflows and misalignments are clear
@@ -236,7 +289,10 @@ Guide:
   - `make bootstrap-owner OWNER=<owner-id>`
   - `make interop`
   - `make compact`
+  - `make mcp`
   - `make privacy-policy`
+  - `make observed-behavior`
+  - `make metrics`
   - `make trend`
 
 ## Hardening
