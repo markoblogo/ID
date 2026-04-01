@@ -22,6 +22,7 @@ Target:
 - `context.compact.json`
 - schema: `schemas/context-compact-v0.schema.json`
 - starter template: `templates/context.compact.json`
+- validator: `scripts/validate_context_compact.py`
 
 ## 3. Design Goal
 
@@ -142,6 +143,6 @@ Omits: extended workflows, history, provenance-heavy context
 ## 9. Next Step
 
 Future implementation may add:
-- exporter script for `context.compact.json`
 - round-trip tests
 - target-specific emitters for known `context.json`-style consumers
+- wrapper examples for transport layers such as MCP

@@ -195,6 +195,7 @@ Guide:
 - compatibility guide: `docs/COMPATIBILITY.md`
 - compact export contract: `docs/CONTEXT_JSON_MAPPING.md`
 - compact exporter: `python3 scripts/export_context_compact.py --owner-id <owner-id>`
+- compact validator: `python3 scripts/validate_context_compact.py --owner-id <owner-id>`
 - export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`
 - interop artifact policy: `profiles/<owner>/interop.v1.json` is versioned and must be regenerated after profile changes
 - validate interop json: `python3 scripts/validate_interop_v1.py --owner-id <owner-id>`

@@ -166,9 +166,11 @@ Known loss: freshness and trust semantics preserved as comments, not enforced fi
 ## 8. Next Adapters
 
 Recommended next compatibility work:
-- implement exporter for the documented compact target
-- MCP-oriented profile resource wrapper example
+- add round-trip / drift checks for compact target consumers
 - round-trip loss tests for future exporters
+
+Reference MCP-oriented wrapper example:
+- `integrations/mcp/context.resource.example.json`
 
 ## 9. Non-Goals
 
