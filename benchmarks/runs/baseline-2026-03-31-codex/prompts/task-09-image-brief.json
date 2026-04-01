@@ -1,0 +1,12 @@
+{
+  "task_id": "task-09-image-brief",
+  "tool": "codex",
+  "context_mode": "id",
+  "prompt_segments": {
+    "system": "Use the ID profile and produce the requested artifact directly.",
+    "profile_context": "Apply the stored ID profile for tone, constraints, and working style.",
+    "task_context": "Benchmark task executed with stable protocol context.",
+    "task_instruction": "# Task 09: Image/Video Brief\n\nDraft prompt brief reflecting user style and hard constraints."
+  },
+  "notes": "Prompt payload captured using ID-backed benchmark context."
+}

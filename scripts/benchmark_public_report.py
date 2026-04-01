@@ -10,8 +10,9 @@ from pathlib import Path
 
 SUCCESS_THRESHOLD = 4
 LOWER_BETTER_PUBLIC_METRICS = {"onboarding_latency_min", "clarification_turns_avg"}
+PROMPT_SEGMENT_KEYS = ("system", "profile_context", "task_context", "task_instruction")
 METRIC_NOTES = {
-    "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task",
+    "prompt_length_reduction": "not yet instrumented; requires comparable prompts/<task-id>.json payloads in matched control runs",
 }
 
 
@@ -104,6 +105,23 @@ def read_results(run_dir: Path) -> list[dict]:
     return rows
 
 
+def prompt_char_count(prompt_payload: dict) -> int:
+    segments = prompt_payload.get("prompt_segments", {})
+    return sum(len(str(segments.get(key, ""))) for key in PROMPT_SEGMENT_KEYS)
+
+
+def read_prompt_payloads(run_dir: Path) -> dict[str, dict]:
+    payloads = {}
+    for path in sorted((run_dir / "prompts").glob("*.json")):
+        try:
+            payload = load_json(path)
+        except json.JSONDecodeError:
+            continue
+        task_id = payload.get("task_id") or path.stem
+        payloads[task_id] = payload
+    return payloads
+
+
 def success(result: dict) -> bool:
     return result.get("result_quality", 0) >= SUCCESS_THRESHOLD and result.get("constraint_adherence", 0) >= SUCCESS_THRESHOLD
 
@@ -129,12 +147,14 @@ def alignment_index(summary: dict) -> float:
 def build_run_row(run_dir: Path, summary: dict) -> dict:
     meta = load_run_meta(run_dir, summary)
     results = read_results(run_dir)
+    prompts = read_prompt_payloads(run_dir)
     tool_list = meta.get("tools", [])
     tool = tool_list[0] if tool_list else "unknown"
     total = len(results)
     success_rate = round(sum(1 for row in results if success(row)) / total, 3) if total else 0.0
     high_alignment_rate = round(sum(1 for row in results if high_alignment(row)) / total, 3) if total else 0.0
     first_pass_rate = round(sum(1 for row in results if first_pass_success(row)) / total, 3) if total else 0.0
+    prompt_lengths = [prompt_char_count(payload) for payload in prompts.values()]
     return {
         "run_id": summary.get("run_id"),
         "date": meta.get("date"),
@@ -143,6 +163,7 @@ def build_run_row(run_dir: Path, summary: dict) -> dict:
         "context_mode": meta.get("context_mode", "id"),
         "comparison_group": meta.get("comparison_group"),
         "tasks": summary.get("tasks", total),
+        "prompt_payload_avg_chars": round(sum(prompt_lengths) / len(prompt_lengths), 1) if prompt_lengths else 0.0,
         "public_metrics": {
             "onboarding_latency_min": summary.get("averages", {}).get("time_to_acceptable_min", 0.0),
             "clarification_turns_avg": summary.get("averages", {}).get("edit_count", 0.0),
@@ -212,6 +233,70 @@ def with_vs_without_delta(rows: list[dict]) -> dict | None:
     }
 
 
+def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
+    grouped: dict[str, dict[str, dict]] = {}
+    for row in rows:
+        comparison_group = row.get("comparison_group")
+        context_mode = row.get("context_mode")
+        if not comparison_group or context_mode not in {"id", "no_id"}:
+            continue
+        grouped.setdefault(comparison_group, {})[context_mode] = row
+
+    pairs = []
+    ratio_values = []
+    char_values = []
+    for comparison_group, contexts in sorted(grouped.items()):
+        with_id = contexts.get("id")
+        without_id = contexts.get("no_id")
+        if with_id is None or without_id is None:
+            continue
+        with_prompts = read_prompt_payloads(runs_root / with_id["run_id"])
+        without_prompts = read_prompt_payloads(runs_root / without_id["run_id"])
+        shared_tasks = sorted(set(with_prompts) & set(without_prompts))
+        if not shared_tasks:
+            continue
+        reductions = []
+        for task_id in shared_tasks:
+            with_chars = prompt_char_count(with_prompts[task_id])
+            without_chars = prompt_char_count(without_prompts[task_id])
+            if without_chars <= 0:
+                continue
+            reduction_chars = without_chars - with_chars
+            reduction_ratio = round(reduction_chars / without_chars, 3)
+            reductions.append(
+                {
+                    "task_id": task_id,
+                    "with_id_chars": with_chars,
+                    "without_id_chars": without_chars,
+                    "reduction_chars": reduction_chars,
+                    "reduction_ratio": reduction_ratio,
+                }
+            )
+            ratio_values.append(reduction_ratio)
+            char_values.append(reduction_chars)
+        if not reductions:
+            continue
+        pairs.append(
+            {
+                "comparison_group": comparison_group,
+                "with_id_run_id": with_id["run_id"],
+                "without_id_run_id": without_id["run_id"],
+                "average_reduction_ratio": round(sum(item["reduction_ratio"] for item in reductions) / len(reductions), 3),
+                "average_reduction_chars": round(sum(item["reduction_chars"] for item in reductions) / len(reductions), 1),
+                "tasks": reductions,
+            }
+        )
+
+    if not pairs:
+        return None
+
+    return {
+        "pairs": pairs,
+        "average_reduction_ratio": round(sum(ratio_values) / len(ratio_values), 3),
+        "average_reduction_chars": round(sum(char_values) / len(char_values), 1),
+    }
+
+
 def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
     summaries: list[tuple[Path, dict]] = []
     for path in sorted(runs_root.glob("*/summary.json")):
@@ -231,16 +316,24 @@ def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
     best_alignment = best_run(rows, "alignment_index", True)
     best_first_pass = best_run(rows, "first_pass_success_rate", True)
     paired_delta = with_vs_without_delta(rows)
+    prompt_reduction = prompt_length_reduction(rows, runs_root)
     not_yet_instrumented = dict(METRIC_NOTES)
     if paired_delta is None:
         not_yet_instrumented["with_vs_without_id_delta"] = (
             "not yet available; requires matched control runs with comparison_group and context_mode=no_id"
         )
+    if prompt_reduction is None:
+        not_yet_instrumented["prompt_length_reduction"] = (
+            "not yet available; requires comparable prompts/<task-id>.json payloads in matched control runs"
+        )
+    else:
+        not_yet_instrumented.pop("prompt_length_reduction", None)
 
     return {
         "runs": rows,
         "profile_freshness": profile_freshness_snapshot(profiles_root, owner_id),
         "with_vs_without_id_delta": paired_delta,
+        "prompt_length_reduction": prompt_reduction,
         "best_by_public_metric": {
             "best_task_success_rate": {
                 "run_id": best_task_success["run_id"],
@@ -278,7 +371,7 @@ def write_markdown(path: Path, payload: dict) -> None:
             f"- {row['date']} | {row['run_id']} | {row['tool']} | mode={row['context_mode']} | "
             f"success={metrics['task_success_rate']} alignment={metrics['alignment_index']} "
             f"latency={metrics['onboarding_latency_min']} clarify={metrics['clarification_turns_avg']} "
-            f"first_pass={metrics['first_pass_success_rate']}"
+            f"first_pass={metrics['first_pass_success_rate']} prompt_avg_chars={row['prompt_payload_avg_chars']}"
         )
 
     paired_delta = payload.get("with_vs_without_id_delta")
@@ -295,6 +388,17 @@ def write_markdown(path: Path, payload: dict) -> None:
         lines.append("Average deltas:")
         for metric, value in paired_delta["average_deltas"].items():
             lines.append(f"- {metric}: {value}")
+
+    prompt_reduction = payload.get("prompt_length_reduction")
+    if prompt_reduction is not None:
+        lines.extend(["", "## Prompt Length Reduction", ""])
+        lines.append(f"- average_reduction_ratio: {prompt_reduction['average_reduction_ratio']}")
+        lines.append(f"- average_reduction_chars: {prompt_reduction['average_reduction_chars']}")
+        for pair in prompt_reduction["pairs"]:
+            lines.append(
+                f"- {pair['comparison_group']} | with_id={pair['with_id_run_id']} | without_id={pair['without_id_run_id']} | "
+                f"avg_ratio={pair['average_reduction_ratio']} avg_chars={pair['average_reduction_chars']}"
+            )
 
     freshness = payload["profile_freshness"]
     lines.extend(["", "## Profile Freshness", ""])

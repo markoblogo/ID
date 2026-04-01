@@ -1,0 +1,12 @@
+{
+  "task_id": "task-06-writing-structure",
+  "tool": "claude",
+  "context_mode": "id",
+  "prompt_segments": {
+    "system": "Use the ID profile and answer directly with the requested artifact.",
+    "profile_context": "Apply the stored ID profile for communication style, constraints, and decision rules.",
+    "task_context": "Benchmark task executed with stable protocol context.",
+    "task_instruction": "# Task 06: Structured Writing\n\nProduce concise, structured document according to formatting constraints."
+  },
+  "notes": "Prompt payload captured using ID-backed benchmark context."
+}

@@ -59,12 +59,32 @@ def write_result(path: Path, *, style: int, constraint: int, quality: int, edits
     )
 
 
+def write_prompt(path: Path, *, task_id: str, tool: str, context_mode: str, system: str, profile_context: str, task_context: str, task_instruction: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "task_id": task_id,
+                "tool": tool,
+                "context_mode": context_mode,
+                "prompt_segments": {
+                    "system": system,
+                    "profile_context": profile_context,
+                    "task_context": task_context,
+                    "task_instruction": task_instruction,
+                },
+                "notes": "test payload",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
 def write_profile(path: Path, *, updated_at: str, ttl_days: int) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         textwrap.dedent(
-            f"""\
-            ---
+            f"""            ---
             profile_id: "markoblogo"
             updated_at: "{updated_at}"
             freshness_ttl_days: {ttl_days}
@@ -105,6 +125,26 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             )
             write_result(runs_root / "run-a" / "results" / "task-1.json", style=5, constraint=5, quality=5, edits=0, minutes=2)
             write_result(runs_root / "run-a" / "results" / "task-2.json", style=4, constraint=4, quality=4, edits=0, minutes=4)
+            write_prompt(
+                runs_root / "run-a" / "prompts" / "task-1.json",
+                task_id="task-1",
+                tool="codex",
+                context_mode="id",
+                system="short system",
+                profile_context="compact profile",
+                task_context="repo context",
+                task_instruction="do task 1",
+            )
+            write_prompt(
+                runs_root / "run-a" / "prompts" / "task-2.json",
+                task_id="task-2",
+                tool="codex",
+                context_mode="id",
+                system="short system",
+                profile_context="compact profile",
+                task_context="repo context",
+                task_instruction="do task 2",
+            )
 
             write_meta(
                 runs_root / "run-a-no-id" / "meta.json",
@@ -128,6 +168,26 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             )
             write_result(runs_root / "run-a-no-id" / "results" / "task-1.json", style=4, constraint=4, quality=4, edits=1, minutes=4)
             write_result(runs_root / "run-a-no-id" / "results" / "task-2.json", style=3, constraint=4, quality=3, edits=2, minutes=6)
+            write_prompt(
+                runs_root / "run-a-no-id" / "prompts" / "task-1.json",
+                task_id="task-1",
+                tool="codex",
+                context_mode="no_id",
+                system="long system prompt with repeated rules",
+                profile_context="manual preferences repeated in full detail",
+                task_context="repo context and additional reminders",
+                task_instruction="do task 1 with repeated constraints",
+            )
+            write_prompt(
+                runs_root / "run-a-no-id" / "prompts" / "task-2.json",
+                task_id="task-2",
+                tool="codex",
+                context_mode="no_id",
+                system="long system prompt with repeated rules",
+                profile_context="manual preferences repeated in full detail",
+                task_context="repo context and additional reminders",
+                task_instruction="do task 2 with repeated constraints",
+            )
 
             write_profile(profiles_root / "markoblogo" / "profile.core.md", updated_at="2026-03-31", ttl_days=14)
             write_profile(profiles_root / "markoblogo" / "profile.extended.md", updated_at="2026-04-01", ttl_days=30)
@@ -163,9 +223,12 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["comparison_group"], "pair-a")
             self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["deltas"]["task_success_rate"], 0.5)
             self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["deltas"]["onboarding_latency_min"], 2.0)
+            self.assertGreater(payload["prompt_length_reduction"]["average_reduction_ratio"], 0)
             self.assertNotIn("with_vs_without_id_delta", payload["not_yet_instrumented"])
+            self.assertNotIn("prompt_length_reduction", payload["not_yet_instrumented"])
             self.assertIn("# Public Benchmark Metrics", output_md.read_text(encoding="utf-8"))
             self.assertIn("With vs Without ID Delta", output_md.read_text(encoding="utf-8"))
+            self.assertIn("Prompt Length Reduction", output_md.read_text(encoding="utf-8"))
 
     def test_requires_at_least_two_valid_summaries(self) -> None:
         with tempfile.TemporaryDirectory() as td:

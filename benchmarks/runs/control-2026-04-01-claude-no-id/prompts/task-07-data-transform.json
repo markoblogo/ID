@@ -1,0 +1,12 @@
+{
+  "task_id": "task-07-data-transform",
+  "tool": "claude",
+  "context_mode": "no_id",
+  "prompt_segments": {
+    "system": "You are assisting a demanding technical user. Be concise, structured, explicit about assumptions, preserve tone and constraints, avoid filler, and restate important requirements so nothing is dropped.",
+    "profile_context": "The user prefers clear engineering communication, minimal fluff, explicit assumptions, practical tradeoff analysis, small safe changes, verification before finalizing, and direct answers. Avoid generic reassurance, avoid vague summaries, and keep the response operational.",
+    "task_context": "This task is benchmarked. Preserve clarity, formatting discipline, directness, constraint adherence, and verification. Repeat any critical user expectations explicitly instead of relying on prior memory.",
+    "task_instruction": "# Task 07: Data Transform\n\nTransform messy records into clean schema and document mapping rules.\n\nAlso preserve direct tone, explicit assumptions, concise structure, and constraint fidelity without relying on stored profile context."
+  },
+  "notes": "Prompt payload captured for no-ID control run with manually restated context."
+}

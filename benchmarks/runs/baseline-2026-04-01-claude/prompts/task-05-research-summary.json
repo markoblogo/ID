@@ -1,0 +1,12 @@
+{
+  "task_id": "task-05-research-summary",
+  "tool": "claude",
+  "context_mode": "id",
+  "prompt_segments": {
+    "system": "Use the ID profile and answer directly with the requested artifact.",
+    "profile_context": "Apply the stored ID profile for communication style, constraints, and decision rules.",
+    "task_context": "Benchmark task executed with stable protocol context.",
+    "task_instruction": "# Task 05: Research Summary\n\nSummarize technical sources with explicit assumptions and gaps."
+  },
+  "notes": "Prompt payload captured using ID-backed benchmark context."
+}

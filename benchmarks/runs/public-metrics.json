@@ -8,6 +8,7 @@
       "context_mode": "id",
       "comparison_group": "codex-2026-03-31",
       "tasks": 10,
+      "prompt_payload_avg_chars": 281.6,
       "public_metrics": {
         "onboarding_latency_min": 4.3,
         "clarification_turns_avg": 0.8,
@@ -25,6 +26,7 @@
       "context_mode": "no_id",
       "comparison_group": "codex-2026-03-31",
       "tasks": 10,
+      "prompt_payload_avg_chars": 889.6,
       "public_metrics": {
         "onboarding_latency_min": 5.8,
         "clarification_turns_avg": 1.8,
@@ -42,6 +44,7 @@
       "context_mode": "id",
       "comparison_group": "claude-2026-04-01",
       "tasks": 10,
+      "prompt_payload_avg_chars": 301.6,
       "public_metrics": {
         "onboarding_latency_min": 5.0,
         "clarification_turns_avg": 1.1,
@@ -59,6 +62,7 @@
       "context_mode": "no_id",
       "comparison_group": "claude-2026-04-01",
       "tasks": 10,
+      "prompt_payload_avg_chars": 907.6,
       "public_metrics": {
         "onboarding_latency_min": 5.8,
         "clarification_turns_avg": 1.8,
@@ -129,6 +133,170 @@
       "alignment_index": 18.3
     }
   },
+  "prompt_length_reduction": {
+    "pairs": [
+      {
+        "comparison_group": "claude-2026-04-01",
+        "with_id_run_id": "baseline-2026-04-01-claude",
+        "without_id_run_id": "control-2026-04-01-claude-no-id",
+        "average_reduction_ratio": 0.668,
+        "average_reduction_chars": 606.0,
+        "tasks": [
+          {
+            "task_id": "task-01-coding-refactor",
+            "with_id_chars": 315,
+            "without_id_chars": 921,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.658
+          },
+          {
+            "task_id": "task-02-bug-triage",
+            "with_id_chars": 306,
+            "without_id_chars": 912,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.664
+          },
+          {
+            "task_id": "task-03-api-design",
+            "with_id_chars": 292,
+            "without_id_chars": 898,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.675
+          },
+          {
+            "task_id": "task-04-ops-runbook",
+            "with_id_chars": 299,
+            "without_id_chars": 905,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.67
+          },
+          {
+            "task_id": "task-05-research-summary",
+            "with_id_chars": 297,
+            "without_id_chars": 903,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.671
+          },
+          {
+            "task_id": "task-06-writing-structure",
+            "with_id_chars": 309,
+            "without_id_chars": 915,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.662
+          },
+          {
+            "task_id": "task-07-data-transform",
+            "with_id_chars": 301,
+            "without_id_chars": 907,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.668
+          },
+          {
+            "task_id": "task-08-agent-handshake",
+            "with_id_chars": 294,
+            "without_id_chars": 900,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.673
+          },
+          {
+            "task_id": "task-09-image-brief",
+            "with_id_chars": 297,
+            "without_id_chars": 903,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.671
+          },
+          {
+            "task_id": "task-10-context-porting",
+            "with_id_chars": 306,
+            "without_id_chars": 912,
+            "reduction_chars": 606,
+            "reduction_ratio": 0.664
+          }
+        ]
+      },
+      {
+        "comparison_group": "codex-2026-03-31",
+        "with_id_run_id": "baseline-2026-03-31-codex",
+        "without_id_run_id": "control-2026-03-31-codex-no-id",
+        "average_reduction_ratio": 0.683,
+        "average_reduction_chars": 608.0,
+        "tasks": [
+          {
+            "task_id": "task-01-coding-refactor",
+            "with_id_chars": 295,
+            "without_id_chars": 903,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.673
+          },
+          {
+            "task_id": "task-02-bug-triage",
+            "with_id_chars": 286,
+            "without_id_chars": 894,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.68
+          },
+          {
+            "task_id": "task-03-api-design",
+            "with_id_chars": 272,
+            "without_id_chars": 880,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.691
+          },
+          {
+            "task_id": "task-04-ops-runbook",
+            "with_id_chars": 279,
+            "without_id_chars": 887,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.685
+          },
+          {
+            "task_id": "task-05-research-summary",
+            "with_id_chars": 277,
+            "without_id_chars": 885,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.687
+          },
+          {
+            "task_id": "task-06-writing-structure",
+            "with_id_chars": 289,
+            "without_id_chars": 897,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.678
+          },
+          {
+            "task_id": "task-07-data-transform",
+            "with_id_chars": 281,
+            "without_id_chars": 889,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.684
+          },
+          {
+            "task_id": "task-08-agent-handshake",
+            "with_id_chars": 274,
+            "without_id_chars": 882,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.689
+          },
+          {
+            "task_id": "task-09-image-brief",
+            "with_id_chars": 277,
+            "without_id_chars": 885,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.687
+          },
+          {
+            "task_id": "task-10-context-porting",
+            "with_id_chars": 286,
+            "without_id_chars": 894,
+            "reduction_chars": 608,
+            "reduction_ratio": 0.68
+          }
+        ]
+      }
+    ],
+    "average_reduction_ratio": 0.675,
+    "average_reduction_chars": 607.0
+  },
   "best_by_public_metric": {
     "best_task_success_rate": {
       "run_id": "baseline-2026-03-31-codex",
@@ -147,7 +315,5 @@
       "value": 0.3
     }
   },
-  "not_yet_instrumented": {
-    "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task"
-  }
+  "not_yet_instrumented": {}
 }

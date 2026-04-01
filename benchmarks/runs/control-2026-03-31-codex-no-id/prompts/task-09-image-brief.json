@@ -1,0 +1,12 @@
+{
+  "task_id": "task-09-image-brief",
+  "tool": "codex",
+  "context_mode": "no_id",
+  "prompt_segments": {
+    "system": "You are assisting a pragmatic technical user. Be direct, concise, structured, explicit about assumptions, preserve constraints, avoid fluff, and restate important expectations so they are not lost.",
+    "profile_context": "The user prefers direct engineering language, minimal fluff, explicit assumptions, readable structure, small diffs, verification before finalizing, and practical tradeoff reasoning. Avoid cheerleading, avoid unnecessary verbosity, and surface risks clearly.",
+    "task_context": "This task is benchmarked. Preserve clarity, formatting discipline, directness, constraint adherence, and verification. Repeat any critical user expectations explicitly instead of relying on prior memory.",
+    "task_instruction": "# Task 09: Image/Video Brief\n\nDraft prompt brief reflecting user style and hard constraints.\n\nAlso preserve direct tone, explicit assumptions, concise structure, and constraint fidelity without relying on stored profile context."
+  },
+  "notes": "Prompt payload captured for no-ID control run with manually restated context."
+}

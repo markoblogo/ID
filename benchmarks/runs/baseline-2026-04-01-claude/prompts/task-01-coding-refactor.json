@@ -1,0 +1,12 @@
+{
+  "task_id": "task-01-coding-refactor",
+  "tool": "claude",
+  "context_mode": "id",
+  "prompt_segments": {
+    "system": "Use the ID profile and answer directly with the requested artifact.",
+    "profile_context": "Apply the stored ID profile for communication style, constraints, and decision rules.",
+    "task_context": "Benchmark task executed with stable protocol context.",
+    "task_instruction": "# Task 01: Coding Refactor\n\nRefactor a medium-size script while preserving behavior and improving readability."
+  },
+  "notes": "Prompt payload captured using ID-backed benchmark context."
+}

@@ -22,11 +22,29 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def prompt_stub(task_id: str, task_text: str, tool: str, context_mode: str) -> dict:
+    profile_context = "profile handshake pending" if context_mode == "id" else ""
+    return {
+        "task_id": task_id,
+        "tool": tool,
+        "context_mode": context_mode,
+        "prompt_segments": {
+            "system": "pending benchmark prompt capture",
+            "profile_context": profile_context,
+            "task_context": "",
+            "task_instruction": task_text.strip(),
+        },
+        "notes": "pending prompt capture",
+    }
+
+
 def main() -> int:
     args = parse_args()
     run_dir = Path(args.runs_root) / args.run_id
     results_dir = run_dir / "results"
+    prompts_dir = run_dir / "prompts"
     results_dir.mkdir(parents=True, exist_ok=True)
+    prompts_dir.mkdir(parents=True, exist_ok=True)
 
     task_files = sorted(Path(args.tasks_root).glob("task-*.md"))
     if not task_files:
@@ -48,6 +66,7 @@ def main() -> int:
 
     for task_path in task_files:
         task_id = task_path.stem
+        task_text = task_path.read_text(encoding="utf-8")
         result = {
             "task_id": task_id,
             "tool": args.tool,
@@ -63,6 +82,10 @@ def main() -> int:
         }
         (results_dir / f"{task_id}.json").write_text(
             json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        (prompts_dir / f"{task_id}.json").write_text(
+            json.dumps(prompt_stub(task_id, task_text, args.tool, args.context_mode), ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
 

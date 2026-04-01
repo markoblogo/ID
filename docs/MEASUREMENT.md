@@ -32,13 +32,11 @@ Outputs:
 - `alignment_index`: normalized composite of style fit, constraint adherence, and result quality on a 0-100 scale.
 - `profile_freshness`: snapshot of current profile staleness based on `updated_at` and `freshness_ttl_days` front matter.
 
-## Not Yet Instrumented
+## Prompt Length Reduction
 
-These remain explicit gaps in the public proof layer:
-- `prompt_length_reduction`
-- `with_vs_without_id_delta`
+`prompt_length_reduction` is now computed from per-task `prompts/<task-id>.json` payloads in matched `id` and `no_id` runs.
 
-Both require additional instrumentation and matched control runs, so they are listed in the report but not yet scored.
+The report measures the average fraction of prompt characters removed by using `ID` instead of repeating the same context manually. Positive values mean the `ID`-backed prompt is shorter.
 
 ## Control Runs
 
@@ -47,3 +45,13 @@ To compute `with_vs_without_id_delta`, create matched run pairs with:
 - `comparison_group`: shared key for the pair
 
 Positive delta means `ID` performed better. For latency and clarification metrics, the report inverts the sign so positive still means improvement.
+
+## Prompt Payload Capture
+
+Each benchmark run should include `prompts/<task-id>.json` files with four prompt segments:
+- `system`
+- `profile_context`
+- `task_context`
+- `task_instruction`
+
+The public metrics layer uses character counts across these segments as a deterministic prompt-size proxy, avoiding tokenizer-specific dependencies.

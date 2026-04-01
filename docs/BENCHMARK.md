@@ -33,11 +33,21 @@ Create run folder per benchmark execution:
 - `benchmarks/runs/<run-id>/meta.json`
 - `benchmarks/runs/<run-id>/results/<task-id>.json`
 - `benchmarks/runs/<run-id>/notes.md`
+- `benchmarks/runs/<run-id>/prompts/<task-id>.json`
 - `benchmarks/runs/<run-id>/summary.json`
 - `benchmarks/runs/<run-id>/summary.md`
 
 Template for result file:
 - `templates/benchmark-result.json`
+
+Prompt payloads should capture:
+- `task_id`
+- `tool`
+- `context_mode`
+- `prompt_segments.system`
+- `prompt_segments.profile_context`
+- `prompt_segments.task_context`
+- `prompt_segments.task_instruction`
 
 Recommended per-result fields in addition to numeric metrics:
 - `confidence`
@@ -107,7 +117,5 @@ Current public signals:
 - high alignment rate
 - first-pass success rate
 - profile freshness snapshot
-
-Not yet instrumented but explicitly tracked:
 - prompt length reduction
 - with-vs-without-ID delta

@@ -1,0 +1,12 @@
+{
+  "task_id": "task-07-data-transform",
+  "tool": "codex",
+  "context_mode": "id",
+  "prompt_segments": {
+    "system": "Use the ID profile and produce the requested artifact directly.",
+    "profile_context": "Apply the stored ID profile for tone, constraints, and working style.",
+    "task_context": "Benchmark task executed with stable protocol context.",
+    "task_instruction": "# Task 07: Data Transform\n\nTransform messy records into clean schema and document mapping rules."
+  },
+  "notes": "Prompt payload captured using ID-backed benchmark context."
+}
