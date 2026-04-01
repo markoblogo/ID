@@ -17,14 +17,39 @@
       "rationale": "Communication preferences are low-risk operational context and should travel with the profile."
     },
     {
+      "field_path": "profiles.core.rules.always_do",
+      "access": "always_share",
+      "rationale": "Core operational rules should remain portable across tools."
+    },
+    {
+      "field_path": "profiles.core.rules.never_do",
+      "access": "always_share",
+      "rationale": "Negative safety and behavior constraints should remain portable across tools."
+    },
+    {
       "field_path": "profiles.core.rules.ask_before",
       "access": "always_share",
       "rationale": "Ask-before constraints are safety-critical and should not be dropped in portable contexts."
     },
     {
+      "field_path": "profiles.core.rules.default_assumptions",
+      "access": "always_share",
+      "rationale": "Default assumptions are part of the portable operating contract."
+    },
+    {
+      "field_path": "profiles.core.quality_bar",
+      "access": "always_share",
+      "rationale": "Quality bar is low-risk operational guidance and should remain visible in compact exports."
+    },
+    {
       "field_path": "profiles.core.priority_domains",
       "access": "always_share",
       "rationale": "Priority domains are part of task routing rather than sensitive personal data."
+    },
+    {
+      "field_path": "profiles.core.tool_notes",
+      "access": "always_share",
+      "rationale": "Current compact export includes tool-level operating notes that are safe-share by default."
     },
     {
       "field_path": "profiles.extended.environment_assumptions",

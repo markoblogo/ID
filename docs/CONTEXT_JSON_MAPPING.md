@@ -1,148 +1,68 @@
-# Compact Context Mapping
+# Context Compact Mapping
 
-## 1. Purpose
+## Goal
 
-Define a compact portable export target for systems that want a small, structured context payload rather than the full markdown or `interop.v1.json` surface.
+`context.compact.json` is a portable, loss-aware target for short onboarding and tool handoff.
 
-This target is intended for:
-- project instructions
-- prompt bundle files
-- lightweight context loaders
-- wrappers that need a short, explicit payload
+It is intentionally smaller than the full `interop.v1.json` artifact and is designed for contexts where a compact, operationally useful profile is preferable to a richer protocol package.
 
-This is a compatibility target, not the canonical source of truth.
+## Source of Truth
 
-## 2. Source and Target
+Canonical source remains the markdown profile set plus the generated `interop.v1.json` artifact.
 
-Source:
-- `profiles/<owner>/profile.core.md`
-- optionally selected data from `profile.extended.md`
+`context.compact.json` is a derived export target, not the source of truth.
 
-Target:
-- `context.compact.json`
-- schema: `schemas/context-compact-v0.schema.json`
-- starter template: `templates/context.compact.json`
-- validator: `scripts/validate_context_compact.py`
+## Output Contract
 
-## 3. Design Goal
-
-Preserve the highest-value portable fields with minimal size:
-- who this profile is for
-- freshness and trust metadata
-- communication style
-- explicit task rules
-- quality bar
-- priority domains
-- compact tool notes
-
-## 4. Target Shape
-
-```json
-{
-  "context_version": "0.1.0",
-  "owner_id": "markoblogo",
-  "updated_at": "2026-04-01",
-  "freshness_ttl_days": 14,
-  "trust_level": "trusted",
-  "communication": [],
-  "rules": {
-    "always_do": [],
-    "never_do": [],
-    "ask_before": [],
-    "default_assumptions": []
-  },
-  "quality_bar": [],
-  "priority_domains": [],
-  "tool_notes": [],
-  "loss_notes": []
-}
-```
-
-## 5. Mapping Rules
-
-### Metadata
-
-- `owner_id` <- `metadata.owner_alias` or profile owner directory name
-- `updated_at` <- `metadata.updated_at`
-- `freshness_ttl_days` <- `metadata.freshness_ttl_days`
-- `trust_level` <- `metadata.trust_level`
-
-### Communication
-
-Map `## Communication Style` bullets or equivalent typed values into:
-- `communication[]`
-
-Compression rule:
-- preserve intent, not heading prose;
-- split long multi-part statements only if needed for clarity.
-
-### Rules
-
-Map `Task Execution Rules` into:
+Fields preserved in the compact target:
+- `context_version`
+- `owner_id`
+- `updated_at`
+- `freshness_ttl_days`
+- `trust_level`
+- `communication`
 - `rules.always_do`
 - `rules.never_do`
 - `rules.ask_before`
 - `rules.default_assumptions`
+- `quality_bar`
+- `priority_domains`
+- `tool_notes`
+- `loss_notes`
 
-This block is non-negotiable. Do not flatten all rules into one list.
+## Loss Profile
 
-### Quality / Domains / Tool Notes
-
-Map:
-- `Quality Bar` -> `quality_bar[]`
-- `Priority Domains` -> `priority_domains[]`
-- `Tool-Specific Notes` -> `tool_notes[]`
-
-## 6. Loss Rules
-
-Fields intentionally omitted from the compact target:
-- long corrections history
+The compact target omits or compresses:
 - extended workflows
-- lexicon
-- long environment assumptions
-- detailed provenance
-- benchmark evidence fields
+- historical corrections
+- most rich per-domain detail
+- provenance/context depth that belongs in full interop or source markdown
 
-These omissions must be declared in `loss_notes`.
+## Privacy-Policy Behavior
 
-Recommended default `loss_notes`:
-- `"Extended workflows omitted"`
-- `"Historical corrections omitted"`
-- `"Use full profile or interop.v1.json for richer context"`
+`export_context_compact.py` now applies `privacy-policy.v1.json` when it exists.
 
-## 7. When to Use This Target
+Default behavior:
+- `always_share` fields remain in the export
+- `local_only` fields are stripped
+- `task_class_scoped` fields are included only when `--task-class <name>` is provided and allowed by policy
 
-Use `context.compact.json` when:
-- the destination accepts only a short structured payload;
-- startup latency matters more than richness;
-- you need a portable summary for a new tool;
-- L1/core semantics are enough for the task.
+If fields are omitted by policy, the exporter records that in `loss_notes` rather than silently leaking or silently dropping context.
 
-Do not use it as the only artifact when:
-- provenance matters;
-- privacy classes differ by task;
-- detailed workflows and repeated misalignments are operationally important;
-- round-trip fidelity is required.
+Example generic export:
 
-## 8. Compatibility Claim
-
-The compact target should be described as:
-- source-preserving for core rules and style
-- intentionally lossy for extended and historical layers
-
-Suggested claim:
-
-```text
-Conformance: Level 2 (Portable)
-Target: context.compact.json
-Loss profile: medium
-Preserves: communication, explicit rules, quality bar, domains, tool notes
-Omits: extended workflows, history, provenance-heavy context
+```bash
+python3 scripts/export_context_compact.py --owner-id <owner-id>
 ```
 
-## 9. Next Step
+Example task-scoped export:
 
-Future implementation may add:
-- round-trip tests
-- target-specific emitters for known `context.json`-style consumers
-- wrapper examples for transport layers such as MCP
+```bash
+python3 scripts/export_context_compact.py --owner-id <owner-id> --task-class coding
+```
+
+## Notes
+
+The compact target remains intentionally conservative.
+
+Use `interop.v1.json` when you need richer context, and keep the markdown profile files as the canonical editable source.
