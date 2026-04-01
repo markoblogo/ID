@@ -96,3 +96,14 @@ Each benchmark run should include `prompts/<task-id>.json` files with four promp
 - `task_instruction`
 
 The public metrics layer uses character counts across these segments as a deterministic prompt-size proxy, avoiding tokenizer-specific dependencies in canonical artifacts.
+
+## Threat Model Boundary
+
+Public metrics are evidence, not blanket proof.
+
+Use them with the threat boundaries in:
+- `docs/THREAT_MODEL.md`
+
+In particular:
+- current control runs are limited and may be synthetic matched controls
+- repo-level benchmark gains should not be overclaimed as universal cross-vendor performance guarantees

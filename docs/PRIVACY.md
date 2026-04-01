@@ -87,3 +87,10 @@ python3 scripts/validate_privacy_policy.py --owner-id <owner-id>
 ```
 
 This layer defines explicit `always_share`, `local_only`, and `task_class_scoped` rules for profile and data paths.
+
+## 9. Threat Model Link
+
+Privacy policy is only one part of the trust story.
+
+For stale-profile risk, policy drift, lossy export, and benchmark overclaim boundaries, see:
+- `docs/THREAT_MODEL.md`

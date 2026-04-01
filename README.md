@@ -165,6 +165,7 @@ Guide:
 
 - policy: `docs/PRIVACY.md`
 - machine-readable policy: `docs/PRIVACY_POLICY_V1.md`
+- threat model: `docs/THREAT_MODEL.md`
 - validate policy: `python3 scripts/validate_privacy_policy.py --owner-id <owner-id>`
 - run: `python3 scripts/redact_for_sharing.py`
 - review: `data/processed/redaction-report.json`
@@ -198,6 +199,7 @@ Guide:
 - compatibility guide: `docs/COMPATIBILITY.md`
 - compact export contract: `docs/CONTEXT_JSON_MAPPING.md`
 - public metrics guide: `docs/MEASUREMENT.md`
+- threat model: `docs/THREAT_MODEL.md`
 - compact exporter: `python3 scripts/export_context_compact.py --owner-id <owner-id>`
 - compact validator: `python3 scripts/validate_context_compact.py --owner-id <owner-id>`
 - export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`
