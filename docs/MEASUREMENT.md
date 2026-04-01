@@ -42,7 +42,13 @@ The canonical benchmark artifact uses character counts across prompt segments as
 
 You can add a tokenizer-aware prompt-size layer locally without changing the canonical deterministic baseline.
 
-Example:
+Canonical command:
+
+```bash
+make metrics-tokenizer
+```
+
+Equivalent direct call:
 
 ```bash
 python3 scripts/benchmark_public_report.py --tokenizer-provider tiktoken --tokenizer-encoding cl100k_base
@@ -54,6 +60,24 @@ Properties:
 - additive only: tokenizer-aware metrics sit next to the char-count proxy, not instead of it
 
 If `tiktoken` is requested explicitly and not installed, the script fails with a clear error.
+
+## Recommended Tokenizer Conventions
+
+To keep local tokenizer-aware comparisons comparable across runs, fix one tokenizer convention per tool family and keep it stable inside a comparison set.
+
+Recommended defaults:
+- OpenAI GPT-family tools: `--tokenizer-provider tiktoken --tokenizer-encoding cl100k_base`
+- Claude-family tools: `--tokenizer-provider tiktoken --tokenizer-encoding cl100k_base`
+- Gemini-family tools: `--tokenizer-provider tiktoken --tokenizer-encoding cl100k_base`
+- Mixed-tool comparisons: use the same tokenizer setting for every run in that comparison group and record it in notes
+
+Operational rules:
+- treat tokenizer-aware metrics as secondary local instrumentation, not canonical benchmark artifacts
+- do not switch tokenizer settings inside the same `comparison_group`
+- prefer `--tokenizer-model` only when the whole comparison set is tied to that exact model mapping
+- if model-specific tokenization is uncertain or unstable, fall back to `cl100k_base` for comparability
+
+The char-count proxy remains the canonical tracked baseline because it is deterministic and does not depend on external tokenizer packages or model-mapping changes.
 
 ## Control Runs
 
