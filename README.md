@@ -189,11 +189,13 @@ Guide:
 - evaluator protocol: `docs/EVALUATOR_PROTOCOL.md`
 - run aggregation: `python3 scripts/benchmark_report.py --run-id <run-id>`
 - trend report across runs: `python3 scripts/benchmark_trend_report.py`
+- public metrics report: `python3 scripts/benchmark_public_report.py`
 - initialize benchmark run: `python3 scripts/benchmark_init_run.py --run-id <run-id> --tool <tool> --owner-id <owner-id> --profile-version <version>`
 - validate benchmark run: `python3 scripts/benchmark_validate_run.py --run-id <run-id>`
 - interop v1 guide: `docs/INTEROP_V1.md`
 - compatibility guide: `docs/COMPATIBILITY.md`
 - compact export contract: `docs/CONTEXT_JSON_MAPPING.md`
+- public metrics guide: `docs/MEASUREMENT.md`
 - compact exporter: `python3 scripts/export_context_compact.py --owner-id <owner-id>`
 - compact validator: `python3 scripts/validate_context_compact.py --owner-id <owner-id>`
 - export interop json: `python3 scripts/export_interop_v1.py --owner-id <owner-id>`

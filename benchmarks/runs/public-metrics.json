@@ -1,0 +1,76 @@
+{
+  "runs": [
+    {
+      "run_id": "baseline-2026-03-31-codex",
+      "date": "2026-03-31",
+      "tool": "codex",
+      "profile_version": "0.1.0",
+      "tasks": 10,
+      "public_metrics": {
+        "onboarding_latency_min": 4.3,
+        "clarification_turns_avg": 0.8,
+        "task_success_rate": 0.9,
+        "high_alignment_rate": 0.9,
+        "first_pass_success_rate": 0.3,
+        "alignment_index": 88.7
+      }
+    },
+    {
+      "run_id": "baseline-2026-04-01-claude",
+      "date": "2026-04-01",
+      "tool": "claude-sonnet-4",
+      "profile_version": "0.1.1",
+      "tasks": 10,
+      "public_metrics": {
+        "onboarding_latency_min": 5.0,
+        "clarification_turns_avg": 1.1,
+        "task_success_rate": 0.9,
+        "high_alignment_rate": 0.9,
+        "first_pass_success_rate": 0.3,
+        "alignment_index": 85.3
+      }
+    }
+  ],
+  "profile_freshness": {
+    "owner_id": "markoblogo",
+    "overall_score": 92.9,
+    "profiles": [
+      {
+        "path": "profiles/markoblogo/profile.core.md",
+        "updated_at": "2026-03-31",
+        "freshness_ttl_days": 14,
+        "age_days": 1,
+        "freshness_score": 92.9
+      },
+      {
+        "path": "profiles/markoblogo/profile.extended.md",
+        "updated_at": "2026-04-01",
+        "freshness_ttl_days": 30,
+        "age_days": 0,
+        "freshness_score": 100.0
+      }
+    ]
+  },
+  "best_by_public_metric": {
+    "best_task_success_rate": {
+      "run_id": "baseline-2026-03-31-codex",
+      "value": 0.9
+    },
+    "best_onboarding_latency": {
+      "run_id": "baseline-2026-03-31-codex",
+      "value": 4.3
+    },
+    "best_alignment_index": {
+      "run_id": "baseline-2026-03-31-codex",
+      "value": 88.7
+    },
+    "best_first_pass_success_rate": {
+      "run_id": "baseline-2026-03-31-codex",
+      "value": 0.3
+    }
+  },
+  "not_yet_instrumented": {
+    "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task",
+    "with_vs_without_id_delta": "not yet instrumented; requires matched control runs without ID context"
+  }
+}

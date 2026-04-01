@@ -1,9 +1,10 @@
-.PHONY: validate interop trend compact drift-check
+.PHONY: validate interop trend compact metrics drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
 INTEROP_ARTIFACTS := $(addsuffix /interop.v1.json,$(addprefix profiles/,$(OWNERS)))
 COMPACT_ARTIFACTS := $(addsuffix /context.compact.json,$(addprefix profiles/,$(OWNERS)))
+PUBLIC_METRICS_ARTIFACTS := benchmarks/runs/public-metrics.json benchmarks/runs/public-metrics.md
 
 validate:
 	$(PYTHON) -c "import pathlib; files=[]; [files.extend(sorted(pathlib.Path('.').glob(pattern))) for pattern in ('scripts/*.py', 'tests/test_*.py')]; [compile(path.read_text(encoding='utf-8'), str(path), 'exec') for path in files]"
@@ -14,6 +15,7 @@ validate:
 	$(MAKE) interop
 	$(MAKE) compact
 	$(MAKE) trend
+	$(MAKE) metrics
 
 interop:
 	@for owner in $(OWNERS); do \
@@ -25,6 +27,9 @@ interop:
 trend:
 	$(PYTHON) scripts/benchmark_trend_report.py
 
+metrics:
+	$(PYTHON) scripts/benchmark_public_report.py
+
 compact:
 	@for owner in $(OWNERS); do \
 		echo "==> export compact context for $$owner"; \
@@ -33,4 +38,7 @@ compact:
 	done
 
 drift-check:
-	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md
+	@for path in $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md; do \
+		test -f "$$path" || { echo "missing artifact: $$path"; exit 1; }; \
+	done
+	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md

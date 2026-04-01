@@ -62,6 +62,8 @@ python3 scripts/benchmark_trend_report.py
 Outputs:
 - `benchmarks/runs/trends.json`
 - `benchmarks/runs/trends.md`
+- `benchmarks/runs/public-metrics.json`
+- `benchmarks/runs/public-metrics.md`
 
 ## 6. Comparison Policy
 
@@ -84,3 +86,24 @@ Recommended in each task result:
 - `confidence`: `high|medium|low`
 - `uncertainty_notes`: list of scoring caveats
 - `evidence_links`: list of repo-relative paths or stable URLs
+
+## 8. Public Utility Layer
+
+Use the public utility layer to expose benchmark value in product-facing terms rather than only raw evaluator averages.
+
+Primary entrypoints:
+- guide: `docs/MEASUREMENT.md`
+- report generator: `python3 scripts/benchmark_public_report.py`
+- shortcut: `make metrics`
+
+Current public signals:
+- onboarding latency
+- clarification turns
+- task success rate
+- high alignment rate
+- first-pass success rate
+- profile freshness snapshot
+
+Not yet instrumented but explicitly tracked:
+- prompt length reduction
+- with-vs-without-ID delta
