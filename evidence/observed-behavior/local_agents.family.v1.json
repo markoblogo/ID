@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "tool_family": "Local agents",
+  "confidence": "high",
+  "observed_at": "2026-04-01",
+  "summary": "Highest-fidelity behavior comes from keeping markdown canonical and using policy-aware machine artifacts as transport-specific views with validation and drift checks.",
+  "onboarding_mode": [
+    "Keep markdown as source of truth",
+    "Use interop, compact, or MCP transport as task-specific views",
+    "Validate generated artifacts before use"
+  ],
+  "best_artifacts": [
+    "profiles/<owner>/interop.v1.json",
+    "profiles/<owner>/context.compact.json",
+    "profiles/<owner>/mcp.context.resource.json"
+  ],
+  "degradation_patterns": [
+    "Prose nuance still flattens in machine artifacts",
+    "Poor orchestration hygiene can hide adapter-specific behavior behind structured transport"
+  ],
+  "evidence": {
+    "basis": [
+      "Direct repo scripts and validators",
+      "Policy-aware export behavior",
+      "Drift-enforced generated artifacts"
+    ],
+    "artifact_refs": [
+      "profiles/markoblogo/interop.v1.json",
+      "profiles/markoblogo/context.compact.json",
+      "profiles/markoblogo/mcp.context.resource.json",
+      "docs/OBSERVED_BEHAVIOR.md"
+    ],
+    "run_refs": [
+      "baseline-2026-03-31-codex",
+      "baseline-2026-04-01-claude"
+    ],
+    "scope_limits": [
+      "High confidence applies to repo-supported local flows only",
+      "Does not certify third-party vendor memory behavior"
+    ]
+  }
+}

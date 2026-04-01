@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "tool_family": "Gemini",
+  "confidence": "low",
+  "observed_at": "2026-04-01",
+  "summary": "Compact artifacts are expected to work better than long prose-heavy source dumps, but repo evidence remains limited.",
+  "onboarding_mode": [
+    "Prefer compact context with explicit task framing"
+  ],
+  "best_artifacts": [
+    "profiles/<owner>/context.compact.json"
+  ],
+  "degradation_patterns": [
+    "Longer prose can flatten unevenly",
+    "Trust and provenance semantics may need direct restatement"
+  ],
+  "evidence": {
+    "basis": [
+      "Design-informed compatibility guidance",
+      "Repo-level structured portability assumptions"
+    ],
+    "artifact_refs": [
+      "docs/OBSERVED_BEHAVIOR.md",
+      "docs/COMPATIBILITY.md"
+    ],
+    "run_refs": [],
+    "scope_limits": [
+      "Low-confidence repo observation",
+      "No repeated direct field evidence captured yet"
+    ]
+  }
+}

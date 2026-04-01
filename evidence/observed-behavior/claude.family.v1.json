@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "tool_family": "Claude",
+  "confidence": "medium",
+  "observed_at": "2026-04-01",
+  "summary": "Structured rules plus selected extended-profile sections work well; provenance and changelog semantics still degrade under compression.",
+  "onboarding_mode": [
+    "Use context.compact.json plus selected profile.extended.md excerpts for strategic work"
+  ],
+  "best_artifacts": [
+    "profiles/<owner>/context.compact.json",
+    "profiles/<owner>/profile.extended.md"
+  ],
+  "degradation_patterns": [
+    "Compressed summaries can hide provenance and changelog semantics",
+    "Project knowledge can become convenience storage instead of audited source"
+  ],
+  "evidence": {
+    "basis": [
+      "Repo benchmark framing",
+      "Observed protocol-workflow assumptions"
+    ],
+    "artifact_refs": [
+      "docs/OBSERVED_BEHAVIOR.md",
+      "docs/COMPATIBILITY.md"
+    ],
+    "run_refs": [
+      "baseline-2026-04-01-claude"
+    ],
+    "scope_limits": [
+      "Repo-level observation, not vendor certification",
+      "Observed patterns remain bounded to current task families"
+    ]
+  }
+}

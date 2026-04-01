@@ -145,6 +145,7 @@ Output:
 - versioning semantics: `docs/VERSIONING.md`
 - compatibility matrix: `docs/COMPATIBILITY.md`
 - observed behavior notes: `docs/OBSERVED_BEHAVIOR.md`
+- observed behavior evidence: `evidence/observed-behavior/*.json`
 - compact target mapping: `docs/CONTEXT_JSON_MAPPING.md`
 
 ## Start Small

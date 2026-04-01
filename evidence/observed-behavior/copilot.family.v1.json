@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "tool_family": "Copilot",
+  "confidence": "medium",
+  "observed_at": "2026-04-01",
+  "summary": "Repo-local markdown plus explicit coding constraints works better than trying to carry broad personal context through the coding assistant boundary.",
+  "onboarding_mode": [
+    "Use profile.core.md with repo instructions and local task context"
+  ],
+  "best_artifacts": [
+    "profiles/<owner>/profile.core.md"
+  ],
+  "degradation_patterns": [
+    "Portability drops outside the repository boundary",
+    "Non-code preferences are easier to ignore or underuse"
+  ],
+  "evidence": {
+    "basis": [
+      "Repo-native coding workflow assumptions",
+      "Compatibility matrix guidance"
+    ],
+    "artifact_refs": [
+      "docs/OBSERVED_BEHAVIOR.md",
+      "docs/COMPATIBILITY.md",
+      "profiles/markoblogo/profile.core.md"
+    ],
+    "run_refs": [],
+    "scope_limits": [
+      "Assumes repo-native coding assistant usage",
+      "Not a generalized long-memory assistant observation"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "tool_family": "ChatGPT",
+  "confidence": "medium",
+  "observed_at": "2026-04-01",
+  "summary": "Best onboarding comes from compact context plus handshake; freshness and trust semantics degrade when not restated explicitly.",
+  "onboarding_mode": [
+    "Use context.compact.json plus a short handshake",
+    "Use profile.core.md directly for repo-local work when compact export is unnecessary"
+  ],
+  "best_artifacts": [
+    "profiles/<owner>/context.compact.json",
+    "profiles/<owner>/profile.core.md"
+  ],
+  "degradation_patterns": [
+    "Freshness and trust semantics become passive unless surfaced explicitly",
+    "Long-form profile nuance compresses into generalized behavior",
+    "Project memory or instructions can drift from repo source of truth"
+  ],
+  "evidence": {
+    "basis": [
+      "Repo compatibility guidance",
+      "Compact-target design decisions",
+      "Observed workflow assumptions captured in docs"
+    ],
+    "artifact_refs": [
+      "docs/OBSERVED_BEHAVIOR.md",
+      "docs/COMPATIBILITY.md",
+      "profiles/markoblogo/context.compact.json"
+    ],
+    "run_refs": [
+      "baseline-2026-03-31-codex"
+    ],
+    "scope_limits": [
+      "Repo-level observation, not vendor certification",
+      "No dedicated vendor-specific field study yet"
+    ]
+  }
+}

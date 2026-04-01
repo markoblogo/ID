@@ -8,6 +8,15 @@ This document is separate from `docs/COMPATIBILITY.md`:
 - `COMPATIBILITY.md` describes intended mapping and expected loss boundaries
 - this file records observed behavior, confidence, and evidence limits
 
+Structured evidence notes live under:
+- `evidence/observed-behavior/*.json`
+
+Validation command:
+
+```bash
+python3 scripts/validate_observed_behavior.py
+```
+
 ## Reading Rule
 
 Each tool-family note should capture:
