@@ -44,3 +44,10 @@ For task-scoped exports:
 ```bash
 python3 scripts/export_mcp_resource.py --owner-id <owner-id> --task-class coding
 ```
+
+Validate the generated artifact with:
+
+```bash
+python3 scripts/validate_mcp_resource.py --owner-id <owner-id>
+make mcp
+```

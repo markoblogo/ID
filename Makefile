@@ -1,9 +1,10 @@
-.PHONY: validate interop trend compact privacy-policy metrics metrics-tokenizer drift-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
 INTEROP_ARTIFACTS := $(addsuffix /interop.v1.json,$(addprefix profiles/,$(OWNERS)))
 COMPACT_ARTIFACTS := $(addsuffix /context.compact.json,$(addprefix profiles/,$(OWNERS)))
+MCP_ARTIFACTS := $(addsuffix /mcp.context.resource.json,$(addprefix profiles/,$(OWNERS)))
 PUBLIC_METRICS_ARTIFACTS := benchmarks/runs/public-metrics.json benchmarks/runs/public-metrics.md
 
 validate:
@@ -14,6 +15,7 @@ validate:
 	$(PYTHON) scripts/validate_profile.py --allow-stale --check-raw-tracked
 	$(MAKE) interop
 	$(MAKE) compact
+	$(MAKE) mcp
 	$(MAKE) trend
 	$(MAKE) metrics
 
@@ -41,6 +43,13 @@ compact:
 		$(PYTHON) scripts/validate_context_compact.py --owner-id "$$owner"; \
 	done
 
+mcp:
+	@for owner in $(OWNERS); do \
+		echo "==> export mcp resource for $$owner"; \
+		$(PYTHON) scripts/export_mcp_resource.py --owner-id "$$owner"; \
+		$(PYTHON) scripts/validate_mcp_resource.py --owner-id "$$owner"; \
+	done
+
 privacy-policy:
 	@for owner in $(OWNERS); do \
 		test -f "profiles/$$owner/privacy-policy.v1.json" || { echo "missing privacy policy for $$owner"; exit 1; }; \
@@ -49,7 +58,7 @@ privacy-policy:
 	done
 
 drift-check:
-	@for path in $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md; do \
+	@for path in $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(MCP_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md; do \
 		test -f "$$path" || { echo "missing artifact: $$path"; exit 1; }; \
 	done
-	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md
+	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(MCP_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md
