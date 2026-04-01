@@ -7,6 +7,7 @@ import argparse
 import json
 from datetime import date, datetime
 from pathlib import Path
+from typing import Callable
 
 SUCCESS_THRESHOLD = 4
 LOWER_BETTER_PUBLIC_METRICS = {"onboarding_latency_min", "clarification_turns_avg"}
@@ -23,6 +24,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--owner-id", default="markoblogo", help="Owner id for freshness snapshot")
     parser.add_argument("--output-json", default="benchmarks/runs/public-metrics.json", help="Output JSON path")
     parser.add_argument("--output-md", default="benchmarks/runs/public-metrics.md", help="Output markdown path")
+    parser.add_argument(
+        "--tokenizer-provider",
+        choices=["tiktoken"],
+        help="Optional tokenizer provider for additional prompt-size metrics",
+    )
+    parser.add_argument(
+        "--tokenizer-encoding",
+        default="cl100k_base",
+        help="Tokenizer encoding name for tokenizer-aware metrics",
+    )
+    parser.add_argument(
+        "--tokenizer-model",
+        help="Optional tokenizer model name; if set, preferred over --tokenizer-encoding",
+    )
     return parser.parse_args()
 
 
@@ -105,9 +120,31 @@ def read_results(run_dir: Path) -> list[dict]:
     return rows
 
 
+def prompt_text(prompt_payload: dict) -> str:
+    segments = prompt_payload.get("prompt_segments", {})
+    return "\n\n".join(str(segments.get(key, "")) for key in PROMPT_SEGMENT_KEYS)
+
+
 def prompt_char_count(prompt_payload: dict) -> int:
     segments = prompt_payload.get("prompt_segments", {})
     return sum(len(str(segments.get(key, ""))) for key in PROMPT_SEGMENT_KEYS)
+
+
+def build_token_counter(args: argparse.Namespace) -> Callable[[str], int] | None:
+    provider = args.tokenizer_provider
+    if not provider:
+        return None
+    if provider == "tiktoken":
+        try:
+            import tiktoken  # type: ignore
+        except ImportError as exc:
+            raise ValueError("tokenizer provider 'tiktoken' is not installed") from exc
+        if args.tokenizer_model:
+            encoder = tiktoken.encoding_for_model(args.tokenizer_model)
+        else:
+            encoder = tiktoken.get_encoding(args.tokenizer_encoding)
+        return lambda text: len(encoder.encode(text))
+    raise ValueError(f"unsupported tokenizer provider: {provider}")
 
 
 def read_prompt_payloads(run_dir: Path) -> dict[str, dict]:
@@ -144,7 +181,7 @@ def alignment_index(summary: dict) -> float:
     return round((sum(components) / 15.0) * 100.0, 1)
 
 
-def build_run_row(run_dir: Path, summary: dict) -> dict:
+def build_run_row(run_dir: Path, summary: dict, token_counter: Callable[[str], int] | None) -> dict:
     meta = load_run_meta(run_dir, summary)
     results = read_results(run_dir)
     prompts = read_prompt_payloads(run_dir)
@@ -155,7 +192,8 @@ def build_run_row(run_dir: Path, summary: dict) -> dict:
     high_alignment_rate = round(sum(1 for row in results if high_alignment(row)) / total, 3) if total else 0.0
     first_pass_rate = round(sum(1 for row in results if first_pass_success(row)) / total, 3) if total else 0.0
     prompt_lengths = [prompt_char_count(payload) for payload in prompts.values()]
-    return {
+
+    row = {
         "run_id": summary.get("run_id"),
         "date": meta.get("date"),
         "tool": tool,
@@ -173,6 +211,10 @@ def build_run_row(run_dir: Path, summary: dict) -> dict:
             "alignment_index": alignment_index(summary),
         },
     }
+    if token_counter is not None and prompts:
+        token_lengths = [token_counter(prompt_text(payload)) for payload in prompts.values()]
+        row["prompt_payload_avg_tokens"] = round(sum(token_lengths) / len(token_lengths), 1)
+    return row
 
 
 def best_run(rows: list[dict], metric: str, reverse: bool) -> dict:
@@ -233,7 +275,13 @@ def with_vs_without_delta(rows: list[dict]) -> dict | None:
     }
 
 
-def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
+def prompt_reduction(
+    rows: list[dict],
+    runs_root: Path,
+    *,
+    count_fn: Callable[[dict], int],
+    label: str,
+) -> dict | None:
     grouped: dict[str, dict[str, dict]] = {}
     for row in rows:
         comparison_group = row.get("comparison_group")
@@ -244,7 +292,7 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
 
     pairs = []
     ratio_values = []
-    char_values = []
+    unit_values = []
     for comparison_group, contexts in sorted(grouped.items()):
         with_id = contexts.get("id")
         without_id = contexts.get("no_id")
@@ -257,27 +305,27 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
             continue
         reductions = []
         pair_ratio_values = []
-        pair_char_values = []
+        pair_unit_values = []
         for task_id in shared_tasks:
-            with_chars = prompt_char_count(with_prompts[task_id])
-            without_chars = prompt_char_count(without_prompts[task_id])
-            if without_chars <= 0:
+            with_units = count_fn(with_prompts[task_id])
+            without_units = count_fn(without_prompts[task_id])
+            if without_units <= 0:
                 continue
-            reduction_chars = without_chars - with_chars
-            reduction_ratio_exact = reduction_chars / without_chars
+            reduction_units = without_units - with_units
+            reduction_ratio_exact = reduction_units / without_units
             reductions.append(
                 {
                     "task_id": task_id,
-                    "with_id_chars": with_chars,
-                    "without_id_chars": without_chars,
-                    "reduction_chars": reduction_chars,
+                    f"with_id_{label}": with_units,
+                    f"without_id_{label}": without_units,
+                    f"reduction_{label}": reduction_units,
                     "reduction_ratio": round(reduction_ratio_exact, 3),
                 }
             )
             pair_ratio_values.append(reduction_ratio_exact)
-            pair_char_values.append(reduction_chars)
+            pair_unit_values.append(reduction_units)
             ratio_values.append(reduction_ratio_exact)
-            char_values.append(reduction_chars)
+            unit_values.append(reduction_units)
         if not reductions:
             continue
         pairs.append(
@@ -286,7 +334,7 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
                 "with_id_run_id": with_id["run_id"],
                 "without_id_run_id": without_id["run_id"],
                 "average_reduction_ratio": round(sum(pair_ratio_values) / len(pair_ratio_values), 3),
-                "average_reduction_chars": round(sum(pair_char_values) / len(pair_char_values), 1),
+                f"average_reduction_{label}": round(sum(pair_unit_values) / len(pair_unit_values), 1),
                 "tasks": reductions,
             }
         )
@@ -297,11 +345,11 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
     return {
         "pairs": pairs,
         "average_reduction_ratio": round(sum(ratio_values) / len(ratio_values), 3),
-        "average_reduction_chars": round(sum(char_values) / len(char_values), 1),
+        f"average_reduction_{label}": round(sum(unit_values) / len(unit_values), 1),
     }
 
 
-def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
+def build_payload(runs_root: Path, profiles_root: Path, owner_id: str, args: argparse.Namespace) -> dict:
     summaries: list[tuple[Path, dict]] = []
     for path in sorted(runs_root.glob("*/summary.json")):
         try:
@@ -312,32 +360,33 @@ def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
     if len(summaries) < 2:
         raise ValueError("need at least 2 run summaries to compute public metrics")
 
+    token_counter = build_token_counter(args)
     summaries.sort(key=lambda item: (load_run_meta(item[0], item[1]).get("date", ""), item[1].get("run_id", "")))
-    rows = [build_run_row(run_dir, summary) for run_dir, summary in summaries]
+    rows = [build_run_row(run_dir, summary, token_counter) for run_dir, summary in summaries]
 
     best_task_success = best_run(rows, "task_success_rate", True)
     best_latency = best_run(rows, "onboarding_latency_min", False)
     best_alignment = best_run(rows, "alignment_index", True)
     best_first_pass = best_run(rows, "first_pass_success_rate", True)
     paired_delta = with_vs_without_delta(rows)
-    prompt_reduction = prompt_length_reduction(rows, runs_root)
+    prompt_reduction_chars = prompt_reduction(rows, runs_root, count_fn=prompt_char_count, label="chars")
     not_yet_instrumented = dict(METRIC_NOTES)
     if paired_delta is None:
         not_yet_instrumented["with_vs_without_id_delta"] = (
             "not yet available; requires matched control runs with comparison_group and context_mode=no_id"
         )
-    if prompt_reduction is None:
+    if prompt_reduction_chars is None:
         not_yet_instrumented["prompt_length_reduction"] = (
             "not yet available; requires comparable prompts/<task-id>.json payloads in matched control runs"
         )
     else:
         not_yet_instrumented.pop("prompt_length_reduction", None)
 
-    return {
+    payload = {
         "runs": rows,
         "profile_freshness": profile_freshness_snapshot(profiles_root, owner_id),
         "with_vs_without_id_delta": paired_delta,
-        "prompt_length_reduction": prompt_reduction,
+        "prompt_length_reduction": prompt_reduction_chars,
         "best_by_public_metric": {
             "best_task_success_rate": {
                 "run_id": best_task_success["run_id"],
@@ -359,6 +408,20 @@ def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
         "not_yet_instrumented": not_yet_instrumented,
     }
 
+    if token_counter is not None:
+        payload["optional_instrumentation"] = {
+            "tokenizer_provider": args.tokenizer_provider,
+            "tokenizer_encoding": None if args.tokenizer_model else args.tokenizer_encoding,
+            "tokenizer_model": args.tokenizer_model,
+        }
+        payload["tokenizer_prompt_length_reduction"] = prompt_reduction(
+            rows,
+            runs_root,
+            count_fn=lambda prompt_payload: token_counter(prompt_text(prompt_payload)),
+            label="tokens",
+        )
+    return payload
+
 
 def write_markdown(path: Path, payload: dict) -> None:
     lines = [
@@ -371,11 +434,15 @@ def write_markdown(path: Path, payload: dict) -> None:
     ]
     for row in payload["runs"]:
         metrics = row["public_metrics"]
+        token_suffix = ""
+        if "prompt_payload_avg_tokens" in row:
+            token_suffix = f" prompt_avg_tokens={row['prompt_payload_avg_tokens']}"
         lines.append(
             f"- {row['date']} | {row['run_id']} | {row['tool']} | mode={row['context_mode']} | "
             f"success={metrics['task_success_rate']} alignment={metrics['alignment_index']} "
             f"latency={metrics['onboarding_latency_min']} clarify={metrics['clarification_turns_avg']} "
             f"first_pass={metrics['first_pass_success_rate']} prompt_avg_chars={row['prompt_payload_avg_chars']}"
+            f"{token_suffix}"
         )
 
     paired_delta = payload.get("with_vs_without_id_delta")
@@ -393,15 +460,30 @@ def write_markdown(path: Path, payload: dict) -> None:
         for metric, value in paired_delta["average_deltas"].items():
             lines.append(f"- {metric}: {value}")
 
-    prompt_reduction = payload.get("prompt_length_reduction")
-    if prompt_reduction is not None:
+    prompt_reduction_chars = payload.get("prompt_length_reduction")
+    if prompt_reduction_chars is not None:
         lines.extend(["", "## Prompt Length Reduction", ""])
-        lines.append(f"- average_reduction_ratio: {prompt_reduction['average_reduction_ratio']}")
-        lines.append(f"- average_reduction_chars: {prompt_reduction['average_reduction_chars']}")
-        for pair in prompt_reduction["pairs"]:
+        lines.append(f"- average_reduction_ratio: {prompt_reduction_chars['average_reduction_ratio']}")
+        lines.append(f"- average_reduction_chars: {prompt_reduction_chars['average_reduction_chars']}")
+        for pair in prompt_reduction_chars["pairs"]:
             lines.append(
                 f"- {pair['comparison_group']} | with_id={pair['with_id_run_id']} | without_id={pair['without_id_run_id']} | "
                 f"avg_ratio={pair['average_reduction_ratio']} avg_chars={pair['average_reduction_chars']}"
+            )
+
+    prompt_reduction_tokens = payload.get("tokenizer_prompt_length_reduction")
+    if prompt_reduction_tokens is not None:
+        instrumentation = payload.get("optional_instrumentation", {})
+        lines.extend(["", "## Optional Tokenizer-Aware Prompt Metrics", ""])
+        lines.append(
+            f"- provider={instrumentation.get('tokenizer_provider')} encoding={instrumentation.get('tokenizer_encoding')} model={instrumentation.get('tokenizer_model')}"
+        )
+        lines.append(f"- average_reduction_ratio: {prompt_reduction_tokens['average_reduction_ratio']}")
+        lines.append(f"- average_reduction_tokens: {prompt_reduction_tokens['average_reduction_tokens']}")
+        for pair in prompt_reduction_tokens["pairs"]:
+            lines.append(
+                f"- {pair['comparison_group']} | with_id={pair['with_id_run_id']} | without_id={pair['without_id_run_id']} | "
+                f"avg_ratio={pair['average_reduction_ratio']} avg_tokens={pair['average_reduction_tokens']}"
             )
 
     freshness = payload["profile_freshness"]
@@ -425,7 +507,7 @@ def main() -> int:
     runs_root = Path(args.runs_root)
     profiles_root = Path(args.profiles_root)
     try:
-        payload = build_payload(runs_root, profiles_root, args.owner_id)
+        payload = build_payload(runs_root, profiles_root, args.owner_id, args)
     except ValueError as exc:
         print(f"ERROR: {exc}")
         return 1

@@ -6,7 +6,7 @@ Expose a small, public-facing proof layer for `ID` so benchmark value is visible
 
 ## Report
 
-Generate the public metrics report with:
+Generate the canonical public metrics report with:
 
 ```bash
 python3 scripts/benchmark_public_report.py
@@ -34,9 +34,26 @@ Outputs:
 
 ## Prompt Length Reduction
 
-`prompt_length_reduction` is now computed from per-task `prompts/<task-id>.json` payloads in matched `id` and `no_id` runs.
+`prompt_length_reduction` is computed from per-task `prompts/<task-id>.json` payloads in matched `id` and `no_id` runs.
 
-The report measures the average fraction of prompt characters removed by using `ID` instead of repeating the same context manually. Positive values mean the `ID`-backed prompt is shorter.
+The canonical benchmark artifact uses character counts across prompt segments as a deterministic prompt-size proxy. Positive values mean the `ID`-backed prompt is shorter.
+
+## Optional Tokenizer-Aware Layer
+
+You can add a tokenizer-aware prompt-size layer locally without changing the canonical deterministic baseline.
+
+Example:
+
+```bash
+python3 scripts/benchmark_public_report.py --tokenizer-provider tiktoken --tokenizer-encoding cl100k_base
+```
+
+Properties:
+- opt-in only: default `make metrics` does not depend on any tokenizer package
+- safe for CI/history: tracked benchmark artifacts should continue to be generated without tokenizer flags
+- additive only: tokenizer-aware metrics sit next to the char-count proxy, not instead of it
+
+If `tiktoken` is requested explicitly and not installed, the script fails with a clear error.
 
 ## Control Runs
 
@@ -54,4 +71,4 @@ Each benchmark run should include `prompts/<task-id>.json` files with four promp
 - `task_context`
 - `task_instruction`
 
-The public metrics layer uses character counts across these segments as a deterministic prompt-size proxy, avoiding tokenizer-specific dependencies.
+The public metrics layer uses character counts across these segments as a deterministic prompt-size proxy, avoiding tokenizer-specific dependencies in canonical artifacts.
