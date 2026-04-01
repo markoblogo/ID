@@ -37,6 +37,46 @@ Golden workflow examples:
 Proof page:
 - `docs/PROOF.md`
 
+## Choose One Path
+
+### 1. `ID Lite`
+
+Use this if you want the smallest practical entrypoint.
+
+You get:
+- a starter profile
+- a handshake
+- a privacy policy starter
+- a compact portable artifact
+
+Start here:
+- `docs/LITE.md`
+
+### 2. `ID Share`
+
+Use this if you want to move context safely between tools or people.
+
+You get:
+- validated interop/compact/MCP artifacts
+- explicit privacy policy
+- documented loss boundaries
+
+Start here:
+- `docs/SHARE.md`
+
+### 3. `ID Bench`
+
+Use this if you want proof that `ID` actually helps.
+
+You get:
+- benchmark runs
+- with-vs-without-ID comparisons
+- public metrics
+- proof summaries with caveats
+
+Start here:
+- `docs/BENCH.md`
+
 ## End-to-End Scenarios
 
 ### 1. New Coding Agent
