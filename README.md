@@ -1,5 +1,10 @@
 # ID Protocol
 
+[![GitHub Release](https://img.shields.io/github/v/release/markoblogo/ID)](https://github.com/markoblogo/ID/releases)
+[![PyPI](https://img.shields.io/pypi/v/id-protocol)](https://pypi.org/project/id-protocol/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/markoblogo/ID/blob/main/LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/id-protocol)](https://pypi.org/project/id-protocol/)
+
 ![ID Protocol Logo](images/IDlogo.png)
 
 `ID` is a protocol and reference repository for portable human-AI interaction context.
