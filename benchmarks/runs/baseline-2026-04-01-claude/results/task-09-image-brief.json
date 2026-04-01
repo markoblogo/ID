@@ -1,0 +1,10 @@
+{
+  "task_id": "task-09-image-brief",
+  "tool": "claude-sonnet-4",
+  "style_fit": 3,
+  "constraint_adherence": 4,
+  "result_quality": 3,
+  "edit_count": 2,
+  "time_to_acceptable_min": 7,
+  "notes": "weaker alignment vs coding workflows"
+}

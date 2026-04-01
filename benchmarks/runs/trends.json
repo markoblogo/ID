@@ -1,0 +1,50 @@
+{
+  "runs": [
+    {
+      "run_id": "baseline-2026-03-31-codex",
+      "date": "2026-03-31",
+      "tool": "codex",
+      "profile_version": "0.1.0",
+      "tasks": 10,
+      "averages": {
+        "style_fit": 4.2,
+        "constraint_adherence": 4.9,
+        "result_quality": 4.2,
+        "edit_count": 0.8,
+        "time_to_acceptable_min": 4.3
+      }
+    },
+    {
+      "run_id": "baseline-2026-04-01-claude",
+      "date": "2026-04-01",
+      "tool": "claude-sonnet-4",
+      "profile_version": "0.1.1",
+      "tasks": 10,
+      "averages": {
+        "style_fit": 4.0,
+        "constraint_adherence": 4.7,
+        "result_quality": 4.1,
+        "edit_count": 1.1,
+        "time_to_acceptable_min": 5.0
+      }
+    }
+  ],
+  "delta_first_to_last": {
+    "from": "baseline-2026-03-31-codex",
+    "to": "baseline-2026-04-01-claude",
+    "metrics": {
+      "style_fit": -0.2,
+      "constraint_adherence": -0.2,
+      "result_quality": -0.1,
+      "edit_count": 0.3,
+      "time_to_acceptable_min": 0.7
+    }
+  },
+  "best_by_metric": {
+    "style_fit": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.2, "direction": "higher_better"},
+    "constraint_adherence": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.9, "direction": "higher_better"},
+    "result_quality": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.2, "direction": "higher_better"},
+    "edit_count": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 0.8, "direction": "lower_better"},
+    "time_to_acceptable_min": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.3, "direction": "lower_better"}
+  }
+}

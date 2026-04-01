@@ -1,0 +1,8 @@
+{
+  "run_id": "baseline-2026-04-01-claude",
+  "date": "2026-04-01",
+  "owner_id": "markoblogo",
+  "profile_version": "0.1.1",
+  "tools": ["claude-sonnet-4"],
+  "evaluator": "manual-self-eval"
+}

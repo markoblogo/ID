@@ -1,9 +1,9 @@
 ---
 profile_id: "markoblogo"
 owner_alias: "markoblogo"
-version: "0.1.0"
+version: "0.1.1"
 created_at: "2026-03-31"
-updated_at: "2026-03-31"
+updated_at: "2026-04-01"
 freshness_ttl_days: 30
 confidence_notes: "Черновик расширенного профиля; уточняется по реальным сессиям."
 trust_level: "provisional"
@@ -69,3 +69,13 @@ trust_level: "provisional"
 
 - "Сначала дай краткое подтверждение понимания профиля и ограничений, затем выполняй задачу"
 - "Не выдумывай личные предпочтения; если данных нет, явно пометь неопределенность"
+
+## 8. Image/Video Generator Preferences
+
+- Session bootstrap: сначала коротко подтверждать визуальный стиль, формат выдачи и ограничения перед генерацией.
+- Prompt style: предпочитается структура "goal -> scene -> constraints -> output spec" без лишней художественной воды.
+- Iteration mode: шаги мелкими итерациями (1-2 правки за цикл), с явным списком что именно изменилось.
+- Consistency rule: при смене модели явно указывать риск стилевого дрейфа и предлагать адаптацию промпта.
+- Output contract:
+  - для изображений: указывать aspect ratio, style anchors, negative constraints;
+  - для видео: указывать duration, shot list, tempo, transitions, final format.

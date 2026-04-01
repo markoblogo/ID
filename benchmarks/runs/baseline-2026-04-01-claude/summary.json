@@ -1,0 +1,19 @@
+{
+  "run_id": "baseline-2026-04-01-claude",
+  "meta": {
+    "run_id": "baseline-2026-04-01-claude",
+    "date": "2026-04-01",
+    "owner_id": "markoblogo",
+    "profile_version": "0.1.1",
+    "tools": ["claude-sonnet-4"],
+    "evaluator": "manual-self-eval"
+  },
+  "tasks": 10,
+  "averages": {
+    "style_fit": 4.0,
+    "constraint_adherence": 4.7,
+    "result_quality": 4.1,
+    "edit_count": 1.1,
+    "time_to_acceptable_min": 5.0
+  }
+}

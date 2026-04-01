@@ -1,0 +1,10 @@
+{
+  "task_id": "task-08-agent-handshake",
+  "tool": "claude-sonnet-4",
+  "style_fit": 5,
+  "constraint_adherence": 5,
+  "result_quality": 5,
+  "edit_count": 0,
+  "time_to_acceptable_min": 2,
+  "notes": "handshake behavior matched profile expectations"
+}

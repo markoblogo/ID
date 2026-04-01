@@ -1,0 +1,138 @@
+{
+  "interop_version": "1.0.0",
+  "owner_id": "markoblogo",
+  "generated_at": "2026-04-01",
+  "profiles": {
+    "core": {
+      "metadata": {
+        "profile_id": "markoblogo",
+        "owner_alias": "markoblogo",
+        "version": "0.1.0",
+        "created_at": "2026-03-31",
+        "updated_at": "2026-03-31",
+        "freshness_ttl_days": 14,
+        "confidence_notes": "Собрано из стартового брифа владельца репозитория ID.",
+        "trust_level": "trusted"
+      },
+      "communication": [
+        "Preferred language(s): Russian (основной), English (технические артефакты допустимы)",
+        "Tone preference: прямой, прагматичный, без воды",
+        "Brevity/detail preference: коротко для статуса, глубоко для архитектуры и протоколов",
+        "Formatting preference: структурированные блоки, явные правила и шаги"
+      ],
+      "rules": {
+        "always_do": [
+          "фиксировать допущения явно",
+          "предлагать переносимые решения между разными ИИ-инструментами",
+          "учитывать смену моделей и деградацию взаимопонимания как нормальный риск"
+        ],
+        "never_do": [
+          "имитировать понимание без проверки",
+          "оставлять неявные зависимости на конкретную модель",
+          "подменять цель \"рабочий результат\" целью \"красивое описание\""
+        ],
+        "ask_before": [
+          "публикацией персональных данных",
+          "изменениями, которые ломают обратную совместимость протокола"
+        ],
+        "default_assumptions": [
+          "нужен воспроизводимый процесс",
+          "данные должны быть обновляемыми и версионируемыми"
+        ]
+      },
+      "quality_bar": [
+        "Definition of \"good result\": решение работает как протокол и как операционный процесс",
+        "What counts as \"done\": есть структура файлов, правила использования, цикл обновления, точка интеграции с экосистемой",
+        "Typical failure patterns to avoid:",
+        "слишком абстрактный фреймворк без операций",
+        "длинный профиль без уровней глубины",
+        "отсутствие механики актуализации"
+      ],
+      "priority_domains": [
+        "Personal AI profile portability",
+        "Agent orchestration and workflow design",
+        "Knowledge capture and memory systems"
+      ],
+      "tool_notes": [
+        "Coding agents: важны четкие операции, файлы-шаблоны и контроль freshness",
+        "Chat assistants: обязателен handshake + подтверждение понимания ограничений",
+        "Image/video models: нужен отдельный слой предпочтений, так как использование реже и мисматчи выше"
+      ],
+      "extensions": {
+        "corrections history (recent)": [
+          "2026-03-31: зафиксирован принцип \"use implies update\" и приоритет многоуровневого контекста (L1/L2/L3)"
+        ]
+      }
+    },
+    "extended": {
+      "metadata": {
+        "profile_id": "markoblogo",
+        "owner_alias": "markoblogo",
+        "version": "0.1.1",
+        "created_at": "2026-03-31",
+        "updated_at": "2026-04-01",
+        "freshness_ttl_days": 30,
+        "confidence_notes": "Черновик расширенного профиля; уточняется по реальным сессиям.",
+        "trust_level": "provisional"
+      },
+      "stable_preferences": [
+        "Working rhythm: итеративные короткие циклы с быстрым переходом к рабочему артефакту",
+        "Decision style: сначала архитектурный каркас, затем прикладные операции",
+        "Risk tolerance: готовность к экспериментам при сохранении контрольных точек"
+      ],
+      "domain_workflows": {
+        "protocol / repo design": [
+          "Preferred output: спецификация + playbook + шаблоны + схемы",
+          "Review checklist:",
+          "есть ли уровни контекста",
+          "есть ли handshake-контракт",
+          "есть ли правила актуализации"
+        ],
+        "cross-ai context porting": [
+          "Preferred output: нейтральный профиль без привязки к одному вендору",
+          "Constraints:",
+          "сохранять формулировки владельца там, где это критично",
+          "разделять подтвержденные и предположительные сведения"
+        ],
+        "memory/archive systems": [
+          "Preferred output: индексируемые текстовые слои с provenance",
+          "Constraints:",
+          "не выдумывать факты",
+          "отмечать неполные/сомнительные места"
+        ]
+      },
+      "misalignments": [
+        "Модель меняется и теряется установленный стиль взаимодействия",
+        "Редко используемые инструменты (например image/video) хуже понимают персональные ожидания",
+        "Большой контекст без слоев перегружает старт сессии"
+      ],
+      "lexicon": [
+        "\"ID\": протокол и репозиторий переносимого профиля взаимодействия человек ↔ ИИ",
+        "\"Use implies update\": использование профиля требует обновления данных",
+        "\"Context depth\": уровни L1/L2/L3 для разной глубины задач"
+      ],
+      "environment_assumptions": [
+        "Base path: `/Users/antonbiletskiy-volokh/Downloads/Projects/ID`",
+        "VCS: Git + GitHub",
+        "Privacy baseline: private-by-default для персональных данных"
+      ],
+      "decision_heuristics": [
+        "If task is short: использовать L1 + handshake",
+        "If task is strategic: использовать L2 и журналировать изменения",
+        "If historical depth is needed: подключать L3-источники с provenance"
+      ],
+      "known_good_prompts": [
+        "\"Сначала дай краткое подтверждение понимания профиля и ограничений, затем выполняй задачу\"",
+        "\"Не выдумывай личные предпочтения; если данных нет, явно пометь неопределенность\""
+      ],
+      "extensions": {
+        "image/video generator preferences": [
+          "Session bootstrap: сначала коротко подтверждать визуальный стиль, формат выдачи и ограничения перед генерацией.",
+          "Prompt style: структура goal -> scene -> constraints -> output spec.",
+          "Iteration mode: 1-2 правки за цикл с явным списком изменений.",
+          "Output contract: image (aspect ratio, style anchors, negative constraints), video (duration, shot list, transitions, final format)."
+        ]
+      }
+    }
+  }
+}

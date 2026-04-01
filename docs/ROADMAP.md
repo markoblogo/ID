@@ -50,8 +50,14 @@
 - interop schema-aligned validator added (`scripts/validate_interop_v1.py`) and wired into CI;
 - hardening docs extended with concrete examples and troubleshooting notes.
 
-## Phase 7: Expansion (next)
+## Phase 7: Expansion (done)
 
-- add at least one comparative baseline for another tool/model;
-- add lightweight trend report across multiple runs;
-- formalize evaluator protocol to reduce scoring variance.
+- comparative baseline added (`benchmarks/runs/baseline-2026-04-01-claude`);
+- trend report script added (`scripts/benchmark_trend_report.py`);
+- interop artifact policy formalized for `profiles/<owner>/interop.v1.json`.
+
+## Phase 8: Evaluator Protocol (next)
+
+- formalize evaluator rubric and calibration steps;
+- add confidence intervals / uncertainty notes for manual scores;
+- standardize evidence links per task result.
