@@ -10,6 +10,10 @@ This document defines:
 - mapping rules;
 - known loss boundaries.
 
+It distinguishes:
+- **intended mapping**: what an exporter/adapter is designed to preserve
+- **observed behavior**: what this repo currently implements and validates
+
 ## 2. Canonical Source of Truth
 
 Canonical source:
@@ -80,7 +84,22 @@ Typical limitations:
 | MCP-based wrappers | partial | 2-4 | structured payload transport, explicit handoff | MCP is transport, not semantic profile standard |
 | `context.json`-like prompt bundles | partial | 2 | compact portable profile blocks | field naming and round-trip semantics vary by implementation |
 
-## 5. Mapping Rules
+## 5. Concrete Tool Matrix
+
+| Tool / environment | Best source input path | Best target artifact | What maps well | What degrades | What is lost | Recommended operating mode |
+|---|---|---|---|---|---|---|
+| ChatGPT | `profile.core.md` + handshake; optionally `profile.extended.md` for longer tasks | `context.compact.json` or carefully compressed project instructions | communication style, quality bar, explicit rules, short tool notes | freshness/trust semantics become passive unless surfaced explicitly in prompt text | changelog discipline, full provenance, richer workflow nuance | use L1/core by default; add handshake and explicit uncertainty/freshness note |
+| Claude | `profile.core.md` + selected `profile.extended.md` sections | `context.compact.json` or project knowledge/instructions | constraints, structured reasoning preferences, domain heuristics, review style | policy/freshness semantics are preserved only if written into instruction layer | round-trip fidelity, changelog continuity, full extensions | use compact export plus 1-2 targeted extended sections for strategic work |
+| Gemini | `profile.core.md` first; compact export for portability | `context.compact.json` | concise rules, quality bar, task framing, high-level domains | long structured profile prose may compress unevenly | detailed provenance/history, nuanced layered trust semantics | prefer compact export over long prose; keep explicit loss notes when sharing |
+| Copilot / repo-native coding assistants | `profile.core.md` + repo instructions + local task context | markdown source profile plus compact export for wrappers | coding constraints, brevity/style expectations, safety rules, repo workflow alignment | non-repo personal context is weaker unless surfaced manually | cross-tool memory continuity, rich personal glossary beyond repo task | use markdown source in repo, compact export only for bridging or automation |
+| Local agents / custom orchestrators | markdown source + `interop.v1.json` + `privacy-policy.v1.json` | `interop.v1.json`, `context.compact.json`, or `mcp.context.resource.json` depending transport | most structured fields, freshness, trust, policy-aware export behavior | prose nuance still flattens in machine artifacts | zero-loss round-trip from markdown source | prefer markdown as source of truth, machine artifacts as transport-specific views |
+
+Notes:
+- `ChatGPT`, `Claude`, and `Gemini` rows describe tool families, not vendor-guaranteed product contracts.
+- `Copilot` row assumes repo-centric coding workflows rather than general long-memory chat use.
+- `Local agents` is the highest-fidelity path because the surrounding orchestration can honor explicit artifacts directly.
+
+## 6. Mapping Rules
 
 ### Markdown -> `interop.v1.json`
 
@@ -134,7 +153,60 @@ Loss profile:
 - medium
 - target-specific field semantics differ and may not preserve all sections cleanly
 
-## 6. Non-Negotiable Semantics
+## 7. Vendor-Specific Guidance
+
+### ChatGPT family
+
+Best fit:
+- compact, explicit, bounded context blocks
+- short operational constraints
+- handshake-led onboarding
+
+Watch for:
+- project memory or instructions being treated as sufficient replacement for freshness/trust metadata
+- silent drift when the profile is updated outside the tool
+
+### Claude family
+
+Best fit:
+- structured rules and heuristics
+- deeper profile sections for long-form reasoning or protocol work
+
+Watch for:
+- good reasoning over compressed summaries that may still hide lossy flattening
+- project knowledge acting as convenience storage rather than auditable source of truth
+
+### Gemini family
+
+Best fit:
+- shorter compact artifacts
+- explicit task framing and bounded constraints
+
+Watch for:
+- uneven handling of longer prose-heavy source profiles
+- weaker preservation of nuanced provenance unless restated directly
+
+### Copilot family
+
+Best fit:
+- repo-local markdown profile plus repo instructions
+- clear coding constraints and review preferences
+
+Watch for:
+- reduced portability outside the repository boundary
+- weaker support for personal context unrelated to immediate code work
+
+### Local agents / orchestrators
+
+Best fit:
+- direct consumption of generated machine artifacts
+- policy-aware exports and MCP transport
+
+Watch for:
+- assuming generated transport artifacts are complete replacements for markdown source
+- hidden adapter behavior if custom orchestration layers are not documented
+
+## 8. Non-Negotiable Semantics
 
 The following should never be silently dropped without documentation:
 - `updated_at`
@@ -146,7 +218,7 @@ The following should never be silently dropped without documentation:
 
 If a target cannot preserve these directly, note the degradation explicitly.
 
-## 7. Compatibility Claims
+## 9. Compatibility Claims
 
 Any integration or exporter should state:
 - claimed conformance level from `spec/CONFORMANCE.md`
@@ -163,16 +235,47 @@ Target: project instructions
 Known loss: freshness and trust semantics preserved as comments, not enforced fields
 ```
 
-## 8. Next Adapters
+## 10. Next Adapters
 
 Recommended next compatibility work:
-- add round-trip / drift checks for compact target consumers
-- round-trip loss tests for future exporters
+- expand import behavior beyond lossy markdown draft generation
+- add stronger round-trip / drift checks for compact target consumers
+- extend round-trip loss tests for future exporters and importers
+- document observed behavior, not just intended mapping, for major vendor tools
 
 Reference MCP-oriented wrapper example:
 - `integrations/mcp/context.resource.example.json`
 
-## 9. Non-Goals
+## 11. Intended vs Observed Behavior
+
+### Intended mapping
+
+The protocol intent is:
+- markdown source remains canonical
+- machine artifacts are transport or portability views
+- lossy mappings must be documented, not hidden
+
+### Observed behavior in this repo today
+
+Currently implemented and validated:
+- markdown -> `interop.v1.json`
+- markdown -> `context.compact.json`
+- markdown -> `mcp.context.resource.json`
+- `context.compact.json` -> markdown draft import
+- `mcp.context.resource.json` -> markdown draft import
+
+Currently documented but not fully observed/certified across vendors:
+- ChatGPT family behavior
+- Claude family behavior
+- Gemini family behavior
+- Copilot family behavior
+
+Not yet implemented:
+- true round-trip restoration into canonical source profiles
+- import adapters that preserve full provenance/history
+- vendor-specific behavioral certification beyond repo-level guidance
+
+## 12. Non-Goals
 
 - `ID` does not try to replace MCP.
 - `ID` does not assume one chat vendor's memory model is portable.
