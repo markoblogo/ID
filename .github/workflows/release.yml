@@ -45,3 +45,11 @@ jobs:
               --title "${GITHUB_REF_NAME}" \
               --generate-notes
           fi
+
+      - name: Trigger PyPI publish workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run pypi-publish.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            -f release_tag="${GITHUB_REF_NAME}"
