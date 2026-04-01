@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://id-protocol.local/schemas/context-compact-v0.schema.json",
+  "title": "ID Compact Context v0",
+  "type": "object",
+  "required": [
+    "context_version",
+    "owner_id",
+    "updated_at",
+    "freshness_ttl_days",
+    "trust_level",
+    "communication",
+    "rules",
+    "quality_bar",
+    "priority_domains",
+    "tool_notes",
+    "loss_notes"
+  ],
+  "properties": {
+    "context_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "owner_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "freshness_ttl_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": ["trusted", "provisional", "archival"]
+    },
+    "communication": {
+      "$ref": "#/$defs/stringArray"
+    },
+    "rules": {
+      "type": "object",
+      "required": ["always_do", "never_do", "ask_before", "default_assumptions"],
+      "properties": {
+        "always_do": { "$ref": "#/$defs/stringArray" },
+        "never_do": { "$ref": "#/$defs/stringArray" },
+        "ask_before": { "$ref": "#/$defs/stringArray" },
+        "default_assumptions": { "$ref": "#/$defs/stringArray" }
+      },
+      "additionalProperties": false
+    },
+    "quality_bar": {
+      "$ref": "#/$defs/stringArray"
+    },
+    "priority_domains": {
+      "$ref": "#/$defs/stringArray"
+    },
+    "tool_notes": {
+      "$ref": "#/$defs/stringArray"
+    },
+    "loss_notes": {
+      "$ref": "#/$defs/stringArray"
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

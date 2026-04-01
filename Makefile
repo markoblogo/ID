@@ -1,4 +1,4 @@
-.PHONY: validate interop trend drift-check
+.PHONY: validate interop trend compact drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
@@ -22,6 +22,12 @@ interop:
 
 trend:
 	$(PYTHON) scripts/benchmark_trend_report.py
+
+compact:
+	@for owner in $(OWNERS); do \
+		echo "==> export compact context for $$owner"; \
+		$(PYTHON) scripts/export_context_compact.py --owner-id "$$owner"; \
+	done
 
 drift-check:
 	git diff --exit-code -- $(INTEROP_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md

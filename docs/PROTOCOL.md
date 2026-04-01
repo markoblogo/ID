@@ -21,6 +21,9 @@ Contains:
 
 Target size: 0.5-2 pages.
 
+Practical onboarding note:
+- a one-screen minimal profile is a valid starting point before a fuller L1 profile is written.
+
 ### L2: Extended
 
 Use for longer sessions and specialized agents.
@@ -105,6 +108,9 @@ Recommended human-readable source: Markdown.
 
 Optional machine companion:
 - JSON documents validated by provided schemas.
+
+Recommended onboarding source:
+- start from a minimal markdown profile, then grow into `profile.core.md` and `profile.extended.md` as evidence accumulates.
 
 ## 9. Non-Goals
 

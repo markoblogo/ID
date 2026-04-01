@@ -6,6 +6,10 @@ Run metadata + freshness checks:
 
 - `python3 scripts/validate_profile.py --owner-id markoblogo`
 
+Recommended progression:
+- validate a minimal/core profile first;
+- expand to the extended profile only after the minimal/core layer survives real sessions.
+
 Strict publish safety check (recommended before push):
 
 - `python3 scripts/validate_profile.py --check-raw-staged --check-raw-tracked`

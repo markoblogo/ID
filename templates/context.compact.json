@@ -1,0 +1,22 @@
+{
+  "context_version": "0.1.0",
+  "owner_id": "owner-id",
+  "updated_at": "YYYY-MM-DD",
+  "freshness_ttl_days": 14,
+  "trust_level": "trusted",
+  "communication": [],
+  "rules": {
+    "always_do": [],
+    "never_do": [],
+    "ask_before": [],
+    "default_assumptions": []
+  },
+  "quality_bar": [],
+  "priority_domains": [],
+  "tool_notes": [],
+  "loss_notes": [
+    "Extended workflows omitted",
+    "Historical corrections omitted",
+    "Use full profile or interop.v1.json for richer context"
+  ]
+}

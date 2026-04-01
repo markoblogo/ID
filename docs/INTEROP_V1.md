@@ -51,6 +51,7 @@ Migration steps:
 - v1 consumers must ignore unknown fields in `extensions`.
 - producers must preserve semantically equivalent data when round-tripping.
 - date fields must stay in `YYYY-MM-DD`.
+- broader target compatibility and loss boundaries are tracked in `docs/COMPATIBILITY.md`.
 
 ## 6. Artifact Policy (`interop.v1.json`)
 
