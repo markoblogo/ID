@@ -78,6 +78,10 @@ make validate
 make drift-check
 ```
 
+Rule:
+- `make validate` may regenerate `profiles/*/interop.v1.json` and `benchmarks/runs/trends.*`.
+- `make drift-check` must be green before merge; if it fails after regeneration, commit the updated artifacts in the same change set.
+
 Committed baseline artifacts:
 - `benchmarks/runs/baseline-2026-03-31-codex/meta.json`
 - `benchmarks/runs/baseline-2026-03-31-codex/results/*.json`
