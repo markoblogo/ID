@@ -138,7 +138,7 @@ Output:
 
 - current protocol docs live under `docs/`
 - versioned standard surface lives under `spec/`
-- current version index: `spec/v0.1/README.md`
+- current version index: `spec/v0.2/README.md`
 - conformance model: `spec/CONFORMANCE.md`
 - change history: `spec/CHANGELOG.md`
 - proposal process: `spec/RFC/README.md`

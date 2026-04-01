@@ -2,6 +2,10 @@
 
 This is the current versioned entrypoint for the `ID` protocol surface.
 
+Status:
+- retained as the earlier baseline entrypoint
+- superseded by `spec/v0.2/README.md` for the current maturity surface
+
 ## Normative documents for v0.1
 
 - protocol scope and package model: `docs/PROTOCOL.md`
