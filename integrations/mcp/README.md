@@ -30,3 +30,17 @@ Source: profile.core.md -> context.compact.json
 Target: MCP resource payload
 Known loss: extended workflows and historical context omitted
 ```
+
+## Live Export
+
+Generate a policy-aware MCP resource payload with:
+
+```bash
+python3 scripts/export_mcp_resource.py --owner-id <owner-id>
+```
+
+For task-scoped exports:
+
+```bash
+python3 scripts/export_mcp_resource.py --owner-id <owner-id> --task-class coding
+```

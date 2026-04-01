@@ -1,51 +1,52 @@
 {
-  "resource_type": "id-context",
-  "resource_version": "0.1.0",
+  "resource_version": "1.0.0",
   "owner_id": "markoblogo",
-  "transport": "mcp-resource",
-  "payload": {
+  "uri": "id://markoblogo/context.compact",
+  "name": "ID Context: markoblogo",
+  "description": "Policy-aware MCP resource derived from ID compact context",
+  "mime_type": "application/json",
+  "contents": {
     "context_version": "0.1.0",
     "owner_id": "markoblogo",
-    "updated_at": "2026-04-01",
+    "updated_at": "2026-03-31",
     "freshness_ttl_days": 14,
     "trust_level": "trusted",
     "communication": [
-      "Russian primary, English acceptable for technical artifacts",
-      "Direct and pragmatic tone",
-      "Short status, deep architecture detail"
+      "Preferred language(s): Russian (основной), English (технические артефакты допустимы)"
     ],
     "rules": {
       "always_do": [
-        "state assumptions explicitly",
-        "prefer portable solutions across AI tools"
+        "фиксировать допущения явно"
       ],
       "never_do": [
-        "invent understanding without verification",
-        "hide model-specific dependencies"
+        "имитировать понимание без проверки"
       ],
       "ask_before": [
-        "publishing personal data",
-        "breaking protocol compatibility"
+        "публикацией персональных данных"
       ],
       "default_assumptions": [
-        "process must be reproducible",
-        "data should stay versioned and updateable"
+        "нужен воспроизводимый процесс"
       ]
     },
     "quality_bar": [
-      "solution should work as protocol and operational process"
+      "Definition of \"good result\": решение работает как протокол и как операционный процесс"
     ],
     "priority_domains": [
-      "personal AI profile portability",
-      "agent orchestration and workflow design"
+      "Personal AI profile portability"
     ],
     "tool_notes": [
-      "coding agents need explicit operations and freshness control"
+      "Coding agents: важны четкие операции, файлы-шаблоны и контроль freshness"
     ],
     "loss_notes": [
       "Extended workflows omitted",
       "Historical corrections omitted",
-      "Use full profile or interop.v1.json for richer context"
+      "Use full profile or interop.v1.json for richer context",
+      "Privacy policy applied"
     ]
+  },
+  "policy": {
+    "applied": true,
+    "task_class": null,
+    "source": "profiles/markoblogo/privacy-policy.v1.json"
   }
 }
