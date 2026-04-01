@@ -9,11 +9,23 @@ Main idea:
 - context has depth levels: short, extended, full;
 - using context implies responsibility to keep it updated.
 
+What this gives in practice:
+- faster onboarding for a new tool or agent;
+- less prompt boilerplate repeated by hand;
+- explicit privacy, freshness, and loss boundaries;
+- measurable with-vs-without-ID comparisons instead of ideology-only claims.
+
 Why this beats ad-hoc prompts or chat memory in some workflows:
 - `system prompts` are fragile and usually copied by hand across tools;
 - chat-native memory is siloed inside one product and hard to audit;
 - project instructions help per repo, but not across roles like writing, research, or multi-tool orchestration;
 - `ID` makes preferences, constraints, freshness, privacy, and portability explicit and versioned.
+
+Short explainer:
+- `docs/WHY_ID.md`
+
+Golden workflow examples:
+- `docs/EXAMPLES.md`
 
 ## End-to-End Scenarios
 
@@ -193,6 +205,8 @@ Guide:
 
 - benchmark guide: `docs/BENCHMARK.md`
 - evaluator protocol: `docs/EVALUATOR_PROTOCOL.md`
+- public utility positioning: `docs/WHY_ID.md`
+- golden examples: `docs/EXAMPLES.md`
 - run aggregation: `python3 scripts/benchmark_report.py --run-id <run-id>`
 - trend report across runs: `python3 scripts/benchmark_trend_report.py`
 - public metrics report: `python3 scripts/benchmark_public_report.py`
