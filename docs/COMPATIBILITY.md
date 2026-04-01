@@ -227,6 +227,7 @@ Any integration or exporter should state:
 - claimed conformance level from `spec/CONFORMANCE.md`
 - source format used
 - target format used
+- checks or validators supporting the claim
 - known lossy fields or behaviors
 
 Recommended claim format:
@@ -235,7 +236,9 @@ Recommended claim format:
 Conformance: Level 2 (Portable)
 Source: markdown core/extended + interop.v1.json
 Target: project instructions
+Checks: validate_interop_v1.py
 Known loss: freshness and trust semantics preserved as comments, not enforced fields
+Limits: no full round-trip restoration into canonical source
 ```
 
 ## 10. Next Adapters

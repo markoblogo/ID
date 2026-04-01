@@ -27,6 +27,8 @@ These documents define protocol-facing commitments and may be cited for compatib
   - evaluator/rubric contract for benchmark interpretation
 - `spec/CONFORMANCE.md`
   - conformance level definitions
+  - claim hardening rules
+  - evidence expectations for protocol-level claims
 
 ## Informative
 
