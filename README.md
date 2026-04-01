@@ -9,10 +9,13 @@
 
 `ID` is a protocol and reference repository for portable human-AI interaction context.
 
+Today it also functions as the repo-local hook layer for `SET`-compatible orchestration flows.
+
 Main idea:
 - any AI should quickly understand how to work with a specific person;
 - context has depth levels: short, extended, full;
 - using context implies responsibility to keep it updated.
+- orchestration should be able to call explicit hook boundaries instead of relying on hidden chat state.
 
 What this gives in practice:
 - faster onboarding for a new tool or agent;
@@ -27,6 +30,19 @@ Current repo status:
 - structured observed-behavior evidence
 - lightweight onboarding bootstrap flow
 - installable lightweight CLI surface (`idctl`)
+
+## Orchestration status
+
+`ID` now has a real execution role inside the wider ABVX toolchain:
+
+- `SET` can orchestrate repo-local `ID` hooks in compatible repositories
+- current CI-safe hooks are `pre_task` and `weekly_review`
+- `ID` stays the context/protocol layer, while `SET` stays the orchestration layer
+- `agentsgen` remains the repo-docs/runtime companion, not a replacement for portable human context
+
+Practical consequence:
+- if a repo is `ID`-compatible, `SET` can validate or refresh human-context boundaries before and after the main repo workflow
+- if a repo only needs repo-scoped agent docs, `agentsgen` is enough on its own
 
 Why this beats ad-hoc prompts or chat memory in some workflows:
 - `system prompts` are fragile and usually copied by hand across tools;
@@ -239,17 +255,18 @@ It is no longer only an internal profile format or documentation experiment.
 
 - repo: [markoblogo/SET](https://github.com/markoblogo/SET)
 - current relationship:
-  - `SET` is the adjacent orchestration/execution layer
-  - `ID` provides the context/protocol layer that can feed orchestration workflows
+  - `SET` is the orchestration/execution layer
+  - `ID` is now a real repo-local hook and protocol companion inside that orchestration path
   - practical boundary:
     - `ID` answers "what context should follow the human across tools?"
-    - `SET` answers "how should agentic or tool workflows be executed/orchestrated?"
+    - `SET` answers "how should repo workflows execute those tools and hooks?"
 
 ### Practical Summary
 
 If you need:
 - protocol and portable context: start with `ID`
 - repo-scoped agent instruction generation: use `AGENTS.md Generator`
+- orchestration and workflow execution: use `SET`
 
 ## Specification And Releases
 
