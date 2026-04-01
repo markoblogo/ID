@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner drift-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner drift-check release-build release-check
 
 PYTHON ?= python3
 REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
@@ -35,6 +35,14 @@ trend:
 
 metrics:
 	$(PYTHON) scripts/benchmark_public_report.py
+
+release-build:
+	rm -rf dist build *.egg-info
+	$(PYTHON) -m build
+
+release-check:
+	@test -d dist || { echo "missing dist/; run make release-build"; exit 1; }
+	$(PYTHON) -m twine check dist/*
 
 metrics-tokenizer:
 	@$(PYTHON) -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('tiktoken') else 1)" || { echo "Install hint: pip install tiktoken"; exit 1; }

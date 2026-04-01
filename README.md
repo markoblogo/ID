@@ -40,6 +40,7 @@ Proof page:
 
 Release/install path:
 - `docs/RELEASES.md`
+- tagged GitHub release flow with `sdist`/`wheel` artifacts
 
 ## Choose One Path
 

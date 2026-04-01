@@ -1,0 +1,38 @@
+name: id-protocol-release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install release tooling
+        run: python -m pip install --upgrade pip build twine
+
+      - name: Validate repo
+        run: make validate
+
+      - name: Build package artifacts
+        run: make release-build
+
+      - name: Check package metadata
+        run: make release-check
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
