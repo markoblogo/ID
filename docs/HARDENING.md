@@ -112,6 +112,10 @@ Example summary:
 - push hangs in current local environment:
   - use standard `git push origin main` first;
   - if environment issue persists, sync via approved GitHub API fallback process.
+- local exec sessions look stuck (no output for simple commands):
+  - run `bash scripts/cleanup_stuck_jobs.sh`;
+  - then rerun checks one by one (avoid large chained commands while recovering);
+  - prefer short commands with explicit timeouts for network checks.
 
 ## 6. Interop Export Hardening
 

@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 HEADING_RE = re.compile(r"^##\s+(.+)$")
+HEADING_L3_RE = re.compile(r"^###\s+(.+)$")
 TOP_BULLET_RE = re.compile(r"^-\s+(.+)$")
 NESTED_BULLET_RE = re.compile(r"^\s{2,}-\s+(.+)$")
 
@@ -39,6 +40,20 @@ def parse_front_matter(text: str) -> tuple[dict[str, str], list[str]]:
         i += 1
 
     return meta, lines
+
+
+def coerce_metadata(meta: dict[str, str]) -> dict:
+    out: dict = {}
+    for key, value in meta.items():
+        if key == "freshness_ttl_days":
+            try:
+                out[key] = int(value)
+                continue
+            except ValueError:
+                out[key] = value
+                continue
+        out[key] = value
+    return out
 
 
 def normalize_heading(heading: str) -> str:
@@ -106,9 +121,30 @@ def extract_rule_blocks(lines: list[str]) -> dict[str, list[str]]:
     return blocks
 
 
+def extract_subsections_bullets(lines: list[str]) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+
+    for raw in lines:
+        header = HEADING_L3_RE.match(raw.strip())
+        if header:
+            current = normalize_heading(header.group(1))
+            sections.setdefault(current, [])
+            continue
+
+        if current is None:
+            continue
+
+        bullet = TOP_BULLET_RE.match(raw.strip())
+        if bullet:
+            sections[current].append(bullet.group(1).strip())
+
+    return sections
+
+
 def map_core_profile(meta: dict[str, str], sections: dict[str, list[str]]) -> dict:
     out = {
-        "metadata": meta,
+        "metadata": coerce_metadata(meta),
         "communication": [],
         "rules": {
             "always_do": [],
@@ -143,7 +179,7 @@ def map_core_profile(meta: dict[str, str], sections: dict[str, list[str]]) -> di
 
 def map_extended_profile(meta: dict[str, str], sections: dict[str, list[str]]) -> dict:
     out = {
-        "metadata": meta,
+        "metadata": coerce_metadata(meta),
         "stable_preferences": [],
         "domain_workflows": {},
         "misalignments": [],
@@ -161,7 +197,11 @@ def map_extended_profile(meta: dict[str, str], sections: dict[str, list[str]]) -
         if "stable preferences" in heading:
             out["stable_preferences"] = bullets
         elif "domain workflows" in heading:
-            out["domain_workflows"][heading] = bullets
+            workflows = extract_subsections_bullets(lines)
+            if workflows:
+                out["domain_workflows"] = workflows
+            elif bullets:
+                out["domain_workflows"]["default"] = bullets
         elif "recurrent misalignments" in heading:
             out["misalignments"] = bullets
         elif "personal lexicon" in heading:

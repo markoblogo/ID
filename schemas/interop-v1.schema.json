@@ -9,17 +9,120 @@
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
-    "owner_id": {"type": "string", "minLength": 1},
-    "generated_at": {"type": "string", "format": "date"},
+    "owner_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date"
+    },
     "profiles": {
       "type": "object",
       "required": ["core", "extended"],
       "properties": {
-        "core": {"type": "object"},
-        "extended": {"type": "object"}
+        "core": {
+          "type": "object",
+          "required": [
+            "metadata",
+            "communication",
+            "rules",
+            "quality_bar",
+            "priority_domains",
+            "tool_notes",
+            "extensions"
+          ],
+          "properties": {
+            "metadata": { "$ref": "#/$defs/metadata" },
+            "communication": { "$ref": "#/$defs/stringArray" },
+            "rules": {
+              "type": "object",
+              "required": ["always_do", "never_do", "ask_before", "default_assumptions"],
+              "properties": {
+                "always_do": { "$ref": "#/$defs/stringArray" },
+                "never_do": { "$ref": "#/$defs/stringArray" },
+                "ask_before": { "$ref": "#/$defs/stringArray" },
+                "default_assumptions": { "$ref": "#/$defs/stringArray" }
+              },
+              "additionalProperties": false
+            },
+            "quality_bar": { "$ref": "#/$defs/stringArray" },
+            "priority_domains": { "$ref": "#/$defs/stringArray" },
+            "tool_notes": { "$ref": "#/$defs/stringArray" },
+            "extensions": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/stringArray" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "extended": {
+          "type": "object",
+          "required": [
+            "metadata",
+            "stable_preferences",
+            "domain_workflows",
+            "misalignments",
+            "lexicon",
+            "environment_assumptions",
+            "decision_heuristics",
+            "known_good_prompts",
+            "extensions"
+          ],
+          "properties": {
+            "metadata": { "$ref": "#/$defs/metadata" },
+            "stable_preferences": { "$ref": "#/$defs/stringArray" },
+            "domain_workflows": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/stringArray" }
+            },
+            "misalignments": { "$ref": "#/$defs/stringArray" },
+            "lexicon": { "$ref": "#/$defs/stringArray" },
+            "environment_assumptions": { "$ref": "#/$defs/stringArray" },
+            "decision_heuristics": { "$ref": "#/$defs/stringArray" },
+            "known_good_prompts": { "$ref": "#/$defs/stringArray" },
+            "extensions": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/$defs/stringArray" }
+            }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "owner_alias",
+        "version",
+        "created_at",
+        "updated_at",
+        "freshness_ttl_days",
+        "trust_level"
+      ],
+      "properties": {
+        "profile_id": { "type": "string", "minLength": 1 },
+        "owner_alias": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "created_at": { "type": "string", "format": "date" },
+        "updated_at": { "type": "string", "format": "date" },
+        "freshness_ttl_days": { "type": "integer", "minimum": 1 },
+        "confidence_notes": { "type": "string" },
+        "trust_level": {
+          "type": "string",
+          "enum": ["trusted", "provisional", "archival"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
 }
