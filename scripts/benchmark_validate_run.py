@@ -4,7 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
+
+
+VALID_CONTEXT_MODES = {"id", "no_id"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -15,13 +19,28 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def load_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+
+
 def main() -> int:
     args = parse_args()
     run_dir = Path(args.runs_root) / args.run_id
     results_dir = run_dir / "results"
+    meta_path = run_dir / "meta.json"
 
     if not run_dir.exists() or not results_dir.exists():
         print(f"ERROR: missing run/results dir for {args.run_id}")
+        return 1
+
+    if not meta_path.exists():
+        print(f"ERROR: missing meta.json for {args.run_id}")
+        return 1
+
+    meta = load_json(meta_path)
+    context_mode = meta.get("context_mode")
+    if context_mode and context_mode not in VALID_CONTEXT_MODES:
+        print(f"ERROR: invalid context_mode in meta.json: {context_mode}")
         return 1
 
     tasks = sorted(p.stem for p in Path(args.tasks_root).glob("task-*.md"))

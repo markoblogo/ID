@@ -1,0 +1,10 @@
+{
+  "task_id": "task-01-coding-refactor",
+  "tool": "codex",
+  "style_fit": 3,
+  "constraint_adherence": 4,
+  "result_quality": 3,
+  "edit_count": 2.0,
+  "time_to_acceptable_min": 7.5,
+  "notes": "good protocol alignment; moderate refinement needed; no-ID control run"
+}

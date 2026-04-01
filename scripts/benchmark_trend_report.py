@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 
 HIGHER_BETTER = {"style_fit", "constraint_adherence", "result_quality"}
-LOWER_BETTER = {"edit_count", "time_to_acceptable_min"}
 METRICS = [
     "style_fit",
     "constraint_adherence",
@@ -23,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runs-root", default="benchmarks/runs", help="Runs root")
     parser.add_argument("--output-json", default="benchmarks/runs/trends.json", help="Output JSON path")
     parser.add_argument("--output-md", default="benchmarks/runs/trends.md", help="Output markdown path")
+    parser.add_argument("--include-control", action="store_true", help="Include context_mode=no_id control runs")
     return parser.parse_args()
 
 
@@ -30,40 +30,49 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
 
 
-def run_label(summary: dict) -> str:
-    return summary.get("run_id", "unknown")
+def load_run_meta(run_dir: Path, summary: dict) -> dict:
+    meta_path = run_dir / "meta.json"
+    if meta_path.exists():
+        try:
+            return load_json(meta_path)
+        except json.JSONDecodeError:
+            pass
+    return summary.get("meta", {})
 
 
 def main() -> int:
     args = parse_args()
     runs_root = Path(args.runs_root)
 
-    summaries: list[dict] = []
+    summaries: list[tuple[Path, dict, dict]] = []
     for path in sorted(runs_root.glob("*/summary.json")):
         try:
-            summaries.append(load_json(path))
+            summary = load_json(path)
         except json.JSONDecodeError:
             continue
+        meta = load_run_meta(path.parent, summary)
+        if not args.include_control and meta.get("context_mode") == "no_id":
+            continue
+        summaries.append((path.parent, summary, meta))
 
     if len(summaries) < 2:
         print("ERROR: need at least 2 run summaries to compute trends")
         return 1
 
-    summaries.sort(key=lambda s: (s.get("meta", {}).get("date", ""), s.get("run_id", "")))
+    summaries.sort(key=lambda item: (item[2].get("date", ""), item[1].get("run_id", "")))
 
     rows = []
-    for s in summaries:
-        meta = s.get("meta", {})
+    for run_dir, summary, meta in summaries:
         tool_list = meta.get("tools", [])
         tool = tool_list[0] if tool_list else "unknown"
         rows.append(
             {
-                "run_id": s.get("run_id"),
+                "run_id": summary.get("run_id"),
                 "date": meta.get("date"),
                 "tool": tool,
                 "profile_version": meta.get("profile_version"),
-                "tasks": s.get("tasks", 0),
-                "averages": s.get("averages", {}),
+                "tasks": summary.get("tasks", 0),
+                "averages": summary.get("averages", {}),
             }
         )
 
@@ -112,13 +121,13 @@ def main() -> int:
         "## Runs",
         "",
     ]
-    for r in rows:
-        a = r["averages"]
+    for row in rows:
+        averages = row["averages"]
         lines.append(
-            f"- {r['date']} | {r['run_id']} | {r['tool']} | "
-            f"style={a.get('style_fit')} constraint={a.get('constraint_adherence')} "
-            f"quality={a.get('result_quality')} edits={a.get('edit_count')} "
-            f"time={a.get('time_to_acceptable_min')}"
+            f"- {row['date']} | {row['run_id']} | {row['tool']} | "
+            f"style={averages.get('style_fit')} constraint={averages.get('constraint_adherence')} "
+            f"quality={averages.get('result_quality')} edits={averages.get('edit_count')} "
+            f"time={averages.get('time_to_acceptable_min')}"
         )
 
     lines.extend(["", "## Delta (first -> last)", ""])
@@ -131,8 +140,8 @@ def main() -> int:
     lines.extend(["", "## Best By Metric", ""])
     for metric in METRICS:
         if metric in best_by_metric:
-            b = best_by_metric[metric]
-            lines.append(f"- {metric}: {b['value']} ({b['tool']} / {b['run_id']})")
+            best = best_by_metric[metric]
+            lines.append(f"- {metric}: {best['value']} ({best['tool']} / {best['run_id']})")
 
     out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Generated: {out_json}")

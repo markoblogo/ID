@@ -39,3 +39,11 @@ These remain explicit gaps in the public proof layer:
 - `with_vs_without_id_delta`
 
 Both require additional instrumentation and matched control runs, so they are listed in the report but not yet scored.
+
+## Control Runs
+
+To compute `with_vs_without_id_delta`, create matched run pairs with:
+- `context_mode`: `id` or `no_id`
+- `comparison_group`: shared key for the pair
+
+Positive delta means `ID` performed better. For latency and clarification metrics, the report inverts the sign so positive still means improvement.

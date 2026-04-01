@@ -1,0 +1,10 @@
+{
+  "task_id": "task-04-ops-runbook",
+  "tool": "codex",
+  "style_fit": 3,
+  "constraint_adherence": 4,
+  "result_quality": 3,
+  "edit_count": 2.0,
+  "time_to_acceptable_min": 5.5,
+  "notes": "operational sequence produced consistently; no-ID control run"
+}

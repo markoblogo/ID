@@ -1,12 +1,12 @@
 {
-  "run_id": "baseline-2026-04-01-claude",
+  "run_id": "control-2026-04-01-claude-no-id",
   "date": "2026-04-01",
   "owner_id": "markoblogo",
-  "profile_version": "0.1.1",
+  "profile_version": "none",
   "tools": [
     "claude-sonnet-4"
   ],
   "evaluator": "manual-self-eval",
-  "context_mode": "id",
+  "context_mode": "no_id",
   "comparison_group": "claude-2026-04-01"
 }

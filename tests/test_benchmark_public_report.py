@@ -13,23 +13,34 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = REPO_ROOT / "scripts" / "benchmark_public_report.py"
 
 
-def write_summary(path: Path, *, run_id: str, date: str, tool: str, averages: dict[str, float]) -> None:
+def write_summary(path: Path, *, run_id: str, averages: dict[str, float]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(
             {
                 "run_id": run_id,
-                "meta": {
-                    "date": date,
-                    "tools": [tool],
-                    "profile_version": "0.1.0",
-                },
                 "tasks": 2,
                 "averages": averages,
             }
         ),
         encoding="utf-8",
     )
+
+
+def write_meta(path: Path, *, run_id: str, date: str, tool: str, profile_version: str, context_mode: str, comparison_group: str | None = None) -> None:
+    payload = {
+        "run_id": run_id,
+        "date": date,
+        "owner_id": "markoblogo",
+        "profile_version": profile_version,
+        "tools": [tool],
+        "evaluator": "manual-self-eval",
+        "context_mode": context_mode,
+    }
+    if comparison_group:
+        payload["comparison_group"] = comparison_group
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
 
 
 def write_result(path: Path, *, style: int, constraint: int, quality: int, edits: float, minutes: float) -> None:
@@ -66,17 +77,24 @@ def write_profile(path: Path, *, updated_at: str, ttl_days: int) -> None:
 
 
 class BenchmarkPublicReportTests(unittest.TestCase):
-    def test_generates_public_metric_outputs(self) -> None:
+    def test_generates_public_metric_outputs_and_control_deltas(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             runs_root = root / "benchmarks" / "runs"
             profiles_root = root / "profiles"
 
-            write_summary(
-                runs_root / "run-a" / "summary.json",
+            write_meta(
+                runs_root / "run-a" / "meta.json",
                 run_id="run-a",
                 date="2026-03-31",
                 tool="codex",
+                profile_version="0.1.0",
+                context_mode="id",
+                comparison_group="pair-a",
+            )
+            write_summary(
+                runs_root / "run-a" / "summary.json",
+                run_id="run-a",
                 averages={
                     "style_fit": 4.6,
                     "constraint_adherence": 4.8,
@@ -88,21 +106,28 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             write_result(runs_root / "run-a" / "results" / "task-1.json", style=5, constraint=5, quality=5, edits=0, minutes=2)
             write_result(runs_root / "run-a" / "results" / "task-2.json", style=4, constraint=4, quality=4, edits=0, minutes=4)
 
+            write_meta(
+                runs_root / "run-a-no-id" / "meta.json",
+                run_id="run-a-no-id",
+                date="2026-03-31",
+                tool="codex",
+                profile_version="none",
+                context_mode="no_id",
+                comparison_group="pair-a",
+            )
             write_summary(
-                runs_root / "run-b" / "summary.json",
-                run_id="run-b",
-                date="2026-04-01",
-                tool="claude",
+                runs_root / "run-a-no-id" / "summary.json",
+                run_id="run-a-no-id",
                 averages={
-                    "style_fit": 3.8,
+                    "style_fit": 3.5,
                     "constraint_adherence": 4.0,
-                    "result_quality": 3.9,
+                    "result_quality": 3.8,
                     "edit_count": 1.5,
                     "time_to_acceptable_min": 5.0,
                 },
             )
-            write_result(runs_root / "run-b" / "results" / "task-1.json", style=4, constraint=4, quality=4, edits=0, minutes=4)
-            write_result(runs_root / "run-b" / "results" / "task-2.json", style=3, constraint=4, quality=3, edits=3, minutes=6)
+            write_result(runs_root / "run-a-no-id" / "results" / "task-1.json", style=4, constraint=4, quality=4, edits=1, minutes=4)
+            write_result(runs_root / "run-a-no-id" / "results" / "task-2.json", style=3, constraint=4, quality=3, edits=2, minutes=6)
 
             write_profile(profiles_root / "markoblogo" / "profile.core.md", updated_at="2026-03-31", ttl_days=14)
             write_profile(profiles_root / "markoblogo" / "profile.extended.md", updated_at="2026-04-01", ttl_days=30)
@@ -133,12 +158,14 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
             payload = json.loads(output_json.read_text(encoding="utf-8"))
             self.assertEqual(len(payload["runs"]), 2)
-            self.assertEqual(payload["runs"][0]["public_metrics"]["task_success_rate"], 1.0)
-            self.assertEqual(payload["runs"][1]["public_metrics"]["task_success_rate"], 0.5)
-            self.assertEqual(payload["best_by_public_metric"]["best_task_success_rate"]["run_id"], "run-a")
-            self.assertEqual(payload["best_by_public_metric"]["best_onboarding_latency"]["run_id"], "run-a")
-            self.assertIn("prompt_length_reduction", payload["not_yet_instrumented"])
+            self.assertEqual(payload["runs"][0]["context_mode"], "id")
+            self.assertEqual(payload["runs"][1]["context_mode"], "no_id")
+            self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["comparison_group"], "pair-a")
+            self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["deltas"]["task_success_rate"], 0.5)
+            self.assertEqual(payload["with_vs_without_id_delta"]["pairs"][0]["deltas"]["onboarding_latency_min"], 2.0)
+            self.assertNotIn("with_vs_without_id_delta", payload["not_yet_instrumented"])
             self.assertIn("# Public Benchmark Metrics", output_md.read_text(encoding="utf-8"))
+            self.assertIn("With vs Without ID Delta", output_md.read_text(encoding="utf-8"))
 
     def test_requires_at_least_two_valid_summaries(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -146,11 +173,17 @@ class BenchmarkPublicReportTests(unittest.TestCase):
             runs_root = root / "benchmarks" / "runs"
             profiles_root = root / "profiles"
 
-            write_summary(
-                runs_root / "run-a" / "summary.json",
+            write_meta(
+                runs_root / "run-a" / "meta.json",
                 run_id="run-a",
                 date="2026-03-31",
                 tool="codex",
+                profile_version="0.1.0",
+                context_mode="id",
+            )
+            write_summary(
+                runs_root / "run-a" / "summary.json",
+                run_id="run-a",
                 averages={"style_fit": 4.0},
             )
             write_profile(profiles_root / "markoblogo" / "profile.core.md", updated_at="2026-03-31", ttl_days=14)

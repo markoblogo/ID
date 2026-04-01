@@ -9,9 +9,9 @@ from datetime import date, datetime
 from pathlib import Path
 
 SUCCESS_THRESHOLD = 4
+LOWER_BETTER_PUBLIC_METRICS = {"onboarding_latency_min", "clarification_turns_avg"}
 METRIC_NOTES = {
     "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task",
-    "with_vs_without_id_delta": "not yet instrumented; requires matched control runs without ID context",
 }
 
 
@@ -27,6 +27,16 @@ def parse_args() -> argparse.Namespace:
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+
+
+def load_run_meta(run_dir: Path, summary: dict) -> dict:
+    meta_path = run_dir / "meta.json"
+    if meta_path.exists():
+        try:
+            return load_json(meta_path)
+        except json.JSONDecodeError:
+            pass
+    return summary.get("meta", {})
 
 
 def parse_iso_date(value: str) -> date:
@@ -117,7 +127,7 @@ def alignment_index(summary: dict) -> float:
 
 
 def build_run_row(run_dir: Path, summary: dict) -> dict:
-    meta = summary.get("meta", {})
+    meta = load_run_meta(run_dir, summary)
     results = read_results(run_dir)
     tool_list = meta.get("tools", [])
     tool = tool_list[0] if tool_list else "unknown"
@@ -130,6 +140,8 @@ def build_run_row(run_dir: Path, summary: dict) -> dict:
         "date": meta.get("date"),
         "tool": tool,
         "profile_version": meta.get("profile_version"),
+        "context_mode": meta.get("context_mode", "id"),
+        "comparison_group": meta.get("comparison_group"),
         "tasks": summary.get("tasks", total),
         "public_metrics": {
             "onboarding_latency_min": summary.get("averages", {}).get("time_to_acceptable_min", 0.0),
@@ -146,6 +158,60 @@ def best_run(rows: list[dict], metric: str, reverse: bool) -> dict:
     return sorted(rows, key=lambda row: row["public_metrics"][metric], reverse=reverse)[0]
 
 
+def delta_value(metric: str, with_id: float, without_id: float) -> float:
+    if metric in LOWER_BETTER_PUBLIC_METRICS:
+        return round(without_id - with_id, 3)
+    return round(with_id - without_id, 3)
+
+
+def with_vs_without_delta(rows: list[dict]) -> dict | None:
+    grouped: dict[str, dict[str, dict]] = {}
+    for row in rows:
+        comparison_group = row.get("comparison_group")
+        context_mode = row.get("context_mode")
+        if not comparison_group or context_mode not in {"id", "no_id"}:
+            continue
+        grouped.setdefault(comparison_group, {})[context_mode] = row
+
+    pairs = []
+    metric_totals: dict[str, list[float]] = {}
+    for comparison_group, contexts in sorted(grouped.items()):
+        with_id = contexts.get("id")
+        without_id = contexts.get("no_id")
+        if with_id is None or without_id is None:
+            continue
+        deltas = {}
+        for metric in with_id["public_metrics"]:
+            value = delta_value(
+                metric,
+                float(with_id["public_metrics"][metric]),
+                float(without_id["public_metrics"][metric]),
+            )
+            deltas[metric] = value
+            metric_totals.setdefault(metric, []).append(value)
+        pairs.append(
+            {
+                "comparison_group": comparison_group,
+                "with_id_run_id": with_id["run_id"],
+                "without_id_run_id": without_id["run_id"],
+                "tool": with_id["tool"],
+                "deltas": deltas,
+            }
+        )
+
+    if not pairs:
+        return None
+
+    return {
+        "pairs": pairs,
+        "average_deltas": {
+            metric: round(sum(values) / len(values), 3)
+            for metric, values in metric_totals.items()
+            if values
+        },
+    }
+
+
 def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
     summaries: list[tuple[Path, dict]] = []
     for path in sorted(runs_root.glob("*/summary.json")):
@@ -157,17 +223,24 @@ def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
     if len(summaries) < 2:
         raise ValueError("need at least 2 run summaries to compute public metrics")
 
-    summaries.sort(key=lambda item: (item[1].get("meta", {}).get("date", ""), item[1].get("run_id", "")))
+    summaries.sort(key=lambda item: (load_run_meta(item[0], item[1]).get("date", ""), item[1].get("run_id", "")))
     rows = [build_run_row(run_dir, summary) for run_dir, summary in summaries]
 
     best_task_success = best_run(rows, "task_success_rate", True)
     best_latency = best_run(rows, "onboarding_latency_min", False)
     best_alignment = best_run(rows, "alignment_index", True)
     best_first_pass = best_run(rows, "first_pass_success_rate", True)
+    paired_delta = with_vs_without_delta(rows)
+    not_yet_instrumented = dict(METRIC_NOTES)
+    if paired_delta is None:
+        not_yet_instrumented["with_vs_without_id_delta"] = (
+            "not yet available; requires matched control runs with comparison_group and context_mode=no_id"
+        )
 
     return {
         "runs": rows,
         "profile_freshness": profile_freshness_snapshot(profiles_root, owner_id),
+        "with_vs_without_id_delta": paired_delta,
         "best_by_public_metric": {
             "best_task_success_rate": {
                 "run_id": best_task_success["run_id"],
@@ -186,7 +259,7 @@ def build_payload(runs_root: Path, profiles_root: Path, owner_id: str) -> dict:
                 "value": best_first_pass["public_metrics"]["first_pass_success_rate"],
             },
         },
-        "not_yet_instrumented": METRIC_NOTES,
+        "not_yet_instrumented": not_yet_instrumented,
     }
 
 
@@ -202,11 +275,26 @@ def write_markdown(path: Path, payload: dict) -> None:
     for row in payload["runs"]:
         metrics = row["public_metrics"]
         lines.append(
-            f"- {row['date']} | {row['run_id']} | {row['tool']} | "
+            f"- {row['date']} | {row['run_id']} | {row['tool']} | mode={row['context_mode']} | "
             f"success={metrics['task_success_rate']} alignment={metrics['alignment_index']} "
             f"latency={metrics['onboarding_latency_min']} clarify={metrics['clarification_turns_avg']} "
             f"first_pass={metrics['first_pass_success_rate']}"
         )
+
+    paired_delta = payload.get("with_vs_without_id_delta")
+    if paired_delta is not None:
+        lines.extend(["", "## With vs Without ID Delta", ""])
+        for pair in paired_delta["pairs"]:
+            deltas = pair["deltas"]
+            lines.append(
+                f"- {pair['comparison_group']} | with_id={pair['with_id_run_id']} | without_id={pair['without_id_run_id']} | "
+                f"success_delta={deltas['task_success_rate']} alignment_delta={deltas['alignment_index']} "
+                f"latency_improvement={deltas['onboarding_latency_min']} clarify_improvement={deltas['clarification_turns_avg']}"
+            )
+        lines.append("")
+        lines.append("Average deltas:")
+        for metric, value in paired_delta["average_deltas"].items():
+            lines.append(f"- {metric}: {value}")
 
     freshness = payload["profile_freshness"]
     lines.extend(["", "## Profile Freshness", ""])

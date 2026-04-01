@@ -1,0 +1,10 @@
+{
+  "task_id": "task-08-agent-handshake",
+  "tool": "codex",
+  "style_fit": 4,
+  "constraint_adherence": 4,
+  "result_quality": 4,
+  "edit_count": 1.0,
+  "time_to_acceptable_min": 3.5,
+  "notes": "handshake behavior matched profile expectations; no-ID control run"
+}

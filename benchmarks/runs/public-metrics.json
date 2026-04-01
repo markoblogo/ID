@@ -5,6 +5,8 @@
       "date": "2026-03-31",
       "tool": "codex",
       "profile_version": "0.1.0",
+      "context_mode": "id",
+      "comparison_group": "codex-2026-03-31",
       "tasks": 10,
       "public_metrics": {
         "onboarding_latency_min": 4.3,
@@ -16,10 +18,29 @@
       }
     },
     {
+      "run_id": "control-2026-03-31-codex-no-id",
+      "date": "2026-03-31",
+      "tool": "codex",
+      "profile_version": "none",
+      "context_mode": "no_id",
+      "comparison_group": "codex-2026-03-31",
+      "tasks": 10,
+      "public_metrics": {
+        "onboarding_latency_min": 5.8,
+        "clarification_turns_avg": 1.8,
+        "task_success_rate": 0.3,
+        "high_alignment_rate": 0.3,
+        "first_pass_success_rate": 0.0,
+        "alignment_index": 68.7
+      }
+    },
+    {
       "run_id": "baseline-2026-04-01-claude",
       "date": "2026-04-01",
       "tool": "claude-sonnet-4",
       "profile_version": "0.1.1",
+      "context_mode": "id",
+      "comparison_group": "claude-2026-04-01",
       "tasks": 10,
       "public_metrics": {
         "onboarding_latency_min": 5.0,
@@ -28,6 +49,23 @@
         "high_alignment_rate": 0.9,
         "first_pass_success_rate": 0.3,
         "alignment_index": 85.3
+      }
+    },
+    {
+      "run_id": "control-2026-04-01-claude-no-id",
+      "date": "2026-04-01",
+      "tool": "claude-sonnet-4",
+      "profile_version": "none",
+      "context_mode": "no_id",
+      "comparison_group": "claude-2026-04-01",
+      "tasks": 10,
+      "public_metrics": {
+        "onboarding_latency_min": 5.8,
+        "clarification_turns_avg": 1.8,
+        "task_success_rate": 0.3,
+        "high_alignment_rate": 0.3,
+        "first_pass_success_rate": 0.0,
+        "alignment_index": 68.7
       }
     }
   ],
@@ -51,6 +89,46 @@
       }
     ]
   },
+  "with_vs_without_id_delta": {
+    "pairs": [
+      {
+        "comparison_group": "claude-2026-04-01",
+        "with_id_run_id": "baseline-2026-04-01-claude",
+        "without_id_run_id": "control-2026-04-01-claude-no-id",
+        "tool": "claude-sonnet-4",
+        "deltas": {
+          "onboarding_latency_min": 0.8,
+          "clarification_turns_avg": 0.7,
+          "task_success_rate": 0.6,
+          "high_alignment_rate": 0.6,
+          "first_pass_success_rate": 0.3,
+          "alignment_index": 16.6
+        }
+      },
+      {
+        "comparison_group": "codex-2026-03-31",
+        "with_id_run_id": "baseline-2026-03-31-codex",
+        "without_id_run_id": "control-2026-03-31-codex-no-id",
+        "tool": "codex",
+        "deltas": {
+          "onboarding_latency_min": 1.5,
+          "clarification_turns_avg": 1.0,
+          "task_success_rate": 0.6,
+          "high_alignment_rate": 0.6,
+          "first_pass_success_rate": 0.3,
+          "alignment_index": 20.0
+        }
+      }
+    ],
+    "average_deltas": {
+      "onboarding_latency_min": 1.15,
+      "clarification_turns_avg": 0.85,
+      "task_success_rate": 0.6,
+      "high_alignment_rate": 0.6,
+      "first_pass_success_rate": 0.3,
+      "alignment_index": 18.3
+    }
+  },
   "best_by_public_metric": {
     "best_task_success_rate": {
       "run_id": "baseline-2026-03-31-codex",
@@ -70,7 +148,6 @@
     }
   },
   "not_yet_instrumented": {
-    "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task",
-    "with_vs_without_id_delta": "not yet instrumented; requires matched control runs without ID context"
+    "prompt_length_reduction": "not yet instrumented; requires storing comparable prompt payloads per task"
   }
 }

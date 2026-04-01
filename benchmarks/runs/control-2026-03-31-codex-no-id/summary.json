@@ -1,0 +1,23 @@
+{
+  "run_id": "control-2026-03-31-codex-no-id",
+  "meta": {
+    "run_id": "control-2026-03-31-codex-no-id",
+    "date": "2026-03-31",
+    "owner_id": "markoblogo",
+    "profile_version": "none",
+    "tools": [
+      "codex"
+    ],
+    "evaluator": "manual-self-eval",
+    "context_mode": "no_id",
+    "comparison_group": "codex-2026-03-31"
+  },
+  "tasks": 10,
+  "averages": {
+    "style_fit": 3.2,
+    "constraint_adherence": 3.9,
+    "result_quality": 3.2,
+    "edit_count": 1.8,
+    "time_to_acceptable_min": 5.8
+  }
+}

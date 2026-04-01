@@ -1,0 +1,10 @@
+{
+  "task_id": "task-09-image-brief",
+  "tool": "codex",
+  "style_fit": 2,
+  "constraint_adherence": 3,
+  "result_quality": 2,
+  "edit_count": 3.0,
+  "time_to_acceptable_min": 8.5,
+  "notes": "weaker alignment vs coding workflows; no-ID control run"
+}

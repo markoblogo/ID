@@ -15,6 +15,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tool", required=True, help="Tool/model label for this run")
     parser.add_argument("--owner-id", required=True, help="Owner id")
     parser.add_argument("--profile-version", required=True, help="Profile version")
+    parser.add_argument("--context-mode", default="id", choices=["id", "no_id"], help="Whether the run used ID context")
+    parser.add_argument("--comparison-group", help="Optional key for matching an ID run with a no-ID control run")
     parser.add_argument("--runs-root", default="benchmarks/runs", help="Runs root")
     parser.add_argument("--tasks-root", default="benchmarks/tasks", help="Tasks root")
     return parser.parse_args()
@@ -38,7 +40,10 @@ def main() -> int:
         "profile_version": args.profile_version,
         "tools": [args.tool],
         "evaluator": "pending",
+        "context_mode": args.context_mode,
     }
+    if args.comparison_group:
+        meta["comparison_group"] = args.comparison_group
     (run_dir / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     for task_path in task_files:

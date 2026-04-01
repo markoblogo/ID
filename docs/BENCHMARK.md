@@ -81,6 +81,10 @@ Required in `meta.json`:
 - `profile_version`
 - `tools`
 - `evaluator`
+- `context_mode`: `id|no_id`
+
+Optional in `meta.json` for control-run comparisons:
+- `comparison_group`: shared key between an `id` run and a `no_id` run
 
 Recommended in each task result:
 - `confidence`: `high|medium|low`

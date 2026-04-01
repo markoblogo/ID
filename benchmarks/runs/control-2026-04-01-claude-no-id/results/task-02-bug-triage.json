@@ -1,0 +1,10 @@
+{
+  "task_id": "task-02-bug-triage",
+  "tool": "claude-sonnet-4",
+  "style_fit": 3,
+  "constraint_adherence": 4,
+  "result_quality": 3,
+  "edit_count": 2.0,
+  "time_to_acceptable_min": 6.5,
+  "notes": "solid structure; one clarification cycle; no-ID control run"
+}
