@@ -142,6 +142,7 @@ Output:
 - conformance model: `spec/CONFORMANCE.md`
 - change history: `spec/CHANGELOG.md`
 - proposal process: `spec/RFC/README.md`
+- versioning semantics: `docs/VERSIONING.md`
 - compatibility matrix: `docs/COMPATIBILITY.md`
 - compact target mapping: `docs/CONTEXT_JSON_MAPPING.md`
 

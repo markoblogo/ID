@@ -14,3 +14,4 @@ Supporting documents:
 - changelog: `spec/CHANGELOG.md`
 - conformance: `spec/CONFORMANCE.md`
 - RFC process: `spec/RFC/README.md`
+- versioning semantics: `docs/VERSIONING.md`

@@ -5,6 +5,7 @@ This is the current versioned entrypoint for the `ID` protocol surface.
 ## Normative documents for v0.1
 
 - protocol scope and package model: `docs/PROTOCOL.md`
+- versioning and update semantics: `docs/VERSIONING.md`
 - lifecycle and operational contract: `docs/OPERATIONS.md`
 - benchmark framework: `docs/BENCHMARK.md`
 - evaluator scoring contract: `docs/EVALUATOR_PROTOCOL.md`

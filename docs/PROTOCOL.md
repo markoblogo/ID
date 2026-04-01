@@ -95,6 +95,9 @@ If a profile section was operationally used in a meaningful session, user or age
 - what changed;
 - what remains uncertain.
 
+Version bump and freshness rules for meaningful vs cosmetic changes are defined in:
+- `docs/VERSIONING.md`
+
 ## 7. Anti-Drift Rules
 
 - never infer permanent preferences from one isolated prompt;
