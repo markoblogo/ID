@@ -144,6 +144,7 @@ Output:
 - proposal process: `spec/RFC/README.md`
 - versioning semantics: `docs/VERSIONING.md`
 - compatibility matrix: `docs/COMPATIBILITY.md`
+- observed behavior notes: `docs/OBSERVED_BEHAVIOR.md`
 - compact target mapping: `docs/CONTEXT_JSON_MAPPING.md`
 
 ## Start Small

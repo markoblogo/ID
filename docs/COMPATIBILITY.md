@@ -14,6 +14,9 @@ It distinguishes:
 - **intended mapping**: what an exporter/adapter is designed to preserve
 - **observed behavior**: what this repo currently implements and validates
 
+Observed field notes live in:
+- `docs/OBSERVED_BEHAVIOR.md`
+
 ## 2. Canonical Source of Truth
 
 Canonical source:
@@ -269,6 +272,9 @@ Currently documented but not fully observed/certified across vendors:
 - Claude family behavior
 - Gemini family behavior
 - Copilot family behavior
+
+Reference observed-notes layer:
+- `docs/OBSERVED_BEHAVIOR.md`
 
 Not yet implemented:
 - true round-trip restoration into canonical source profiles
