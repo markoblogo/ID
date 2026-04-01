@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "id-protocol"
+version = "0.2.0"
+description = "Portable human-AI context protocol reference tooling"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "markoblogo" }]
+license = { text = "MIT" }
+keywords = ["ai", "context", "interop", "protocol", "agents"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+idctl = "idcli:main"
+
+[tool.setuptools]
+py-modules = ["idcli"]

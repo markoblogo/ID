@@ -21,6 +21,7 @@ Current repo status:
 - benchmark and public proof layer
 - structured observed-behavior evidence
 - lightweight onboarding bootstrap flow
+- installable lightweight CLI surface (`idctl`)
 
 Why this beats ad-hoc prompts or chat memory in some workflows:
 - `system prompts` are fragile and usually copied by hand across tools;
@@ -36,6 +37,9 @@ Golden workflow examples:
 
 Proof page:
 - `docs/PROOF.md`
+
+Release/install path:
+- `docs/RELEASES.md`
 
 ## Choose One Path
 
@@ -197,6 +201,7 @@ Today this repository functions as:
 - a validated tooling reference
 - a benchmark/evidence reference
 - a lightweight onboarding entrypoint
+- an installable lightweight CLI surface
 
 It is no longer only an internal profile format or documentation experiment.
 
@@ -238,6 +243,12 @@ It is no longer only an internal profile format or documentation experiment.
 If you need:
 - protocol and portable context: start with `ID`
 - repo-scoped agent instruction generation: use `AGENTS.md Generator`
+
+## Specification And Releases
+
+- protocol/spec surface: `spec/`
+- versioning and conformance: `docs/VERSIONING.md`, `spec/CONFORMANCE.md`
+- releases and install: `docs/RELEASES.md`
 - broader experiment catalog / ecosystem discovery: use `lab.abvx`
 - orchestration/execution workflows: use `SET`
 
