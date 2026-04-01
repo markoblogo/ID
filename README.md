@@ -167,6 +167,7 @@ Output:
 ## Start Small
 
 Recommended onboarding path:
+- bootstrap a starter set with `python3 scripts/bootstrap_owner.py --owner-id <owner-id>`
 - start with `templates/profile.minimal.md`
 - then promote stable guidance into `profiles/<owner>/profile.core.md`
 - add `profile.extended.md` only after repeated workflows and misalignments are clear

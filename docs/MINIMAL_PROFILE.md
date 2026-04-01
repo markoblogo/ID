@@ -40,7 +40,8 @@ Upgrade path:
 
 ### Day 0
 
-- fill `templates/profile.minimal.md`
+- run `python3 scripts/bootstrap_owner.py --owner-id <owner-id>`
+- fill `profiles/<owner>/profile.minimal.md`
 - create a matching handshake
 - use it in a real task
 
