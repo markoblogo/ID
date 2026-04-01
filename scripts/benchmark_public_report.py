@@ -256,23 +256,27 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
         if not shared_tasks:
             continue
         reductions = []
+        pair_ratio_values = []
+        pair_char_values = []
         for task_id in shared_tasks:
             with_chars = prompt_char_count(with_prompts[task_id])
             without_chars = prompt_char_count(without_prompts[task_id])
             if without_chars <= 0:
                 continue
             reduction_chars = without_chars - with_chars
-            reduction_ratio = round(reduction_chars / without_chars, 3)
+            reduction_ratio_exact = reduction_chars / without_chars
             reductions.append(
                 {
                     "task_id": task_id,
                     "with_id_chars": with_chars,
                     "without_id_chars": without_chars,
                     "reduction_chars": reduction_chars,
-                    "reduction_ratio": reduction_ratio,
+                    "reduction_ratio": round(reduction_ratio_exact, 3),
                 }
             )
-            ratio_values.append(reduction_ratio)
+            pair_ratio_values.append(reduction_ratio_exact)
+            pair_char_values.append(reduction_chars)
+            ratio_values.append(reduction_ratio_exact)
             char_values.append(reduction_chars)
         if not reductions:
             continue
@@ -281,8 +285,8 @@ def prompt_length_reduction(rows: list[dict], runs_root: Path) -> dict | None:
                 "comparison_group": comparison_group,
                 "with_id_run_id": with_id["run_id"],
                 "without_id_run_id": without_id["run_id"],
-                "average_reduction_ratio": round(sum(item["reduction_ratio"] for item in reductions) / len(reductions), 3),
-                "average_reduction_chars": round(sum(item["reduction_chars"] for item in reductions) / len(reductions), 1),
+                "average_reduction_ratio": round(sum(pair_ratio_values) / len(pair_ratio_values), 3),
+                "average_reduction_chars": round(sum(pair_char_values) / len(pair_char_values), 1),
                 "tasks": reductions,
             }
         )
