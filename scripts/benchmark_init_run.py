@@ -51,6 +51,9 @@ def main() -> int:
             "result_quality": 0,
             "edit_count": 0,
             "time_to_acceptable_min": 0,
+            "confidence": "medium",
+            "uncertainty_notes": [],
+            "evidence_links": [],
             "notes": "pending",
         }
         (results_dir / f"{task_id}.json").write_text(

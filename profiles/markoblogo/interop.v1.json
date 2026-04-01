@@ -128,9 +128,12 @@
       "extensions": {
         "image/video generator preferences": [
           "Session bootstrap: сначала коротко подтверждать визуальный стиль, формат выдачи и ограничения перед генерацией.",
-          "Prompt style: структура goal -> scene -> constraints -> output spec.",
-          "Iteration mode: 1-2 правки за цикл с явным списком изменений.",
-          "Output contract: image (aspect ratio, style anchors, negative constraints), video (duration, shot list, transitions, final format)."
+          "Prompt style: предпочитается структура \"goal -> scene -> constraints -> output spec\" без лишней художественной воды.",
+          "Iteration mode: шаги мелкими итерациями (1-2 правки за цикл), с явным списком что именно изменилось.",
+          "Consistency rule: при смене модели явно указывать риск стилевого дрейфа и предлагать адаптацию промпта.",
+          "Output contract:",
+          "для изображений: указывать aspect ratio, style anchors, negative constraints;",
+          "для видео: указывать duration, shot list, tempo, transitions, final format."
         ]
       }
     }

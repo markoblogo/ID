@@ -7,10 +7,13 @@ CI workflow file:
 
 Current checks:
 - Python syntax (`py_compile`)
+- unit tests (`unittest`)
 - Shell syntax (`bash -n`)
 - raw-data publish guard
 - profile validation
 - interop export + schema-aligned validation
+- trend artifact generation
+- drift enforcement for `profiles/*/interop.v1.json` and `benchmarks/runs/trends.*`
 
 ## 2. Interop Validation Commands
 
@@ -24,6 +27,12 @@ Validate generated file:
 
 ```bash
 python3 scripts/validate_interop_v1.py --owner-id markoblogo
+```
+
+Shortcut:
+
+```bash
+make interop
 ```
 
 Validate explicit file path:
@@ -54,6 +63,19 @@ Aggregate report:
 
 ```bash
 python3 scripts/benchmark_report.py --run-id baseline-2026-03-31-codex
+```
+
+Cross-run trends:
+
+```bash
+make trend
+```
+
+Full local validation path:
+
+```bash
+make validate
+make drift-check
 ```
 
 Committed baseline artifacts:

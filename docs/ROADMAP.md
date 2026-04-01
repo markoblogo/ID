@@ -56,8 +56,9 @@
 - trend report script added (`scripts/benchmark_trend_report.py`);
 - interop artifact policy formalized for `profiles/<owner>/interop.v1.json`.
 
-## Phase 8: Evaluator Protocol (next)
+## Phase 8: Evaluator Protocol (done)
 
-- formalize evaluator rubric and calibration steps;
-- add confidence intervals / uncertainty notes for manual scores;
-- standardize evidence links per task result.
+- evaluator protocol added (`docs/EVALUATOR_PROTOCOL.md`);
+- benchmark rubric and calibration steps formalized;
+- confidence / uncertainty conventions added for manual scores;
+- evidence link expectations standardized per task result.

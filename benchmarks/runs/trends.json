@@ -41,10 +41,35 @@
     }
   },
   "best_by_metric": {
-    "style_fit": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.2, "direction": "higher_better"},
-    "constraint_adherence": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.9, "direction": "higher_better"},
-    "result_quality": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.2, "direction": "higher_better"},
-    "edit_count": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 0.8, "direction": "lower_better"},
-    "time_to_acceptable_min": {"run_id": "baseline-2026-03-31-codex", "tool": "codex", "value": 4.3, "direction": "lower_better"}
+    "style_fit": {
+      "run_id": "baseline-2026-03-31-codex",
+      "tool": "codex",
+      "value": 4.2,
+      "direction": "higher_better"
+    },
+    "constraint_adherence": {
+      "run_id": "baseline-2026-03-31-codex",
+      "tool": "codex",
+      "value": 4.9,
+      "direction": "higher_better"
+    },
+    "result_quality": {
+      "run_id": "baseline-2026-03-31-codex",
+      "tool": "codex",
+      "value": 4.2,
+      "direction": "higher_better"
+    },
+    "edit_count": {
+      "run_id": "baseline-2026-03-31-codex",
+      "tool": "codex",
+      "value": 0.8,
+      "direction": "lower_better"
+    },
+    "time_to_acceptable_min": {
+      "run_id": "baseline-2026-03-31-codex",
+      "tool": "codex",
+      "value": 4.3,
+      "direction": "lower_better"
+    }
   }
 }

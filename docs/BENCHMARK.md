@@ -12,6 +12,9 @@ Create a repeatable comparison framework across AI tools/models for profile alig
 - `edit_count` (float/int): number of user correction turns needed.
 - `time_to_acceptable_min` (float): minutes to reach acceptable result.
 
+Scoring protocol:
+- use `docs/EVALUATOR_PROTOCOL.md` for the shared rubric, calibration flow, confidence, and uncertainty conventions.
+
 ## 3. Task Set
 
 Canonical tasks live in `benchmarks/tasks/`.
@@ -36,6 +39,12 @@ Create run folder per benchmark execution:
 Template for result file:
 - `templates/benchmark-result.json`
 
+Recommended per-result fields in addition to numeric metrics:
+- `confidence`
+- `uncertainty_notes`
+- `evidence_links`
+- `notes`
+
 ## 5. Aggregation
 
 Per-run summary:
@@ -59,6 +68,7 @@ Outputs:
 - compare tools on the same task set and profile version whenever possible.
 - keep evaluator consistent per run when possible.
 - preserve run notes and evidence without sensitive data leakage.
+- do not compare small score deltas without checking evaluator confidence and evidence quality.
 
 ## 7. Minimum Run Metadata
 
@@ -69,3 +79,8 @@ Required in `meta.json`:
 - `profile_version`
 - `tools`
 - `evaluator`
+
+Recommended in each task result:
+- `confidence`: `high|medium|low`
+- `uncertainty_notes`: list of scoring caveats
+- `evidence_links`: list of repo-relative paths or stable URLs
