@@ -1,7 +1,8 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict observed-behavior drift-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner drift-check
 
 PYTHON ?= python3
-OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
+REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+OWNERS := $(shell test -d profiles && find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; || true)
 INTEROP_ARTIFACTS := $(addsuffix /interop.v1.json,$(addprefix profiles/,$(OWNERS)))
 COMPACT_ARTIFACTS := $(addsuffix /context.compact.json,$(addprefix profiles/,$(OWNERS)))
 MCP_ARTIFACTS := $(addsuffix /mcp.context.resource.json,$(addprefix profiles/,$(OWNERS)))
@@ -47,6 +48,10 @@ lint-profile-strict:
 
 observed-behavior:
 	$(PYTHON) scripts/validate_observed_behavior.py
+
+bootstrap-owner:
+	@test -n "$(OWNER)" || { echo "usage: make bootstrap-owner OWNER=<owner-id> [OWNER_ALIAS=<alias>]"; exit 1; }
+	$(PYTHON) "$(REPO_ROOT)/scripts/bootstrap_owner.py" --owner-id "$(OWNER)" $(if $(OWNER_ALIAS),--owner-alias "$(OWNER_ALIAS)",)
 
 compact:
 	@for owner in $(OWNERS); do \

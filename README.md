@@ -174,6 +174,7 @@ Recommended onboarding path:
 
 Guide:
 - `docs/MINIMAL_PROFILE.md`
+- `docs/QUICKSTART.md`
 
 ## Ingest + Extract
 
@@ -232,6 +233,7 @@ Guide:
 - MCP import draft: `python3 scripts/import_mcp_resource.py --owner-id <owner-id>`
 - shortcut commands:
   - `make validate`
+  - `make bootstrap-owner OWNER=<owner-id>`
   - `make interop`
   - `make compact`
   - `make privacy-policy`

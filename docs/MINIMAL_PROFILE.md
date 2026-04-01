@@ -4,6 +4,10 @@
 
 Lower onboarding friction for new users of `ID`.
 
+Fastest path:
+- `make bootstrap-owner OWNER=<owner-id>`
+- then follow `docs/QUICKSTART.md`
+
 Use the minimal profile when:
 - you want a portable profile in one screen;
 - you are onboarding a new agent or tool quickly;

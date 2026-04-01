@@ -141,7 +141,7 @@ def main() -> int:
     owner_dir = profiles_root / args.owner_id
     owner_dir.mkdir(parents=True, exist_ok=True)
 
-    template_path = Path("templates/profile.minimal.md")
+    template_path = Path(__file__).resolve().parents[1] / "templates" / "profile.minimal.md"
     if not template_path.exists():
         print(f"ERROR: missing template: {template_path}")
         return 1
