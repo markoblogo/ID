@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile drift-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict drift-check
 
 PYTHON ?= python3
 OWNERS := $(shell find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \;)
@@ -13,6 +13,7 @@ validate:
 	bash -n scripts/run_integration_hook.sh
 	$(PYTHON) scripts/check_publish_guard.py --all-tracked
 	$(PYTHON) scripts/validate_profile.py --allow-stale --check-raw-tracked
+	$(MAKE) lint-profile-strict
 	$(MAKE) privacy-policy
 	$(MAKE) interop
 	$(MAKE) compact
@@ -39,6 +40,9 @@ metrics-tokenizer:
 
 lint-profile:
 	$(PYTHON) scripts/lint_profile_quality.py
+
+lint-profile-strict:
+	$(PYTHON) scripts/lint_profile_quality.py --strict
 
 compact:
 	@for owner in $(OWNERS); do \
