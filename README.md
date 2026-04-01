@@ -41,6 +41,7 @@ Proof page:
 Release/install path:
 - `docs/RELEASES.md`
 - tagged GitHub release flow with `sdist`/`wheel` artifacts
+- PyPI publish workflow prepared for trusted publishing once package naming is finalized
 
 ## Choose One Path
 

@@ -1,0 +1,42 @@
+name: id-protocol-pypi-publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to publish from
+        required: true
+        type: string
+
+jobs:
+  publish-pypi:
+    runs-on: ubuntu-latest
+    environment: pypi
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          mkdir -p dist
+          gh release download "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --dir dist \
+            --pattern "*.whl" \
+            --pattern "*.tar.gz"
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

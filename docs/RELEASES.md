@@ -75,15 +75,42 @@ Workflow file:
 .github/workflows/release.yml
 ```
 
+## PyPI Publishing Flow
+
+PyPI publishing is separated from GitHub release creation.
+
+Workflow file:
+
+```text
+.github/workflows/pypi-publish.yml
+```
+
+Flow:
+
+1. a GitHub release is published
+2. the PyPI workflow downloads the release assets
+3. the workflow publishes them to PyPI via trusted publishing
+
+Before enabling real publication, configure:
+
+1. the final package name on PyPI
+2. a trusted publisher for `markoblogo/ID`
+3. the `pypi` GitHub environment, ideally with approval protection
+
+This separation is intentional:
+- GitHub release remains the canonical first publication step
+- PyPI publication stays auditable and can be approval-gated
+
 ## Current Release Posture
 
 - installable from source via `pip install .` or built artifacts in `dist/`
 - lightweight wrapper CLI via `idctl`
 - tagged GitHub release flow for `sdist`/`wheel`
-- no PyPI, Homebrew, or npm publication yet
+- PyPI publish workflow present, pending final package-name/trusted-publisher setup
+- no Homebrew or npm publication yet
 
 ## Recommended Next Release Steps
 
-1. Publish artifacts to PyPI once the package name and maintenance policy are stable.
+1. Finalize the PyPI package name and configure trusted publishing.
 2. Decide whether Homebrew or `pipx` should be a first-class install path.
 3. Decide whether `idctl` stays thin or grows a richer UX.
