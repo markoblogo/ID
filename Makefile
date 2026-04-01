@@ -13,6 +13,7 @@ validate:
 	bash -n scripts/run_integration_hook.sh
 	$(PYTHON) scripts/check_publish_guard.py --all-tracked
 	$(PYTHON) scripts/validate_profile.py --allow-stale --check-raw-tracked
+	$(MAKE) privacy-policy
 	$(MAKE) interop
 	$(MAKE) compact
 	$(MAKE) mcp
