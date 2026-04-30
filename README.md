@@ -261,6 +261,14 @@ It is no longer only an internal profile format or documentation experiment.
     - `ID` answers "what context should follow the human across tools?"
     - `SET` answers "how should repo workflows execute those tools and hooks?"
 
+### `ID` and `DecisionMap`
+
+- repo: [markoblogo/decision-map](https://github.com/markoblogo/decision-map)
+- current relationship:
+  - `DecisionMap` is a standalone decision/strategy protocol + prompt toolkit
+  - `ID` can be used as an optional portable context layer for long-running decision work
+  - no hard dependency: `DecisionMap` remains usable with any LLM without `ID`
+
 ### Practical Summary
 
 If you need:

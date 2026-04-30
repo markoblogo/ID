@@ -9,6 +9,9 @@ Targets covered now:
 - `lab`
 - `set`
 
+Reference-only companion:
+- `decisionmap` (optional protocol companion; no hook target and no hard dependency)
+
 ## 2. Hook Runner
 
 Entry point:
