@@ -75,21 +75,21 @@
   ],
   "profile_freshness": {
     "owner_id": "markoblogo",
-    "overall_score": 92.9,
+    "overall_score": 0.0,
     "profiles": [
       {
         "path": "profiles/markoblogo/profile.core.md",
         "updated_at": "2026-03-31",
         "freshness_ttl_days": 14,
-        "age_days": 1,
-        "freshness_score": 92.9
+        "age_days": 30,
+        "freshness_score": 0.0
       },
       {
         "path": "profiles/markoblogo/profile.extended.md",
         "updated_at": "2026-04-01",
         "freshness_ttl_days": 30,
-        "age_days": 0,
-        "freshness_score": 100.0
+        "age_days": 29,
+        "freshness_score": 3.3
       }
     ]
   },

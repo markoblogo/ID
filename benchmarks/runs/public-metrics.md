@@ -32,9 +32,9 @@ Average deltas:
 ## Profile Freshness
 
 - owner: markoblogo
-- overall_score: 92.9
-- profiles/markoblogo/profile.core.md: score=92.9 age_days=1 ttl=14
-- profiles/markoblogo/profile.extended.md: score=100.0 age_days=0 ttl=30
+- overall_score: 0.0
+- profiles/markoblogo/profile.core.md: score=0.0 age_days=30 ttl=14
+- profiles/markoblogo/profile.extended.md: score=3.3 age_days=29 ttl=30
 
 ## Not Yet Instrumented
 
