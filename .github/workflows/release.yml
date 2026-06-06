@@ -33,6 +33,7 @@ jobs:
         run: make release-check
 
       - name: Sync MCP manifest
+        continue-on-error: true
         env:
           MCP_REGISTRY_ENDPOINT: ${{ vars.MCP_REGISTRY_ENDPOINT }}
           MCP_REGISTRY_TOKEN: ${{ secrets.MCP_REGISTRY_TOKEN }}
