@@ -97,15 +97,19 @@ Before enabling real publication, configure:
 2. a trusted publisher for `markoblogo/ID`
 3. the `pypi` GitHub environment, ideally with approval protection
 
-Current intended PyPI configuration:
+Current (active) PyPI and MCP configuration:
 
 - package name: `id-protocol`
 - GitHub owner: `markoblogo`
 - GitHub repository: `ID`
 - workflow file: `.github/workflows/pypi-publish.yml`
 - environment: `pypi`
+- GitHub Release workflow file: `.github/workflows/release.yml`
+- MCP registry sync env vars:
+  - `vars.MCP_REGISTRY_ENDPOINT`
+  - `secrets.MCP_REGISTRY_TOKEN`
 
-As of `2026-04-01`, `id-protocol` returned `404` on the public PyPI JSON endpoint, so it appears available. This still needs to be finalized on PyPI itself.
+Release workflow uses `scripts/publish_mcp_manifest.py` to POST `mcp-manifest.json` as a versioned artifact during release. If `MCP_REGISTRY_ENDPOINT` is missing, sync is skipped with a logged warning and does not block publishing.
 
 This separation is intentional:
 - GitHub release remains the canonical first publication step
@@ -116,11 +120,10 @@ This separation is intentional:
 - installable from source via `pip install .` or built artifacts in `dist/`
 - lightweight wrapper CLI via `idctl`
 - tagged GitHub release flow for `sdist`/`wheel`
-- PyPI publish workflow present, pending final package-name/trusted-publisher setup
+- PyPI publish flow is live via trusted publishing (`id-protocol-pypi-publish`)
 - no Homebrew or npm publication yet
 
 ## Recommended Next Release Steps
 
-1. Finalize the PyPI package name and configure trusted publishing.
-2. Decide whether Homebrew or `pipx` should be a first-class install path.
-3. Decide whether `idctl` stays thin or grows a richer UX.
+1. Decide whether Homebrew or `pipx` should be a first-class install path.
+2. Decide whether `idctl` stays thin or grows a richer UX.
