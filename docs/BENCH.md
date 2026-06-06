@@ -18,6 +18,12 @@ Use `ID Bench` when you want:
 - `docs/MEASUREMENT.md`
 - `docs/PROOF.md`
 
+If you are starting now:
+
+```bash
+idctl init --owner-id <owner-id>
+```
+
 ## Typical Flow
 
 ### 1. Run and validate benchmark artifacts

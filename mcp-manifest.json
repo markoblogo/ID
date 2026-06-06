@@ -1,0 +1,54 @@
+{
+  "manifest_version": "1.0",
+  "name": "ID",
+  "display_name": "ID Protocol",
+  "description": "Portable human-AI context protocol reference tooling.",
+  "homepage": "https://github.com/markoblogo/ID",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markoblogo/ID"
+  },
+  "version": "0.2.4",
+  "license": "MIT",
+  "status": "active",
+  "maintainer": {
+    "name": "markoblogo"
+  },
+  "keywords": [
+    "agent-protocol",
+    "interop",
+    "portable-context",
+    "mcp",
+    "privacy"
+  ],
+  "mcp_servers": [
+    {
+      "name": "id-protocol",
+      "entrypoint": "ID",
+      "schema": "https://raw.githubusercontent.com/markoblogo/ID/main/api/id-protocol.mcp.json",
+      "stability": "stable"
+    }
+  ],
+  "artifacts": [
+    {
+      "type": "schema",
+      "id": "interop",
+      "schema": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/interop-v1.schema.json"
+    },
+    {
+      "type": "schema",
+      "id": "compact",
+      "schema": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/context-compact-v0.schema.json"
+    },
+    {
+      "type": "schema",
+      "id": "mcp_resource",
+      "schema": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/mcp-context-resource-v1.schema.json"
+    },
+    {
+      "type": "schema",
+      "id": "privacy_policy",
+      "schema": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/privacy-policy-v1.schema.json"
+    }
+  ]
+}

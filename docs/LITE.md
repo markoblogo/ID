@@ -15,7 +15,7 @@ Use `ID Lite` when you want:
 ### 1. Bootstrap
 
 ```bash
-make bootstrap-owner OWNER=<owner-id>
+idctl init --owner-id <owner-id>
 ```
 
 This creates:

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://id-protocol.local/schemas/privacy-policy-v1.schema.json",
+  "$id": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/privacy-policy-v1.schema.json",
   "title": "ID Privacy Policy v1",
   "type": "object",
   "required": [

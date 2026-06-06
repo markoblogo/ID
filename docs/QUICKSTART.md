@@ -2,73 +2,78 @@
 
 ## Goal
 
-Get from zero to a usable `ID` starter profile in a few minutes.
+From zero to first useful AI-ready profile in 5–10 minutes.
 
-## 1. Bootstrap A New Owner
+## 0. Choose your path
+
+- `Lite`: just enough context to run one profile.
+- `Share`: structured export for multiple tools.
+- `Bench`: measurable claims and benchmarking.
+
+Decision point:
+- if you want quick starter and first utility, go `Lite`;
+- if you need portable artifacts right away, go `Share`;
+- if you need proof for a review, start with `Bench`.
+
+## 1. Bootstrapping a new owner
 
 ```bash
-make bootstrap-owner OWNER=<owner-id>
+idctl init --owner-id <owner-id>
 ```
 
-Optional alias:
+Equivalent:
 
 ```bash
 make bootstrap-owner OWNER=<owner-id> OWNER_ALIAS=<owner-alias>
 ```
 
-This creates:
-- `profiles/<owner>/profile.minimal.md`
-- `profiles/<owner>/handshake.md`
-- `profiles/<owner>/privacy-policy.v1.json`
+Result:
+- `profiles/<owner-id>/profile.minimal.md`
+- `profiles/<owner-id>/handshake.md`
+- `profiles/<owner-id>/privacy-policy.v1.json`
 
-## 2. Fill The Minimal Profile
-
-Edit:
-- `profiles/<owner>/profile.minimal.md`
-
-Keep it small:
-- communication style
-- task rules
-- quality bar
-- priority domains
-- tool notes
-
-## 3. Use The Handshake
-
-Start a real task with:
-- the minimal profile
-- the handshake
-
-The point is to test the profile in live work, not perfect it in isolation.
-
-## 4. Validate The Repo
+Interactive wizard (when you want shell prompts instead of flags):
 
 ```bash
-make validate
+idctl init --interactive
 ```
 
-This checks:
-- profile structure
-- profile quality linting
-- observed behavior evidence
-- privacy policy
-- generated artifacts
-- benchmark/public metrics artifacts
+## 2. Fill profile in concrete outcomes
 
-## 5. Grow Only After Real Use
+- `profiles/<owner-id>/profile.minimal.md`
+  - owner goals and language preferences
+  - task rules and quality bar
+  - priority domains and tool notes
+- `profiles/<owner-id>/handshake.md`
+  - one-page execution checklist for every task
 
-Recommended upgrade path:
-1. start with `profile.minimal.md`
-2. promote stable guidance into `profile.core.md`
-3. add `profile.extended.md` only after repeated patterns are clear
-4. use exports only when portability is needed
-
-## 6. First Useful Commands
+## 3. Validate and generate first artifacts
 
 ```bash
-make bootstrap-owner OWNER=<owner-id>
 make validate
-make interop
 make compact
-make mcp
 ```
+
+Expected output:
+- `profiles/<owner-id>/context.compact.json`
+- validation summary in terminal
+
+## 4. Scale to next path
+
+- `Lite`: stop here if you just need AI-ready context.
+- `Share`: add `profile.core.md`, then run:
+  - `make interop`
+  - `make mcp`
+  - `make privacy-policy`
+- `Bench`: add benchmark runs and run:
+  - `idctl metrics`
+  - `make trend`
+
+## 5. First useful workflow
+
+- open a task and start from:
+  - owner profile
+  - handshake
+  - compact context artifact (when sharing with another tool)
+
+This verifies the profile in real work instead of polishing docs only.

@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: ID Protocol Service Contract
+  version: 0.2.4
+  description: >
+    Optional HTTP façade for ID profile artifacts.
+    The contract is intentionally minimal and aligned to existing CLI outputs.
+servers:
+  - url: https://id-protocol.local
+paths:
+  /v1/profiles/{owner_id}:
+    get:
+      summary: Read a profile bundle (metadata + generated artifacts)
+      operationId: getProfileBundle
+      parameters:
+        - in: path
+          name: owner_id
+          required: true
+          schema:
+            type: string
+          description: Owner identifier
+      responses:
+        "200":
+          description: Bundle found
+        "404":
+          description: Owner not found
+  /v1/profiles/{owner_id}/bootstrap:
+    post:
+      summary: Bootstrap starter profile artifacts
+      operationId: initOwner
+      parameters:
+        - in: path
+          name: owner_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                owner_alias:
+                  type: string
+                owner_alias_default:
+                  type: string
+                force:
+                  type: boolean
+                  default: false
+                today:
+                  type: string
+                  format: date
+      responses:
+        "201":
+          description: Bootstrapped
+        "409":
+          description: Conflicts without force
+  /v1/profiles/{owner_id}/artifacts:
+    get:
+      summary: Download generated artifacts
+      operationId: listArtifacts
+      parameters:
+        - in: path
+          name: owner_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Artifact list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  owner_id:
+                    type: string
+                  artifacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                        type:
+                          type: string
+        "404":
+          description: Owner missing
+  /v1/profiles/{owner_id}/validate:
+    post:
+      summary: Validate profile artifacts
+      operationId: validateProfile
+      parameters:
+        - in: path
+          name: owner_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                mode:
+                  type: string
+                  enum:
+                    - profile
+                    - compact
+                    - interop
+                    - mcp
+                  default: profile
+                allow_stale:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Validation passed
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://id-protocol.local/schemas/interop-v1.schema.json",
+  "$id": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/interop-v1.schema.json",
   "title": "ID Protocol Interop v1",
   "type": "object",
   "required": ["interop_version", "owner_id", "generated_at", "profiles"],

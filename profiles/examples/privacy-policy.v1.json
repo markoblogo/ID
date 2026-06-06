@@ -1,0 +1,27 @@
+{
+  "policy_version": "1.0.0",
+  "owner_id": "examples",
+  "updated_at": "2026-06-06",
+  "default_access": "local_only",
+  "task_classes": [
+    "coding",
+    "writing",
+    "research",
+    "agent_orchestration"
+  ],
+  "rules": [
+    {
+      "field_path": "profiles.core.communication",
+      "access": "always_share",
+      "rationale": "Communication preferences are part of onboarding for examples."
+    },
+    {
+      "field_path": "profiles.extended.environment_assumptions",
+      "access": "local_only",
+      "rationale": "Example environment assumptions remain local in published example docs."
+    }
+  ],
+  "notes": [
+    "Sample policy for example profiles in docs and smoke coverage."
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "name": "id-protocol",
+  "version": "0.2.4",
+  "protocolVersion": "2025-03-26",
+  "description": "MCP resource contracts exposed by ID profile workflows.",
+  "tools": [
+    {
+      "name": "id_read_profile",
+      "title": "Read profile bundle",
+      "description": "Reads core/extended profile markdown and current generated artifacts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner_id": {
+            "type": "string",
+            "description": "Profile owner identifier"
+          },
+          "artifact": {
+            "type": "string",
+            "enum": ["profile", "interop", "compact", "mcp", "privacy_policy"]
+          }
+        },
+        "required": ["owner_id"]
+      }
+    },
+    {
+      "name": "id_validate",
+      "title": "Validate artifact",
+      "description": "Runs ID validators for a given owner artifact family.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "owner_id": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["profile", "compact", "interop", "mcp", "privacy_policy"]
+          },
+          "allow_stale": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["owner_id", "mode"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "id://{owner}/context.compact",
+      "name": "compact-context",
+      "description": "Machine-readable compact context for quick model handoff.",
+      "mimeType": "application/json"
+    }
+  ],
+  "errors": {
+    "400": "Invalid request parameters",
+    "404": "Owner or artifact not found",
+    "422": "Schema validation failed"
+  }
+}

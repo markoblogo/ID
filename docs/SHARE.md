@@ -17,6 +17,12 @@ Use `ID Share` when you want:
 - `profiles/<owner>/context.compact.json`
 - `profiles/<owner>/mcp.context.resource.json`
 
+Use one bootstrap command first:
+
+```bash
+idctl init --owner-id <owner-id>
+```
+
 ## Typical Flow
 
 ### 1. Validate privacy policy

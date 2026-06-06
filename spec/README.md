@@ -8,13 +8,15 @@ Goals:
 - give contributors a clear place for compatibility and RFC work.
 
 Current version:
-- `v0.2`: [spec/v0.2/README.md](/Users/antonbiletskiy-volokh/Downloads/Projects/ID/spec/v0.2/README.md)
+- `v0.2`: [spec/v0.2/README.md](spec/v0.2/README.md)
 
 Earlier baseline:
-- `v0.1`: [spec/v0.1/README.md](/Users/antonbiletskiy-volokh/Downloads/Projects/ID/spec/v0.1/README.md)
+- `v0.1`: [spec/v0.1/README.md](spec/v0.1/README.md)
 
 Supporting documents:
 - changelog: `spec/CHANGELOG.md`
 - conformance: `spec/CONFORMANCE.md`
 - RFC process: `spec/RFC/README.md`
 - versioning semantics: `docs/VERSIONING.md`
+- migration guide: `spec/MIGRATION.md`
+- machine-readable schemas: `schemas/README.md`

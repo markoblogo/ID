@@ -1,127 +1,69 @@
 # Proof
 
-## Goal
+## Why this evidence exists
 
-Show the strongest current evidence that `ID` improves practical human-AI workflow quality, while keeping scope and caveats explicit.
+This section proves two things:
+- `ID` produces measurable workflow improvements where the same task set is run with and without it;
+- those gains are bounded by explicit trust, loss, and portability caveats.
 
-This page is intentionally short:
-- claim
-- evidence
-- caveat
+## Claim Pack
 
-## Claim 1: `ID` reduces onboarding friction
+### 1) Faster first pass onboarding
 
-Current repo-tracked evidence:
-- average onboarding latency improvement: `1.15` minutes
-- average clarification-turn improvement: `0.85`
-- average first-pass success improvement: `0.3`
+`ID` reduces onboarding friction for the same tasks.
 
-Primary evidence:
-- `benchmarks/runs/public-metrics.md`
-- `benchmarks/runs/public-metrics.json`
+- Evidence: `benchmarks/runs/public-metrics.md` and `.json`
+- Measured in repo benchmarks: average onboarding latency and clarification turns
+- Interpretation:
+  - `-1.15` minutes onboarding latency means less setup before first useful output
+  - `-0.85` clarification turns means fewer hand-offs to correct context drift
 
-Interpretation:
-- with `ID`, the tested tools needed less setup time and fewer corrective turns before acceptable output
+### 2) Better output alignment after repeated interactions
 
-Caveat:
-- current control runs are limited and some are synthetic matched controls, not a full external evaluation program
+`ID` shifts score mix toward style/constraint compliance in matched task families.
 
-## Claim 2: `ID` improves output quality, not just workflow neatness
+- Evidence: `benchmarks/runs/public-metrics.md`
+- Metrics:
+  - task success, alignment index, high alignment rate
+- Interpretation:
+  - output quality is not just “same as before with cleaner wrapping,” it is measurably closer to the profile target in this corpus
 
-Current repo-tracked evidence:
-- average task success delta: `0.6`
-- average alignment index delta: `18.3`
-- average high-alignment-rate delta: `0.6`
+### 3) Less repeated prompt boilerplate
 
-Primary evidence:
-- `benchmarks/runs/public-metrics.md`
-- `docs/EVALUATOR_PROTOCOL.md`
+`ID` artifacts remove repeated context narration from task prompts.
 
-Interpretation:
-- the measured gain is not only in speed; the outputs are also closer to the expected style/constraint/result target
+- Evidence: `benchmarks/runs/public-metrics.md`, `docs/MEASUREMENT.md`
+- Interpretation:
+  - prompt reduction in this corpus is primarily from stable, reusable context surfaces instead of re-typing constraints every run
 
-Caveat:
-- this is benchmark evidence inside the current repo/task set, not a universal claim for all tasks or vendors
+### 4) Portability with explicit loss
 
-## Claim 3: `ID` materially reduces prompt boilerplate
+`ID` is not a fixed memory store. It is a portability layer with known degradations.
 
-Current repo-tracked evidence:
-- average prompt reduction ratio: `0.676`
-- average prompt reduction: `607.0` characters
+- Evidence: `profiles/markoblogo/interop.v1.json`, `profiles/markoblogo/context.compact.json`, `profiles/markoblogo/mcp.context.resource.json`
+- Interpretation:
+  - portability is explicit and measurable, and imports/exports are validated against documented rules
 
-Primary evidence:
-- `benchmarks/runs/public-metrics.md`
-- `docs/MEASUREMENT.md`
+### 5) Verifiable trust boundaries
 
-Interpretation:
-- the profile and artifact system reduces repeated hand-written context in matched with-vs-without-ID comparisons
+`ID` keeps privacy and transport assumptions as data, not only prose.
 
-Caveat:
-- canonical tracked prompt reduction is character-count based for determinism, not tokenizer-native by default
+- Evidence: `docs/PRIVACY.md`, `docs/PRIVACY_POLICY_V1.md`, `docs/THREAT_MODEL.md`, `profiles/markoblogo/privacy-policy.v1.json`
+- Interpretation:
+  - policy flags influence generated artifacts and tool behavior where it is implemented
 
-## Claim 4: `ID` is portable with explicit loss boundaries
+## Evidence Surface
 
-Current repo-tracked evidence:
-- validated artifacts:
-  - `profiles/<owner>/interop.v1.json`
-  - `profiles/<owner>/context.compact.json`
-  - `profiles/<owner>/mcp.context.resource.json`
-- import adapters and round-trip loss tests exist
-- compatibility and observed-behavior layers are documented
+- Public metrics: `benchmarks/runs/public-metrics.md` and `benchmarks/runs/public-metrics.json`
+- Benchmark protocol: `docs/MEASUREMENT.md`, `docs/EVALUATOR_PROTOCOL.md`
+- Compatibility expectations: `docs/COMPATIBILITY.md`
+- Conformance intent: `spec/CONFORMANCE.md`
 
-Primary evidence:
-- `docs/COMPATIBILITY.md`
-- `docs/OBSERVED_BEHAVIOR.md`
-- `profiles/markoblogo/interop.v1.json`
-- `profiles/markoblogo/context.compact.json`
-- `profiles/markoblogo/mcp.context.resource.json`
+## Non-Claims
 
-Interpretation:
-- `ID` is not locked to one product memory system; it can move between source markdown, compact transport, and MCP-style transport with documented degradation
+Current evidence does **not** claim:
+- universal superiority across all providers or tasks;
+- zero-loss import/export in all directions;
+- complete vendor-side privacy guarantees.
 
-Caveat:
-- portability is not zero-loss, and import flows currently return reviewable drafts rather than canonical source restoration
-
-## Claim 5: `ID` has explicit trust and privacy boundaries
-
-Current repo-tracked evidence:
-- machine-readable privacy policy
-- policy-aware compact export
-- policy-aware MCP export
-- strict validation path covering privacy policy and generated artifacts
-
-Primary evidence:
-- `docs/PRIVACY.md`
-- `docs/PRIVACY_POLICY_V1.md`
-- `docs/THREAT_MODEL.md`
-- `profiles/markoblogo/privacy-policy.v1.json`
-
-Interpretation:
-- the repo treats privacy and transport loss as protocol concerns, not only as documentation notes
-
-Caveat:
-- this is still repo-level trust engineering, not a substitute for vendor-side privacy guarantees
-
-## Current Best Evidence Bundle
-
-If someone wants the shortest credible proof pack, point them to:
-- `docs/WHY_ID.md`
-- `docs/EXAMPLES.md`
-- `docs/MEASUREMENT.md`
-- `docs/OBSERVED_BEHAVIOR.md`
-- `benchmarks/runs/public-metrics.md`
-
-## What This Does Not Prove
-
-This repo does **not** yet prove that:
-- `ID` outperforms every vendor memory feature in every workflow
-- current benchmark deltas generalize to every domain
-- exports are lossless
-- maintenance burden disappears once the protocol exists
-
-## Bottom Line
-
-The strongest current evidence is:
-- `ID` reduces repeated onboarding work
-- `ID` improves measured task quality inside the repo benchmark setup
-- `ID` makes portability, privacy, and degradation more explicit and auditable than prompt-only workflows
+Those areas are tracked in `docs/EVIDENCE_POLICY.md` and update notes.

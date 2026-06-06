@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://id-protocol.local/schemas/profile-extended.schema.json",
+  "$id": "https://raw.githubusercontent.com/markoblogo/ID/main/schemas/profile-extended.schema.json",
   "title": "ID Protocol Extended Profile",
   "type": "object",
   "required": [

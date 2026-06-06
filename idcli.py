@@ -11,6 +11,8 @@ REPO_ROOT = Path(__file__).resolve().parent
 
 COMMANDS: dict[str, list[str]] = {
     "bootstrap-owner": ["scripts/bootstrap_owner.py"],
+    "init": ["scripts/idctl_init.py"],
+    "migrate": ["scripts/migrate.py"],
     "validate": ["scripts/validate_profile.py"],
     "validate-privacy": ["scripts/validate_privacy_policy.py"],
     "validate-compact": ["scripts/validate_context_compact.py"],
@@ -21,6 +23,7 @@ COMMANDS: dict[str, list[str]] = {
     "export-mcp": ["scripts/export_mcp_resource.py"],
     "import-compact": ["scripts/import_context_compact.py"],
     "import-mcp": ["scripts/import_mcp_resource.py"],
+    "metrics-readme": ["scripts/generate_metrics_readme.py"],
     "metrics": ["scripts/benchmark_public_report.py"],
     "trend": ["scripts/benchmark_trend_report.py"],
 }
