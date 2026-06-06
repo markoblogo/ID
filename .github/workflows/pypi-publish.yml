@@ -14,6 +14,8 @@ jobs:
   publish-pypi:
     runs-on: ubuntu-latest
     environment: pypi
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
 
     permissions:
       contents: read
@@ -21,6 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
 
       - uses: actions/setup-python@v6
         with:
@@ -29,7 +33,6 @@ jobs:
       - name: Download release artifacts
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           mkdir -p dist
           gh release download "${RELEASE_TAG}" \
@@ -40,3 +43,19 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Build MCP registry server.json
+        run: |
+          python scripts/build_registry_server_json.py \
+            --version "${RELEASE_TAG}" \
+            --output server.json
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish server.json

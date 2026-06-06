@@ -105,18 +105,15 @@ Current (active) PyPI and MCP configuration:
 - workflow file: `.github/workflows/pypi-publish.yml`
 - environment: `pypi`
 - GitHub Release workflow file: `.github/workflows/release.yml`
-- MCP registry sync env vars:
-  - `vars.MCP_REGISTRY_ENDPOINT`
-  - `secrets.MCP_REGISTRY_TOKEN`
 
-Release workflow uses `scripts/publish_mcp_manifest.py` to transform `mcp-manifest.json`
-and POST a registry-compatible MCP `ServerJSON` payload to `MCP_REGISTRY_ENDPOINT` during release.
-If `MCP_REGISTRY_ENDPOINT` is missing, sync is skipped with a logged warning and does not block publishing.
-If registry sync is configured but fails, the release still proceeds and the workflow logs the MCP sync failure for follow-up.
+PyPI workflow now performs MCP registry publication after a successful PyPI upload.
+It uses `scripts/build_registry_server_json.py` to generate a registry-compatible `server.json`
+and authenticates with `mcp-publisher login github-oidc`, so no dedicated registry JWT secret is required.
 
 This separation is intentional:
 - GitHub release remains the canonical first publication step
 - PyPI publication stays auditable and can be approval-gated
+- MCP registry publication happens only after the corresponding package version is live on PyPI
 
 ## Current Release Posture
 

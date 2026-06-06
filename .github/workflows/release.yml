@@ -32,16 +32,6 @@ jobs:
       - name: Check package metadata
         run: make release-check
 
-      - name: Sync MCP manifest
-        continue-on-error: true
-        env:
-          MCP_REGISTRY_ENDPOINT: ${{ vars.MCP_REGISTRY_ENDPOINT }}
-          MCP_REGISTRY_TOKEN: ${{ secrets.MCP_REGISTRY_TOKEN }}
-          MCP_REGISTRY_VERSION: ${{ github.ref_name }}
-          MCP_REGISTRY_PROJECT: markoblogo/ID
-          MCP_REGISTRY_SOURCE: ${{ github.repository }}@${{ github.ref_name }}
-        run: python scripts/publish_mcp_manifest.py --version "${GITHUB_REF_NAME}"
-
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}

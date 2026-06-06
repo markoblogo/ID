@@ -10,6 +10,7 @@
 ![ID Protocol Logo](images/IDlogo.png)
 
 `ID` turns a person into a portable AI context that travels between tools with explicit freshness, trust, and privacy rules.
+<!-- mcp-name: io.github.markoblogo/id -->
 
 Positioning:
 - `ID` is **not another assistant**. It is the protocol layer that keeps context explicit, portable, and auditable.

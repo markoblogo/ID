@@ -38,3 +38,8 @@ def test_version_in_sync_with_pyproject() -> None:
     project_version = pyproject["project"]["version"]
     manifest = json.loads((REPO_ROOT / "mcp-manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"] == project_version
+
+
+def test_readme_declares_registry_mcp_name() -> None:
+    readme = REPO_ROOT.joinpath("README.md").read_text(encoding="utf-8")
+    assert "<!-- mcp-name: io.github.markoblogo/id -->" in readme
