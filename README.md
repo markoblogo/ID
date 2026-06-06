@@ -4,32 +4,61 @@
 [![PyPI](https://img.shields.io/pypi/v/id-protocol)](https://pypi.org/project/id-protocol/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/markoblogo/ID/blob/main/LICENSE)
 [![Python](https://img.shields.io/pypi/pyversions/id-protocol)](https://pypi.org/project/id-protocol/)
+[![CI](https://github.com/markoblogo/ID/actions/workflows/ci.yml/badge.svg)](https://github.com/markoblogo/ID/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/markoblogo/ID/branch/main/graph/badge.svg)](https://codecov.io/gh/markoblogo/ID)
 
 ![ID Protocol Logo](images/IDlogo.png)
 
-`ID` is a protocol and reference repository for portable human-AI interaction context.
+`ID` turns a person into a portable AI context that travels between tools with explicit freshness, trust, and privacy rules.
 
-Today it also functions as the repo-local hook layer for `SET`-compatible orchestration flows.
+Positioning:
+- `ID` is **not another assistant**. It is the protocol layer that keeps context explicit, portable, and auditable.
+- It complements `SET`, `agentsmd`, and other orchestrators by making context, contracts, and hooks first-class.
 
-Main idea:
-- any AI should quickly understand how to work with a specific person;
-- context has depth levels: short, extended, full;
-- using context implies responsibility to keep it updated.
-- orchestration should be able to call explicit hook boundaries instead of relying on hidden chat state.
+### Start in 5–10 minutes
 
-What this gives in practice:
-- faster onboarding for a new tool or agent;
-- less prompt boilerplate repeated by hand;
-- explicit privacy, freshness, and loss boundaries;
-- measurable with-vs-without-ID comparisons instead of ideology-only claims.
+1. `idctl init --owner-id <owner-id>`
+2. fill `profiles/<owner>/profile.minimal.md`
+3. `make validate`
+4. `make compact`
 
-Current repo status:
-- versioned protocol surface under `spec/`
-- policy-aware portable artifacts (`interop`, `compact`, `mcp`)
-- benchmark and public proof layer
-- structured observed-behavior evidence
-- lightweight onboarding bootstrap flow
-- installable lightweight CLI surface (`idctl`)
+Result:
+- immediate AI-ready portable context
+- one concrete checkpoint (`profile.minimal.md`)
+- generated artifact (`context.compact.json`)
+
+### Quick path
+
+- `Lite` path: minimal setup, get started fast → `docs/LITE.md`
+- `Share` path: multi-tool portability → `docs/SHARE.md`
+- `Bench` path: evidence and claims → `docs/BENCH.md`
+
+### Comparative note
+
+- `Copilot`, `Cursor`, and `Continue` generate local prompt memories.
+- `ID` gives a stable externalized profile and contract that those tools can consume.
+
+<!-- METRICS_SNIPPET_START -->
+### Live Public Metrics
+
+Runs analyzed: `4`
+
+| Metric | Value | Meaning |
+| --- | --- | --- |
+| onboarding latency | 1.15 | Less is better |
+| clarification turns | 0.85 | Less hand-offs |
+| task success | 0.6 | Higher is better |
+| alignment index | 18.3 | Higher is better |
+
+Profile freshness score (owner `markoblogo`): `0.0`
+
+```
+Key artifacts:
+- profiles/markoblogo/profile.core.md: score=0.0 age=67 ttl=14
+- profiles/markoblogo/profile.extended.md: score=0.0 age=66 ttl=30
+```
+
+<!-- METRICS_SNIPPET_END -->
 
 ## Orchestration status
 
@@ -50,19 +79,19 @@ Why this beats ad-hoc prompts or chat memory in some workflows:
 - project instructions help per repo, but not across roles like writing, research, or multi-tool orchestration;
 - `ID` makes preferences, constraints, freshness, privacy, and portability explicit and versioned.
 
-Short explainer:
-- `docs/WHY_ID.md`
+Evidence surface:
+- `docs/PROOF.md` (claim pack and caveats)
+- `benchmarks/runs/public-metrics.md` (live utility summary)
+- `docs/MEASUREMENT.md` and `docs/EVALUATOR_PROTOCOL.md` (method)
+- `docs/EVIDENCE_POLICY.md` (evidence rules)
 
-Golden workflow examples:
-- `docs/EXAMPLES.md`
+Ecosystem map:
+- `docs/ECOSYSTEM.md`
+- `docs/INTEGRATIONS.md`
+- docs entrypoint index: `docs/README.md`
 
-Proof page:
-- `docs/PROOF.md`
-
-Release/install path:
+Release/install:
 - `docs/RELEASES.md`
-- tagged GitHub release flow with `sdist`/`wheel` artifacts
-- PyPI publish workflow prepared for trusted publishing once package naming is finalized
 
 ## Choose One Path
 

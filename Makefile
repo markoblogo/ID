@@ -1,8 +1,15 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner drift-check release-build release-check
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage mcp-manifest-sync
 
 PYTHON ?= python3
+PROJECT_VERSION := $(shell $(PYTHON) -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text(encoding='utf-8'))['project']['version'])")
 REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-OWNERS := $(shell test -d profiles && find profiles -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; || true)
+OWNERS := $(shell \
+	if test -d profiles; then \
+		for owner_dir in profiles/*/; do \
+			[ -f "$$owner_dir/profile.core.md" ] || [ -f "$$owner_dir/profile.extended.md" ] || [ -f "$$owner_dir/profile.minimal.md" ] || continue; \
+			basename "$$owner_dir"; \
+		done; \
+	fi)
 INTEROP_ARTIFACTS := $(addsuffix /interop.v1.json,$(addprefix profiles/,$(OWNERS)))
 COMPACT_ARTIFACTS := $(addsuffix /context.compact.json,$(addprefix profiles/,$(OWNERS)))
 MCP_ARTIFACTS := $(addsuffix /mcp.context.resource.json,$(addprefix profiles/,$(OWNERS)))
@@ -22,6 +29,12 @@ validate:
 	$(MAKE) mcp
 	$(MAKE) trend
 	$(MAKE) metrics
+	$(MAKE) metrics-readme
+
+coverage:
+	$(PYTHON) -m coverage run -m unittest discover -s tests -p "test_*.py"
+	$(PYTHON) -m coverage report --fail-under=60
+	$(PYTHON) -m coverage xml
 
 interop:
 	@for owner in $(OWNERS); do \
@@ -35,6 +48,9 @@ trend:
 
 metrics:
 	$(PYTHON) scripts/benchmark_public_report.py
+
+metrics-readme:
+	$(PYTHON) scripts/generate_metrics_readme.py
 
 release-build:
 	rm -rf dist build *.egg-info
@@ -60,6 +76,15 @@ observed-behavior:
 bootstrap-owner:
 	@test -n "$(OWNER)" || { echo "usage: make bootstrap-owner OWNER=<owner-id> [OWNER_ALIAS=<alias>]"; exit 1; }
 	$(PYTHON) "$(REPO_ROOT)/scripts/bootstrap_owner.py" --owner-id "$(OWNER)" $(if $(OWNER_ALIAS),--owner-alias "$(OWNER_ALIAS)",)
+
+migrate:
+	@test -n "$(OWNER_ID)" || { echo "usage: make migrate OWNER_ID=<owner-id> FROM=v0.1 TO=v0.2 [DRY_RUN=1]"; exit 1; }
+	@test -n "$(FROM)" || { echo "usage: make migrate OWNER_ID=<owner-id> FROM=v0.1 TO=v0.2 [DRY_RUN=1]"; exit 1; }
+	@test -n "$(TO)" || { echo "usage: make migrate OWNER_ID=<owner-id> FROM=v0.1 TO=v0.2 [DRY_RUN=1]"; exit 1; }
+	$(PYTHON) scripts/migrate.py --owner-id "$(OWNER_ID)" --from "$(FROM)" --to "$(TO)" $(if $(DRY_RUN),--dry-run,)
+
+migrate-check:
+	$(PYTHON) scripts/migrate.py --owner-id "$(OWNER_ID)" --from "$(FROM)" --to "$(TO)" --dry-run --json
 
 compact:
 	@for owner in $(OWNERS); do \
@@ -87,3 +112,6 @@ drift-check:
 		test -f "$$path" || { echo "missing artifact: $$path"; exit 1; }; \
 	done
 	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(MCP_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md
+
+mcp-manifest-sync:
+	$(PYTHON) scripts/publish_mcp_manifest.py --version "$(PROJECT_VERSION)"
