@@ -60,7 +60,15 @@ class PublishMcpManifestTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             manifest = Path(tmp) / "mcp-manifest.json"
             manifest.write_text(
-                json.dumps({"name": "ID", "version": "0.2.3"}),
+                json.dumps(
+                    {
+                        "name": "ID",
+                        "version": "0.2.3",
+                        "description": "Portable human-AI context protocol reference tooling.",
+                        "display_name": "ID Protocol",
+                        "homepage": "https://github.com/markoblogo/ID",
+                    }
+                ),
                 encoding="utf-8",
             )
             with patch.object(
@@ -79,16 +87,24 @@ class PublishMcpManifestTests(unittest.TestCase):
             ):
                 args = manifest_script.parse_args()
             payload = manifest_script.build_payload(manifest_script.load_manifest(manifest), args)
-            self.assertIn("manifest", payload)
-            self.assertEqual(payload["registry_project"], "markoblogo/ID")
-            self.assertIn("version", payload)
+            self.assertIn("$schema", payload)
+            self.assertIn("name", payload)
+            self.assertEqual(payload["name"], "io.github.markoblogo/id")
+            self.assertIn("description", payload)
             self.assertEqual(payload["version"], "0.2.3")
+            self.assertIn("title", payload)
 
     def test_publish_posts_payload(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             manifest = Path(tmp) / "mcp-manifest.json"
             manifest.write_text(
-                json.dumps({"name": "ID", "version": "0.2.3"}),
+                json.dumps(
+                    {
+                        "name": "ID",
+                        "version": "0.2.3",
+                        "description": "Portable human-AI context protocol reference tooling.",
+                    }
+                ),
                 encoding="utf-8",
             )
             manifest_data = manifest_script.load_manifest(manifest)
@@ -104,8 +120,10 @@ class PublishMcpManifestTests(unittest.TestCase):
             self.assertEqual(captured["method"], "POST")
             self.assertEqual(captured["path"], "/manifests")
             self.assertIsInstance(captured["payload"], dict)
-            self.assertEqual(captured["payload"]["registry_project"], "markoblogo/ID")
-            self.assertEqual(captured["payload"]["manifest"]["name"], "ID")
+            self.assertIn("$schema", captured["payload"])
+            self.assertIn("name", captured["payload"])
+            self.assertEqual(captured["payload"]["name"], "io.github.markoblogo/id")
+            self.assertEqual(captured["payload"]["version"], manifest_data["version"])
 
     def test_publish_passes_authorization_header(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -109,7 +109,9 @@ Current (active) PyPI and MCP configuration:
   - `vars.MCP_REGISTRY_ENDPOINT`
   - `secrets.MCP_REGISTRY_TOKEN`
 
-Release workflow uses `scripts/publish_mcp_manifest.py` to POST `mcp-manifest.json` as a versioned artifact during release. If `MCP_REGISTRY_ENDPOINT` is missing, sync is skipped with a logged warning and does not block publishing.
+Release workflow uses `scripts/publish_mcp_manifest.py` to transform `mcp-manifest.json`
+and POST a registry-compatible MCP `ServerJSON` payload to `MCP_REGISTRY_ENDPOINT` during release.
+If `MCP_REGISTRY_ENDPOINT` is missing, sync is skipped with a logged warning and does not block publishing.
 
 This separation is intentional:
 - GitHub release remains the canonical first publication step

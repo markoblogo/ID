@@ -12,6 +12,22 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+SERVER_JSON_SCHEMA_URL = "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json"
+
+
+def derive_server_name(manifest_name: str, repo: str) -> str:
+    if manifest_name and "/" in manifest_name:
+        return manifest_name
+
+    owner, _, project = repo.partition("/")
+    if owner and project:
+        project_slug = project.lower().replace("_", "-")
+        return f"io.github.{owner}/{project_slug}"
+
+    if manifest_name:
+        return f"io.github.markoblogo/{manifest_name.lower().replace('_', '-')}"
+    return "io.github.markoblogo/id-protocol"
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sync MCP manifest to configured registry endpoint.")
@@ -43,7 +59,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--registry-source",
         help="Optional source tag for payload metadata.",
-        default=os.getenv("GITHUB_REPOSITORY"),
+        default=os.getenv("GITHUB_REPOSITORY", "markoblogo/ID"),
     )
     parser.add_argument(
         "--dry-run",
@@ -64,14 +80,23 @@ def load_manifest(path: Path) -> dict[str, Any]:
 
 
 def build_payload(manifest: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    repository_url = manifest.get("homepage") or (manifest.get("repository", {}).get("url") if isinstance(manifest.get("repository"), dict) else None)
+    description = manifest.get("description") or manifest.get("display_name") or "Machine-readable MCP registry manifest."
+    server_name = derive_server_name(manifest.get("name", ""), args.registry_source)
+
     payload = {
-        "registry_project": args.project,
-        "manifest": manifest,
-        "source": args.registry_source,
+        "$schema": SERVER_JSON_SCHEMA_URL,
+        "name": server_name,
+        "description": description,
+        "version": args.version or str(manifest.get("version", "")),
+        "title": manifest.get("display_name") or manifest.get("name"),
+        "websiteUrl": manifest.get("homepage"),
+        "repository": {
+            "type": "git",
+            "url": repository_url,
+        },
     }
-    if args.version:
-        payload["version"] = args.version
-    return payload
+    return {key: value for key, value in payload.items() if value not in (None, "", {}, {"type": "git", "url": ""})}
 
 
 def publish(payload: dict[str, Any], endpoint: str, token: str | None, timeout: float) -> None:
