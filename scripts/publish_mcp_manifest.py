@@ -92,11 +92,10 @@ def build_payload(manifest: dict[str, Any], args: argparse.Namespace) -> dict[st
         "title": manifest.get("display_name") or manifest.get("name"),
         "websiteUrl": manifest.get("homepage"),
         "repository": {
-            "type": "git",
             "url": repository_url,
         },
     }
-    return {key: value for key, value in payload.items() if value not in (None, "", {}, {"type": "git", "url": ""})}
+    return {key: value for key, value in payload.items() if value not in (None, "", {}, {"url": ""})}
 
 
 def publish(payload: dict[str, Any], endpoint: str, token: str | None, timeout: float) -> None:

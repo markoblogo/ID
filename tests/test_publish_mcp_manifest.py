@@ -93,6 +93,7 @@ class PublishMcpManifestTests(unittest.TestCase):
             self.assertIn("description", payload)
             self.assertEqual(payload["version"], "0.2.3")
             self.assertIn("title", payload)
+            self.assertEqual(payload["repository"], {"url": "https://github.com/markoblogo/ID"})
 
     def test_publish_posts_payload(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -124,6 +125,7 @@ class PublishMcpManifestTests(unittest.TestCase):
             self.assertIn("name", captured["payload"])
             self.assertEqual(captured["payload"]["name"], "io.github.markoblogo/id")
             self.assertEqual(captured["payload"]["version"], manifest_data["version"])
+            self.assertNotIn("type", captured["payload"].get("repository", {}))
 
     def test_publish_passes_authorization_header(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
