@@ -18,6 +18,12 @@ Positioning:
 
 ### Start in 5–10 minutes
 
+Install with Homebrew:
+
+```bash
+brew install markoblogo/tap/id-protocol
+```
+
 1. `idctl init --owner-id <owner-id>`
 2. fill `profiles/<owner>/profile.minimal.md`
 3. `make validate`
