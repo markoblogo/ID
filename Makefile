@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage mcp-manifest-sync
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage mcp-manifest-sync soul
 
 PYTHON ?= python3
 PROJECT_VERSION := $(shell $(PYTHON) -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text(encoding='utf-8'))['project']['version'])")
@@ -30,6 +30,12 @@ validate:
 	$(MAKE) trend
 	$(MAKE) metrics
 	$(MAKE) metrics-readme
+
+soul:
+	@for owner in $(OWNERS); do \
+		echo "==> refresh soul for $$owner"; \
+		$(PYTHON) idcli.py refresh-soul --owner-id "$$owner"; \
+	done
 
 coverage:
 	$(PYTHON) -m coverage run -m unittest discover -s tests -p "test_*.py"

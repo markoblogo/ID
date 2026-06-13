@@ -26,19 +26,22 @@ brew install markoblogo/tap/id-protocol
 
 1. `idctl init --owner-id <owner-id>`
 2. fill `profiles/<owner>/profile.minimal.md`
-3. `make validate`
-4. `make compact`
+3. `idctl refresh-soul --owner-id <owner-id>`
+4. `make validate`
+5. `make compact`
 
 Result:
 - immediate AI-ready portable context
 - one concrete checkpoint (`profile.minimal.md`)
 - generated artifact (`context.compact.json`)
+- compact agent-facing layer (`soul.md`)
 
 ### Quick path
 
 - `Lite` path: minimal setup, get started fast → `docs/LITE.md`
 - `Share` path: multi-tool portability → `docs/SHARE.md`
 - `Bench` path: evidence and claims → `docs/BENCH.md`
+- `Soul` path: derived compact working self-model → `docs/SOUL.md`
 
 ### Comparative note
 
@@ -61,8 +64,8 @@ Profile freshness score (owner `markoblogo`): `0.0`
 
 ```
 Key artifacts:
-- profiles/markoblogo/profile.core.md: score=0.0 age=67 ttl=14
-- profiles/markoblogo/profile.extended.md: score=0.0 age=66 ttl=30
+- profiles/markoblogo/profile.core.md: score=0.0 age=74 ttl=14
+- profiles/markoblogo/profile.extended.md: score=0.0 age=73 ttl=30
 ```
 
 <!-- METRICS_SNIPPET_END -->
@@ -79,12 +82,14 @@ Key artifacts:
 Practical consequence:
 - if a repo is `ID`-compatible, `SET` can validate or refresh human-context boundaries before and after the main repo workflow
 - if a repo only needs repo-scoped agent docs, `agentsgen` is enough on its own
+- `soul.md` is the short reviewed handoff layer when the full profile stack is too heavy for the first pass
 
 Why this beats ad-hoc prompts or chat memory in some workflows:
 - `system prompts` are fragile and usually copied by hand across tools;
 - chat-native memory is siloed inside one product and hard to audit;
 - project instructions help per repo, but not across roles like writing, research, or multi-tool orchestration;
 - `ID` makes preferences, constraints, freshness, privacy, and portability explicit and versioned.
+- `soul.md` compresses that profile into a faster bootstrap surface without replacing the canonical source files.
 
 Evidence surface:
 - `docs/PROOF.md` (claim pack and caveats)

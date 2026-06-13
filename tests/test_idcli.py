@@ -23,6 +23,7 @@ class IdCliTest(unittest.TestCase):
         self.assertIn("init", completed.stdout)
         self.assertIn("migrate", completed.stdout)
         self.assertIn("export-compact", completed.stdout)
+        self.assertIn("refresh-soul", completed.stdout)
 
     def test_validate_observed_passes(self) -> None:
         completed = subprocess.run(

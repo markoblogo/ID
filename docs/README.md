@@ -12,6 +12,7 @@
 
 - `docs/QUICKSTART.md` — 5–10 minute path
 - `docs/LITE.md` / `docs/SHARE.md` / `docs/BENCH.md` — onboarding split
+- `docs/SOUL.md` — compact derived working self-model
 - `docs/PROTOCOL.md` — protocol intent and responsibilities
 
 ## Contract Docs

@@ -7,10 +7,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+from id_soul import run_cli as run_soul_cli
+
 REPO_ROOT = Path(__file__).resolve().parent
 
 COMMANDS: dict[str, list[str]] = {
     "bootstrap-owner": ["scripts/bootstrap_owner.py"],
+    "refresh-soul": [],
     "init": ["scripts/idctl_init.py"],
     "migrate": ["scripts/migrate.py"],
     "validate": ["scripts/validate_profile.py"],
@@ -45,6 +48,9 @@ def main(argv: list[str] | None = None) -> int:
     if not ns.command:
         parser.print_help()
         return 0
+
+    if ns.command == "refresh-soul":
+        return run_soul_cli(ns.args)
 
     script = REPO_ROOT / COMMANDS[ns.command][0]
     completed = subprocess.run([sys.executable, str(script), *ns.args], check=False)

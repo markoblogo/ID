@@ -13,6 +13,6 @@ Profile freshness score (owner `markoblogo`): `0.0`
 
 ```
 Key artifacts:
-- profiles/markoblogo/profile.core.md: score=0.0 age=67 ttl=14
-- profiles/markoblogo/profile.extended.md: score=0.0 age=66 ttl=30
+- profiles/markoblogo/profile.core.md: score=0.0 age=74 ttl=14
+- profiles/markoblogo/profile.extended.md: score=0.0 age=73 ttl=30
 ```

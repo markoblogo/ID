@@ -26,13 +26,15 @@ That file is the repo-local handoff surface for `ID`-compatible workflows. It sh
 ## Recommended flow
 
 1. Load the owner profile and handshake from `ID`.
-2. Load `docs/ai/id-context.json` from the active repository.
-3. Merge human context from `ID` with repo context from `agentsgen`.
-4. If orchestration is present, let `SET` call `pre_task` and `weekly_review` around the repo workflow.
+2. If present, load `profiles/<owner>/soul.md` as the fast human-context bootstrap layer.
+3. Load `docs/ai/id-context.json` from the active repository.
+4. Merge human context from `ID` with repo context from `agentsgen`.
+5. If orchestration is present, let `SET` call `pre_task` and `weekly_review` around the repo workflow.
 
 ## Non-goals
 
 - `docs/ai/id-context.json` does not replace `profile.core.md`, `profile.extended.md`, or interop exports.
+- `soul.md` does not replace the canonical source profile files; it is a compact derived layer.
 - `agentsgen` does not own user preferences or privacy policy.
 - `ID` does not replace repo-local contracts such as `AGENTS.md`.
 

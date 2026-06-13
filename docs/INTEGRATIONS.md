@@ -35,12 +35,14 @@ scripts/run_integration_hook.sh pre_task --owner-id markoblogo --target agentsmd
 
 Expected output includes:
 - `profile_core=profiles/<owner>/profile.core.md`
+- `soul=profiles/<owner>/soul.md` when present
 - `handshake=profiles/<owner>/handshake.md`
 - `integration_guide=integrations/<target>/README.md`
 
 Behavior:
 - runs `validate_profile.py --allow-stale`
 - fails if `profile.core.md` or `handshake.md` is missing
+- `soul.md` is optional but preferred as the first compact handoff layer
 
 ## 4. Post-Task Contract
 

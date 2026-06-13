@@ -20,6 +20,7 @@ Examples:
 
 ```bash
 idctl bootstrap-owner --owner-id <owner-id>
+idctl refresh-soul --owner-id <owner-id>
 idctl export-compact --owner-id <owner-id>
 idctl export-mcp --owner-id <owner-id>
 idctl validate-observed
