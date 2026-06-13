@@ -1,6 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+resolve_preferred_human_bootstrap() {
+  local owner_id="$1"
+  python3 - "$owner_id" <<'PY'
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+owner_id = sys.argv[1]
+defaults = [
+    f"profiles/{owner_id}/soul.md",
+    f"profiles/{owner_id}/profile.core.md",
+    f"profiles/{owner_id}/handshake.md",
+]
+paths: list[str] = []
+context_path = Path("docs/ai/id-context.json")
+if context_path.is_file():
+    try:
+        payload = json.loads(context_path.read_text(encoding="utf-8"))
+        usage = payload.get("usage") if isinstance(payload, dict) else None
+        bootstrap = usage.get("preferred_human_bootstrap") if isinstance(usage, dict) else None
+        if isinstance(bootstrap, list):
+            for item in bootstrap:
+                if isinstance(item, str) and item.strip():
+                    paths.append(item.replace("<owner>", owner_id))
+    except Exception:
+        pass
+
+for item in defaults:
+    if item not in paths:
+        paths.append(item)
+
+for item in paths:
+    print(item)
+PY
+}
+
 usage() {
   cat <<'USAGE'
 Usage:
@@ -75,6 +113,19 @@ case "$HOOK" in
 
     CORE="profiles/${OWNER_ID}/profile.core.md"
     HANDSHAKE="profiles/${OWNER_ID}/handshake.md"
+    SOUL="profiles/${OWNER_ID}/soul.md"
+
+    BOOTSTRAP_CANDIDATES=()
+    while IFS= read -r item; do
+      [[ -n "$item" ]] || continue
+      BOOTSTRAP_CANDIDATES+=("$item")
+    done < <(resolve_preferred_human_bootstrap "$OWNER_ID")
+    EXISTING_BOOTSTRAP=()
+    for item in "${BOOTSTRAP_CANDIDATES[@]}"; do
+      if [[ -f "$item" ]]; then
+        EXISTING_BOOTSTRAP+=("$item")
+      fi
+    done
 
     if [[ ! -f "$CORE" ]]; then
       echo "ERROR: missing $CORE"
@@ -87,8 +138,18 @@ case "$HOOK" in
     fi
 
     echo "[pre_task] target=$TARGET owner=$OWNER_ID"
+    if [[ -f "$SOUL" ]]; then
+      echo "soul=$SOUL"
+    fi
     echo "profile_core=$CORE"
     echo "handshake=$HANDSHAKE"
+    if [[ ${#EXISTING_BOOTSTRAP[@]} -gt 0 ]]; then
+      echo "primary_human_bootstrap=${EXISTING_BOOTSTRAP[0]}"
+      echo "preferred_human_bootstrap=$(IFS='|'; echo "${EXISTING_BOOTSTRAP[*]}")"
+    else
+      echo "primary_human_bootstrap=$CORE"
+      echo "preferred_human_bootstrap=$CORE|$HANDSHAKE"
+    fi
     echo "integration_guide=integrations/${TARGET}/README.md"
     ;;
 

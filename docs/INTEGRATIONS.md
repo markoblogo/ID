@@ -34,6 +34,8 @@ scripts/run_integration_hook.sh pre_task --owner-id markoblogo --target agentsmd
 ```
 
 Expected output includes:
+- `primary_human_bootstrap=profiles/<owner>/soul.md` when available
+- `preferred_human_bootstrap=...` resolved from repo-local `docs/ai/id-context.json` when present
 - `profile_core=profiles/<owner>/profile.core.md`
 - `soul=profiles/<owner>/soul.md` when present
 - `handshake=profiles/<owner>/handshake.md`
@@ -43,6 +45,7 @@ Behavior:
 - runs `validate_profile.py --allow-stale`
 - fails if `profile.core.md` or `handshake.md` is missing
 - `soul.md` is optional but preferred as the first compact handoff layer
+- if `docs/ai/id-context.json` provides `preferred_human_bootstrap`, the hook resolves that order first and then filters to existing local files
 
 ## 4. Post-Task Contract
 
