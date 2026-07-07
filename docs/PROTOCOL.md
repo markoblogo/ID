@@ -1,10 +1,16 @@
-# ID Protocol Specification v0.1
+# ID Protocol Specification v0.2
 
 ## 1. Scope
 
 ID Protocol defines a universal package that tells any AI tool how to communicate with a specific human.
 
 Protocol unit: `Identity Context Package (ICP)`.
+
+Practical model:
+- `profile.*` is source
+- `soul.md` is a derived bootstrap artifact
+- `context.compact.json` is a compact release bundle
+- `idctl diff` is the semantic review surface
 
 ## 2. Package Levels
 
@@ -116,7 +122,20 @@ Optional machine companions:
 Recommended onboarding source:
 - start from a minimal markdown profile, then grow into `profile.core.md` and `profile.extended.md` as evidence accumulates.
 
-## 9. Non-Goals
+## 9. Capability Negotiation
+
+Consumers should request the richest artifact they can reliably handle.
+
+Default order:
+
+1. `mcp.context.resource.json` when the host supports policy-aware resources.
+2. `context.compact.json` when structured compact context is supported.
+3. `soul.md` when the host needs a short human-readable bootstrap.
+4. `profile.minimal.md` when only plain prompt text is available.
+
+Consumers must not silently pretend they consumed unsupported layers. If an artifact is ignored or lossy, the agent should say so during handshake.
+
+## 10. Non-Goals
 
 - no claim of objective personality truth;
 - no mandatory cloud sync;

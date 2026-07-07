@@ -58,6 +58,14 @@ Expected output:
 - `profiles/<owner-id>/context.compact.json`
 - validation summary in terminal
 
+Check whether the profile is safe to carry into the next tool:
+
+```bash
+idctl diff --owner-id <owner-id> --since 7d
+```
+
+This reports changed sections, semantic groups, and stale profile metadata.
+
 ## 4. Scale to next path
 
 - `Lite`: stop here if you just need AI-ready context.
@@ -77,3 +85,5 @@ Expected output:
   - compact context artifact (when sharing with another tool)
 
 This verifies the profile in real work instead of polishing docs only.
+
+For concrete tool-handoff scenarios, see `docs/WILD.md`.

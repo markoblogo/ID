@@ -7,12 +7,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+from id_diff import run_cli as run_diff_cli
 from id_soul import run_cli as run_soul_cli
 
 REPO_ROOT = Path(__file__).resolve().parent
 
 COMMANDS: dict[str, list[str]] = {
     "bootstrap-owner": ["scripts/bootstrap_owner.py"],
+    "diff": [],
     "refresh-soul": [],
     "init": ["scripts/idctl_init.py"],
     "migrate": ["scripts/migrate.py"],
@@ -51,6 +53,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if ns.command == "refresh-soul":
         return run_soul_cli(ns.args)
+    if ns.command == "diff":
+        return run_diff_cli(ns.args)
 
     script = REPO_ROOT / COMMANDS[ns.command][0]
     completed = subprocess.run([sys.executable, str(script), *ns.args], check=False)

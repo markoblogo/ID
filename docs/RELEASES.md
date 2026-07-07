@@ -14,6 +14,13 @@ This installs:
 idctl
 ```
 
+For user installs, prefer Homebrew or `pipx` when available:
+
+```bash
+brew install markoblogo/tap/id-protocol
+pipx install id-protocol
+```
+
 ## Current CLI Surface
 
 Examples:
@@ -21,11 +28,23 @@ Examples:
 ```bash
 idctl bootstrap-owner --owner-id <owner-id>
 idctl refresh-soul --owner-id <owner-id>
+idctl diff --owner-id <owner-id>
 idctl export-compact --owner-id <owner-id>
 idctl export-mcp --owner-id <owner-id>
 idctl validate-observed
 idctl metrics
 ```
+
+## v0.4.0 Release Focus
+
+`v0.4.0` moves `ID` from “portable profile format” toward “Git-like AI identity context”.
+
+Added:
+- `idctl diff` for semantic profile change review
+- JSON diff output for automation
+- stale metadata reporting in diff output
+- concrete wild workflows across Claude Code, Cursor, Continue, ChatGPT, Gemini, OpenAI API, and MCP-aware wrappers
+- updated README positioning around source, build artifact, release bundle, diff, validation, provenance, and freshness
 
 The CLI is intentionally thin. It wraps the existing reference scripts rather than
 introducing a second execution model.
@@ -119,12 +138,14 @@ This separation is intentional:
 ## Current Release Posture
 
 - installable from source via `pip install .` or built artifacts in `dist/`
+- user install path via PyPI/`pipx` and Homebrew
 - lightweight wrapper CLI via `idctl`
+- semantic identity diff via `idctl diff`
 - tagged GitHub release flow for `sdist`/`wheel`
 - PyPI publish flow is live via trusted publishing (`id-protocol-pypi-publish`)
-- no Homebrew or npm publication yet
+- no npm publication yet
 
 ## Recommended Next Release Steps
 
-1. Decide whether Homebrew or `pipx` should be a first-class install path.
-2. Decide whether `idctl` stays thin or grows a richer UX.
+1. Add `idctl observe`, `idctl propose`, and `idctl approve` for owner-reviewed profile evolution.
+2. Add capability/content negotiation guidance for tool-specific artifact selection.

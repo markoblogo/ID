@@ -62,3 +62,18 @@
 - benchmark rubric and calibration steps formalized;
 - confidence / uncertainty conventions added for manual scores;
 - evidence link expectations standardized per task result.
+
+## Phase 9: Wild Workflows + Identity Diff (done)
+
+- README positioning updated around Git-like AI identity context;
+- concrete cross-tool workflows added in `docs/WILD.md`;
+- semantic profile diff added via `idctl diff`;
+- diff docs added in `docs/IDENTITY_DIFF.md`;
+- release docs updated for `v0.4.0`.
+
+## Phase 10: Owner-Reviewed Evolution (next)
+
+- `idctl observe` for collecting candidate behavioral evidence;
+- `idctl propose` for profile update suggestions with provenance and confidence;
+- `idctl approve` for owner-controlled promotion into canonical profile source;
+- contradiction and expiration checks layered on top of `idctl diff`.

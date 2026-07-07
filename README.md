@@ -11,10 +11,22 @@
   <img src="images/IDlogo.png" alt="ID Protocol Logo" width="240">
 </p>
 
-`ID` turns a person into portable AI context with explicit freshness, trust, provenance, and privacy rules.
+`ID` is Git-like infrastructure for portable human-AI identity context.
 <!-- mcp-name: io.github.markoblogo/id -->
 
-It is not another assistant. It is the profile and contract layer that can travel across tools.
+Git versions code. `ID` versions the reviewed context that tells AI tools how to work with a person.
+
+It is not another assistant. It is the profile, contract, and release layer that can travel across tools.
+
+```text
+profile.*  -> source
+soul.md    -> build artifact
+context.compact.json -> release bundle
+idctl diff -> semantic identity diff
+validate   -> CI gate
+provenance -> blame surface
+freshness  -> stale detection
+```
 
 ## What It Covers
 
@@ -22,7 +34,24 @@ It is not another assistant. It is the profile and contract layer that can trave
 - compact derived `soul.md` for fast agent bootstrap
 - portable interop artifacts (`context.compact`, `interop.v1`, `mcp`)
 - validation, freshness, and publish-safety checks
+- semantic identity diffs via `idctl diff`
 - integration points for `SET`, `agentsgen`, and other repo workflows
+
+## Works Across Tools
+
+```text
+Claude Code
+     |
+     v
+profile.* + soul.md + context.compact.json
+     |
+     v
+ChatGPT / Gemini / Cursor / Continue / OpenAI API
+```
+
+The value is simple: create one reviewed profile, then reuse it across tools without rebuilding user context from scratch.
+
+See `docs/WILD.md` for concrete cross-tool workflows.
 
 ## Start In 5 Minutes
 
@@ -46,6 +75,12 @@ You end up with:
 - `profile.minimal.md` as the first owner checkpoint
 - `soul.md` as the short reviewed handoff layer
 - `context.compact.json` as the portable compact artifact
+
+Check what changed before sharing or switching tools:
+
+```bash
+idctl diff --owner-id <owner-id> --since 7d
+```
 
 ## Core Files
 
@@ -89,6 +124,8 @@ Practical rule:
 - `Lite`: `docs/LITE.md`
 - `Share`: `docs/SHARE.md`
 - `Bench`: `docs/BENCH.md`
+- `Wild`: `docs/WILD.md`
+- `Identity Diff`: `docs/IDENTITY_DIFF.md`
 - `Soul`: `docs/SOUL.md`
 - `Integrations`: `docs/INTEGRATIONS.md`
 - `Releases`: `docs/RELEASES.md`
@@ -110,8 +147,8 @@ Profile freshness score (owner `markoblogo`): `0.0`
 
 ```
 Key artifacts:
-- profiles/markoblogo/profile.core.md: score=0.0 age=74 ttl=14
-- profiles/markoblogo/profile.extended.md: score=0.0 age=73 ttl=30
+- profiles/markoblogo/profile.core.md: score=0.0 age=98 ttl=14
+- profiles/markoblogo/profile.extended.md: score=0.0 age=97 ttl=30
 ```
 
 <!-- METRICS_SNIPPET_END -->
@@ -122,6 +159,7 @@ Key artifacts:
 idctl init --owner-id <owner-id>
 idctl refresh-soul --owner-id <owner-id>
 idctl validate
+idctl diff --owner-id <owner-id>
 idctl export-compact --owner-id <owner-id>
 idctl export-interop --owner-id <owner-id>
 idctl export-mcp --owner-id <owner-id>
@@ -134,6 +172,7 @@ Today `ID` functions as:
 - a protocol/spec reference
 - a validated tooling reference
 - a compact onboarding path
+- a Git-like diff/review surface for AI identity context
 - an installable CLI package on PyPI/Homebrew
 
-Latest release: `v0.3.0` adds the derived `soul.md` layer and refresh flow.
+Latest release: `v0.4.0` adds `idctl diff`, wild workflows, and Git-like identity context positioning.

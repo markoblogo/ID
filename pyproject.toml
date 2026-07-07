@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "id-protocol"
-version = "0.3.0"
-description = "Portable human-AI context protocol reference tooling"
+version = "0.4.0"
+description = "Git-like protocol and tooling for portable human-AI identity context"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "markoblogo" }]
@@ -26,7 +26,8 @@ classifiers = [
 idctl = "idcli:main"
 
 [tool.setuptools]
-py-modules = ["idcli", "id_soul"]
+py-modules = ["idcli", "id_soul", "id_diff"]
+packages = ["scripts"]
 
 [project.optional-dependencies]
 dev = [

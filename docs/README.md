@@ -2,6 +2,8 @@
 
 ## Evidence Surface
 
+- `docs/WILD.md` — concrete cross-tool workflows
+- `docs/IDENTITY_DIFF.md` — semantic profile diff
 - `docs/PROOF.md` — top-level claim pack
 - `benchmarks/runs/public-metrics.md` — current public metrics
 - `docs/MEASUREMENT.md` — how to read the metric model
@@ -11,6 +13,7 @@
 ## Quick Entry Docs
 
 - `docs/QUICKSTART.md` — 5–10 minute path
+- `docs/WILD.md` — “works in the wild” scenarios
 - `docs/LITE.md` / `docs/SHARE.md` / `docs/BENCH.md` — onboarding split
 - `docs/SOUL.md` — compact derived working self-model
 - `docs/PROTOCOL.md` — protocol intent and responsibilities

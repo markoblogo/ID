@@ -20,6 +20,7 @@ class IdCliTest(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0)
         self.assertIn("bootstrap-owner", completed.stdout)
+        self.assertIn("diff", completed.stdout)
         self.assertIn("init", completed.stdout)
         self.assertIn("migrate", completed.stdout)
         self.assertIn("export-compact", completed.stdout)
