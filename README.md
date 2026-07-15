@@ -58,7 +58,7 @@ See `docs/WILD.md` for concrete cross-tool workflows.
 Install:
 
 ```bash
-brew install markoblogo/tap/id-protocol
+uv tool install id-protocol
 ```
 
 Bootstrap:

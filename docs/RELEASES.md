@@ -14,10 +14,10 @@ This installs:
 idctl
 ```
 
-For user installs, prefer Homebrew or `pipx` when available:
+For user installs, prefer `uv tool` or `pipx`:
 
 ```bash
-brew install markoblogo/tap/id-protocol
+uv tool install id-protocol
 pipx install id-protocol
 ```
 
