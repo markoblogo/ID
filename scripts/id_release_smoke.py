@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     versions = {name: version(name) for name in ("id-protocol", "agentsgen", "abvx-set")}
-    assert versions == {"id-protocol": "0.5.0", "agentsgen": "0.5.0", "abvx-set": "0.3.1"}, versions
+    assert versions == {"id-protocol": "0.5.1", "agentsgen": "0.5.0", "abvx-set": "0.3.1"}, versions
     rows = []
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -45,7 +45,18 @@ def main():
             run('idctl', command, '--owner-id', 'demo')
         for name in ['context.compact.json', 'mcp.context.resource.json']:
             assert 'SYNTHETIC_PRIVATE_SENTINEL' not in (owner/name).read_text()
-        rows.append({'demo': 'policy-omission', 'passed': True, 'seconds': round(time.perf_counter()-start, 3)})
+        legacy = {'policy_version': '1.0.0', 'owner_id': 'demo',
+                  'always_share': ['profiles.core.quality_bar'],
+                  'local_only': ['profiles.core.communication'], 'task_class_scoped': {}}
+        policy_path.write_text(json.dumps(legacy))
+        policy_bytes = policy_path.read_bytes()
+        for command in ['validate-privacy', 'export-compact', 'export-mcp']:
+            run('idctl', command, '--owner-id', 'demo')
+        for name in ['context.compact.json', 'mcp.context.resource.json']:
+            assert 'SYNTHETIC_PRIVATE_SENTINEL' not in (owner/name).read_text()
+        assert policy_path.read_bytes() == policy_bytes
+        rows.append({'demo': 'policy-omission', 'passed': True, 'legacy_compatibility': True,
+                     'seconds': round(time.perf_counter()-start, 3)})
 
         start = time.perf_counter()
         run('agentsgen', 'init', '.', '--defaults', '--autodetect')

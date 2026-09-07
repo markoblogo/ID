@@ -53,7 +53,7 @@ def find_errors(doc: Any) -> list[str]:
 
     required = ["policy_version", "owner_id", "updated_at", "default_access", "task_classes", "rules"]
     for key in required:
-        if key not in doc:
+        if key not in doc or doc[key] is None:
             errors.append(f"missing required field: {key}")
 
     value = doc.get("policy_version")
@@ -139,8 +139,17 @@ def main() -> int:
         print(f"ERROR: missing input file: {input_path}")
         return 1
 
-    doc = load_json(input_path)
-    errors = find_errors(doc)
+    try:
+        doc = load_json(input_path)
+        from privacy_policy import normalize_policy
+        owner_id = args.owner_id or (doc.get("owner_id") if isinstance(doc, dict) else None)
+        normalized = normalize_policy(doc, owner_id)
+    except (ValueError, OSError) as exc:
+        print(f"INVALID: {input_path}: {exc}")
+        return 1
+    if normalized != doc:
+        print("COMPATIBLE: legacy policy normalized in memory; source file unchanged")
+    errors = find_errors(normalized)
     if errors:
         print(f"INVALID: {input_path}")
         for err in errors:

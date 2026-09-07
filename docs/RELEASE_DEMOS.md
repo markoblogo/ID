@@ -1,6 +1,6 @@
 # Reproducible release demos
 
-Install ID 0.5.0, agentsgen 0.5.0, and abvx-set 0.3.1 in the same clean virtual
+Install ID 0.5.1, agentsgen 0.5.0, and abvx-set 0.3.1 in the same clean virtual
 environment. From the ID source checkout, run:
 
 ```sh

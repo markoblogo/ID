@@ -1,5 +1,13 @@
 # Releases
 
+## 0.5.1 — legacy privacy policy compatibility
+
+- Automatically normalize the old list-based policy format during validation and compact/MCP export.
+- Preserve explicit restrictions and the original file; unlisted fields default to local-only.
+- Reject mixed formats, conflicting rules, malformed JSON and owner mismatches with actionable errors.
+- No manual schema rewrite is required for supported legacy policies.
+
+
 ## 0.5.0 — portable onboarding and tested integrations
 
 - Ship templates, schemas and the hook script in the installable package.
@@ -11,8 +19,8 @@
 - Verify source, installed wheel, privacy behavior and interoperability before publication.
 
 Upgrade: `uv tool upgrade id-protocol` or `pipx upgrade id-protocol`.
-Existing core/extended profiles remain supported. Review old privacy policy files against
-the current schema before exporting; unvalidated legacy shapes are rejected.
+Existing core/extended profiles remain supported. Version 0.5.1 adds automatic compatibility for the legacy list format. Other invalid
+policies still require review.
 This release does not update the owner's review dates or infer new personal facts.
 
 MCP export is a resource payload, not a server. Release automation no longer registers

@@ -58,7 +58,11 @@ idctl diff --owner-id demo --since 7d
 Diff uses Git history; commit reviewed source changes if you want version comparisons.
 `interop.v1.json` and `soul.md` are local derived context, **not privacy-filtered sharing bundles**.
 Review your policy and the resulting compact export before giving it to another tool.
-Missing, invalid, or mismatched policies block compact/MCP export. The explicit
+Legacy list policies (`always_share`, `local_only`, `task_class_scoped`) are
+converted in memory during validation and export; your source file stays unchanged.
+Unlisted fields remain local-only. Scoped entries map field paths to task-class lists.
+Mixed formats, conflicting rules, invalid types, and owner mismatches still block export.
+Missing policies also block compact/MCP export. The explicit
 `--allow-unfiltered` option permits a missing policy for a reviewed legacy workflow;
 it does not bypass an invalid policy.
 
@@ -68,7 +72,7 @@ Generating or exporting a file does not upload it. Source profiles remain under 
 
 | Product | Owns | Tested release |
 | --- | --- | --- |
-| ID | Human preferences and operating constraints | 0.5.0 |
+| ID | Human preferences and operating constraints | 0.5.1 |
 | [agentsgen](https://github.com/markoblogo/AGENTS.md_generator) | Repository commands and instructions | 0.5.0 |
 | [SET](https://github.com/markoblogo/SET) | Workflow presets and planning exports | 0.3.1 |
 | [abvx-agent-skills](https://github.com/markoblogo/abvx-agent-skills) | Optional reusable agent workflows | 0.14.0, optional pairing |
