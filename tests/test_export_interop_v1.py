@@ -160,7 +160,7 @@ trust_level: provisional
             )
 
             self.assertEqual(proc.returncode, 1)
-            self.assertIn("missing profile.core.md or profile.extended.md", proc.stdout)
+            self.assertIn("missing profile.core.md or profile.minimal.md", proc.stdout)
 
 
 if __name__ == "__main__":

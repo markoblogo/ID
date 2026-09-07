@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 from datetime import date
@@ -169,7 +170,7 @@ def map_core_profile(meta: dict[str, str], sections: dict[str, list[str]]) -> di
             out["quality_bar"] = extract_bullets(lines)
         elif "priority domains" in heading:
             out["priority_domains"] = extract_bullets(lines)
-        elif "tool-specific notes" in heading:
+        elif "tool-specific notes" in heading or heading == "tool notes":
             out["tool_notes"] = extract_bullets(lines)
         else:
             out["extensions"][heading] = extract_bullets(lines)
@@ -236,17 +237,19 @@ def main() -> int:
     ext_path = owner_dir / "profile.extended.md"
     out_path = owner_dir / "interop.v1.json"
 
-    if not core_path.exists() or not ext_path.exists():
-        print("ERROR: missing profile.core.md or profile.extended.md")
+    if not core_path.exists():
+        core_path = owner_dir / "profile.minimal.md"
+    if not core_path.exists():
+        print("ERROR: missing profile.core.md or profile.minimal.md")
         return 1
 
     payload = {
         "interop_version": "1.0.0",
         "owner_id": args.owner_id,
-        "generated_at": date.today().isoformat(),
+        "generated_at": date.fromisoformat(os.environ.get("ID_REFERENCE_DATE", date.today().isoformat())).isoformat(),
         "profiles": {
             "core": parse_profile(core_path, "core"),
-            "extended": parse_profile(ext_path, "extended"),
+            "extended": parse_profile(ext_path, "extended") if ext_path.exists() else {},
         },
     }
 

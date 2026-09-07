@@ -1,151 +1,30 @@
 # Releases
 
-`ID` now has a normal source-build release path and a lightweight installed CLI surface.
+## 0.5.0 — portable onboarding and tested integrations
 
-## Install From Source
+- Ship templates, schemas and the hook script in the installable package.
+- Make owner alias optional and allow minimal-only interop/compact export.
+- Keep new profiles provisional; preflight all starter files before writing and reject unsafe owner paths.
+- Require valid matching policies for compact/MCP exports, with explicit `--allow-unfiltered` for missing-policy legacy use.
+- Add an installed SET adapter and owner-local bootstrap path checks, tested with agentsgen 0.5.0 and SET 0.3.1.
+- Replace live-metrics marketing with a dated reproducible benchmark snapshot and three synthetic release demos.
+- Verify source, installed wheel, privacy behavior and interoperability before publication.
 
-```bash
-pip install .
-```
+Upgrade: `uv tool upgrade id-protocol` or `pipx upgrade id-protocol`.
+Existing core/extended profiles remain supported. Review old privacy policy files against
+the current schema before exporting; unvalidated legacy shapes are rejected.
+This release does not update the owner's review dates or infer new personal facts.
 
-This installs:
+MCP export is a resource payload, not a server. Release automation no longer registers
+this CLI as an executable MCP server. Older registry entries do not establish runtime support.
 
-```bash
-idctl
-```
+## Release procedure
 
-For user installs, prefer `uv tool` or `pipx`:
+Run `make validate`, `make drift-check`, and `make coverage`; build and check the wheel.
+Run the installed-package demos and the pinned SET Action integration. Merge only after CI.
+Tag the reviewed version. Verify GitHub assets, PyPI publication and a fresh public-index install.
 
-```bash
-uv tool install id-protocol
-pipx install id-protocol
-```
+Checked-in benchmark reports use `benchmarks/reference-date.txt`; update that explicit
+snapshot date when refreshing reports. Live profile validation continues to use today's date.
 
-## Current CLI Surface
-
-Examples:
-
-```bash
-idctl bootstrap-owner --owner-id <owner-id>
-idctl refresh-soul --owner-id <owner-id>
-idctl diff --owner-id <owner-id>
-idctl export-compact --owner-id <owner-id>
-idctl export-mcp --owner-id <owner-id>
-idctl validate-observed
-idctl metrics
-```
-
-## v0.4.0 Release Focus
-
-`v0.4.0` moves `ID` from “portable profile format” toward “Git-like AI identity context”.
-
-Added:
-- `idctl diff` for semantic profile change review
-- JSON diff output for automation
-- stale metadata reporting in diff output
-- concrete wild workflows across Claude Code, Cursor, Continue, ChatGPT, Gemini, OpenAI API, and MCP-aware wrappers
-- updated README positioning around source, build artifact, release bundle, diff, validation, provenance, and freshness
-
-The CLI is intentionally thin. It wraps the existing reference scripts rather than
-introducing a second execution model.
-
-## Build Release Artifacts Locally
-
-```bash
-make release-build
-make release-check
-```
-
-This produces:
-
-```bash
-dist/*.tar.gz
-dist/*.whl
-```
-
-`make release-check` runs `twine check` against the built artifacts.
-
-If your system Python is externally managed, use an isolated virtualenv:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install build twine
-make PYTHON=.venv/bin/python release-build
-make PYTHON=.venv/bin/python release-check
-```
-
-## GitHub Release Flow
-
-Normal release flow:
-
-1. bump the project version in `pyproject.toml`
-2. commit the version change
-3. create and push a tag such as `v0.2.0`
-4. GitHub Actions runs the release workflow
-5. the workflow:
-   - runs `make validate`
-   - builds `sdist` and `wheel`
-   - checks metadata with `twine`
-   - attaches `dist/*` to the GitHub release
-
-Workflow file:
-
-```text
-.github/workflows/release.yml
-```
-
-## PyPI Publishing Flow
-
-PyPI publishing is separated from GitHub release creation.
-
-Workflow file:
-
-```text
-.github/workflows/pypi-publish.yml
-```
-
-Flow:
-
-1. a GitHub release is published
-2. the PyPI workflow downloads the release assets
-3. the workflow publishes them to PyPI via trusted publishing
-
-Before enabling real publication, configure:
-
-1. the final package name on PyPI
-2. a trusted publisher for `markoblogo/ID`
-3. the `pypi` GitHub environment, ideally with approval protection
-
-Current (active) PyPI and MCP configuration:
-
-- package name: `id-protocol`
-- GitHub owner: `markoblogo`
-- GitHub repository: `ID`
-- workflow file: `.github/workflows/pypi-publish.yml`
-- environment: `pypi`
-- GitHub Release workflow file: `.github/workflows/release.yml`
-
-PyPI workflow now performs MCP registry publication after a successful PyPI upload.
-It uses `scripts/build_registry_server_json.py` to generate a registry-compatible `server.json`
-and authenticates with `mcp-publisher login github-oidc`, so no dedicated registry JWT secret is required.
-
-This separation is intentional:
-- GitHub release remains the canonical first publication step
-- PyPI publication stays auditable and can be approval-gated
-- MCP registry publication happens only after the corresponding package version is live on PyPI
-
-## Current Release Posture
-
-- installable from source via `pip install .` or built artifacts in `dist/`
-- user install path via PyPI/`pipx` and Homebrew
-- lightweight wrapper CLI via `idctl`
-- semantic identity diff via `idctl diff`
-- tagged GitHub release flow for `sdist`/`wheel`
-- PyPI publish flow is live via trusted publishing (`id-protocol-pypi-publish`)
-- no npm publication yet
-
-## Recommended Next Release Steps
-
-1. Add `idctl observe`, `idctl propose`, and `idctl approve` for owner-reviewed profile evolution.
-2. Add capability/content negotiation guidance for tool-specific artifact selection.
+Earlier releases: [GitHub history](https://github.com/markoblogo/ID/releases).

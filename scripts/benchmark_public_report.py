@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 from datetime import date, datetime
 from pathlib import Path
@@ -84,7 +85,7 @@ def freshness_entry(path: Path, root: Path) -> dict | None:
     if not updated_at or not ttl_raw:
         return None
     ttl_days = int(ttl_raw)
-    age_days = (date.today() - parse_iso_date(updated_at)).days
+    age_days = (date.fromisoformat(os.environ.get("ID_REFERENCE_DATE", date.today().isoformat())) - parse_iso_date(updated_at)).days
     ratio = max(0.0, 1.0 - (age_days / ttl_days)) if ttl_days > 0 else 0.0
     return {
         "path": str(path.relative_to(root)),

@@ -109,6 +109,7 @@ class ExportContextCompactTests(unittest.TestCase):
                 [
                     sys.executable,
                     str(SCRIPT),
+                    "--allow-unfiltered",
                     "--owner-id",
                     "markoblogo",
                     "--profiles-root",

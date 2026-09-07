@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON="${ID_PYTHON:-python3}"
 
 resolve_preferred_human_bootstrap() {
   local owner_id="$1"
-  python3 - "$owner_id" <<'PY'
+  "$PYTHON" - "$owner_id" <<'PY'
 from __future__ import annotations
 
 import json
@@ -11,9 +13,14 @@ import sys
 from pathlib import Path
 
 owner_id = sys.argv[1]
+import re
+if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,127}', owner_id):
+    raise SystemExit('Invalid owner-id')
+owner_root = (Path('profiles') / owner_id).resolve()
 defaults = [
     f"profiles/{owner_id}/soul.md",
     f"profiles/{owner_id}/profile.core.md",
+    f"profiles/{owner_id}/profile.minimal.md",
     f"profiles/{owner_id}/handshake.md",
 ]
 paths: list[str] = []
@@ -26,9 +33,18 @@ if context_path.is_file():
         if isinstance(bootstrap, list):
             for item in bootstrap:
                 if isinstance(item, str) and item.strip():
-                    paths.append(item.replace("<owner>", owner_id))
-    except Exception:
-        pass
+                    candidate = item.replace("<owner>", owner_id)
+                    if any(char in candidate for char in "\n\r|"):
+                        raise ValueError('Invalid bootstrap path')
+                    if Path(candidate).is_absolute() or not Path(candidate).resolve().is_relative_to(owner_root):
+                        raise ValueError('Bootstrap path must stay inside the owner profile')
+                    if candidate.endswith('/profile.core.md') and not Path(candidate).is_file():
+                        minimal = candidate.replace('/profile.core.md', '/profile.minimal.md')
+                        if Path(minimal).is_file():
+                            candidate = minimal
+                    paths.append(candidate)
+    except (ValueError, OSError) as exc:
+        raise SystemExit(f"Invalid id-context manifest: {exc}") from exc
 
 for item in defaults:
     if item not in paths:
@@ -102,6 +118,11 @@ if [[ -z "$OWNER_ID" ]]; then
   exit 2
 fi
 
+if [[ ! "$OWNER_ID" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$ ]]; then
+  echo "ERROR: invalid owner-id" >&2
+  exit 2
+fi
+
 case "$HOOK" in
   pre_task)
     if [[ -z "$TARGET" ]]; then
@@ -109,17 +130,18 @@ case "$HOOK" in
       exit 2
     fi
 
-    python3 scripts/validate_profile.py --owner-id "$OWNER_ID" --allow-stale
+    "$PYTHON" "$SCRIPT_DIR/validate_profile.py" --owner-id "$OWNER_ID" --allow-stale
 
     CORE="profiles/${OWNER_ID}/profile.core.md"
     HANDSHAKE="profiles/${OWNER_ID}/handshake.md"
     SOUL="profiles/${OWNER_ID}/soul.md"
 
+    BOOTSTRAP_OUTPUT="$(resolve_preferred_human_bootstrap "$OWNER_ID")"
     BOOTSTRAP_CANDIDATES=()
     while IFS= read -r item; do
       [[ -n "$item" ]] || continue
       BOOTSTRAP_CANDIDATES+=("$item")
-    done < <(resolve_preferred_human_bootstrap "$OWNER_ID")
+    done <<< "$BOOTSTRAP_OUTPUT"
     EXISTING_BOOTSTRAP=()
     for item in "${BOOTSTRAP_CANDIDATES[@]}"; do
       if [[ -f "$item" ]]; then
@@ -128,7 +150,10 @@ case "$HOOK" in
     done
 
     if [[ ! -f "$CORE" ]]; then
-      echo "ERROR: missing $CORE"
+      CORE="profiles/${OWNER_ID}/profile.minimal.md"
+    fi
+    if [[ ! -f "$CORE" ]]; then
+      echo "ERROR: missing core or minimal profile for $OWNER_ID"
       exit 1
     fi
 
@@ -150,7 +175,7 @@ case "$HOOK" in
       echo "primary_human_bootstrap=$CORE"
       echo "preferred_human_bootstrap=$CORE|$HANDSHAKE"
     fi
-    echo "integration_guide=integrations/${TARGET}/README.md"
+    echo "integration_guide=https://github.com/markoblogo/ID/tree/v0.5.0/integrations/${TARGET}"
     ;;
 
   post_task)
@@ -159,7 +184,7 @@ case "$HOOK" in
       exit 2
     fi
 
-    python3 scripts/session_update.py \
+    "$PYTHON" "$SCRIPT_DIR/session_update.py" \
       --owner-id "$OWNER_ID" \
       --session-context "$SESSION_CONTEXT" \
       --sections-used "$SECTIONS_USED" \
@@ -179,7 +204,7 @@ case "$HOOK" in
       echo "owner: $OWNER_ID"
       echo
       echo "## Profile Validation"
-      python3 scripts/validate_profile.py --owner-id "$OWNER_ID" --allow-stale || true
+      "$PYTHON" "$SCRIPT_DIR/validate_profile.py" --owner-id "$OWNER_ID" --allow-stale || true
       echo
       echo "## Raw Publish Guard"
       python3 scripts/check_publish_guard.py --all-tracked || true

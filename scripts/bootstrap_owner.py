@@ -7,6 +7,7 @@ import argparse
 import json
 from datetime import date
 from pathlib import Path
+from runtime_paths import resource_path, validate_owner_id
 
 
 def parse_args() -> argparse.Namespace:
@@ -117,13 +118,13 @@ def build_handshake(owner_id: str) -> str:
 def render_minimal(template_path: Path, owner_id: str, owner_alias: str, today: str) -> str:
     text = template_path.read_text(encoding="utf-8")
     replacements = {
-        '"owner-id"': f'"{owner_id}"',
-        '"owner-alias"': f'"{owner_alias}"',
+        '"owner-id"': json.dumps(owner_id),
+        '"owner-alias"': json.dumps(owner_alias, ensure_ascii=False),
         '"YYYY-MM-DD"': f'"{today}"',
     }
     for src, dst in replacements.items():
         text = text.replace(src, dst)
-    return text
+    return text.replace('trust_level: "trusted"', 'trust_level: "provisional"')
 
 
 def write_file(path: Path, content: str, force: bool) -> None:
@@ -134,14 +135,19 @@ def write_file(path: Path, content: str, force: bool) -> None:
 
 def main() -> int:
     args = parse_args()
-    today = args.today or date.today().isoformat()
+    try:
+        validate_owner_id(args.owner_id)
+        today = date.fromisoformat(args.today).isoformat() if args.today else date.today().isoformat()
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     owner_alias = args.owner_alias or args.owner_id
 
     profiles_root = Path(args.profiles_root)
     owner_dir = profiles_root / args.owner_id
-    owner_dir.mkdir(parents=True, exist_ok=True)
+    if not owner_dir.resolve().is_relative_to(profiles_root.resolve()):
+        raise SystemExit('Owner directory escapes profiles root')
 
-    template_path = Path(__file__).resolve().parents[1] / "templates" / "profile.minimal.md"
+    template_path = resource_path("templates/profile.minimal.md")
     if not template_path.exists():
         print(f"ERROR: missing template: {template_path}")
         return 1
@@ -150,6 +156,15 @@ def main() -> int:
     privacy_policy = json.dumps(build_privacy_policy(args.owner_id, today), ensure_ascii=False, indent=2) + "\n"
     handshake = build_handshake(args.owner_id)
 
+    # Preflight every destination before writing any starter file.
+    names = ("profile.minimal.md", "privacy-policy.v1.json", "handshake.md")
+    for name in names:
+        destination = owner_dir / name
+        if destination.is_symlink():
+            raise SystemExit(f"Refusing symlink destination: {destination}")
+        if destination.exists() and not args.force:
+            raise SystemExit(f"Refusing to overwrite existing file without --force: {destination}")
+    owner_dir.mkdir(parents=True, exist_ok=True)
     write_file(owner_dir / "profile.minimal.md", minimal_content, args.force)
     write_file(owner_dir / "privacy-policy.v1.json", privacy_policy, args.force)
     write_file(owner_dir / "handshake.md", handshake, args.force)

@@ -197,7 +197,8 @@ def main() -> int:
 
     profile_files = list(list_profile_files(root, args.owner_id))
     if not profile_files:
-        print("WARN: no profile files found to validate")
+        print("ERROR: no profile files found to validate; run idctl init first")
+        return 1
 
     for path in profile_files:
         issues.extend(validate_profile(path, today, args.allow_stale))

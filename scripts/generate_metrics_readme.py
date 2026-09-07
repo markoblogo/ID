@@ -21,7 +21,7 @@ def parse_args() -> argparse.Namespace:
 
 def build_snippet(payload: dict) -> str:
     lines: list[str] = [
-        "### Live Public Metrics",
+        "### Recorded benchmark snapshot",
         "",
         f"Runs analyzed: `{len(payload.get('runs', []))}`",
         "",

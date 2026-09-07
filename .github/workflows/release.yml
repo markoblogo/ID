@@ -21,16 +21,32 @@ jobs:
           python-version: "3.12"
 
       - name: Install release tooling
-        run: python -m pip install --upgrade pip build twine
+        run: python -m pip install --upgrade pip build twine && python -m pip install ".[dev]"
 
       - name: Validate repo
         run: make validate
+
+      - name: Require reproducible artifacts and test coverage
+        run: |
+          make drift-check
+          make coverage
+          python - <<'PYCODE'
+          import os, pathlib, tomllib
+          version = tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version']
+          assert os.environ['GITHUB_REF_NAME'] == 'v' + version
+          PYCODE
 
       - name: Build package artifacts
         run: make release-build
 
       - name: Check package metadata
         run: make release-check
+
+      - name: Test installed release and pinned companions
+        run: |
+          python -m venv /tmp/id-wheel
+          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.3.1
+          PATH="/tmp/id-wheel/bin:$PATH" /tmp/id-wheel/bin/python scripts/id_release_smoke.py
 
       - name: Publish GitHub release
         env:
