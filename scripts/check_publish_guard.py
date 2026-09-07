@@ -23,7 +23,7 @@ def parse_args() -> argparse.Namespace:
 def list_paths(cmd: list[str]) -> list[str]:
     proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
     if proc.returncode != 0:
-        return []
+        raise SystemExit("Cannot verify tracked/staged paths: run publish guard in a Git checkout")
     return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
 
 

@@ -1,178 +1,112 @@
-# ID Protocol
+# ID — portable context for AI tools
 
-[![GitHub Release](https://img.shields.io/github/v/release/markoblogo/ID)](https://github.com/markoblogo/ID/releases)
-[![PyPI](https://img.shields.io/pypi/v/id-protocol)](https://pypi.org/project/id-protocol/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/markoblogo/ID/blob/main/LICENSE)
-[![Python](https://img.shields.io/pypi/pyversions/id-protocol)](https://pypi.org/project/id-protocol/)
+Keep your working preferences in reviewed files. Reuse them across projects and AI tools, and inspect what changed before sharing.
+
 [![CI](https://github.com/markoblogo/ID/actions/workflows/ci.yml/badge.svg)](https://github.com/markoblogo/ID/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/markoblogo/ID/branch/main/graph/badge.svg)](https://codecov.io/gh/markoblogo/ID)
+[![PyPI](https://img.shields.io/pypi/v/id-protocol)](https://pypi.org/project/id-protocol/)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<p>
-  <img src="images/IDlogo.png" alt="ID Protocol Logo" width="240">
-</p>
+ID gives you a small owner profile, a derived `soul.md`, portable JSON exports,
+privacy rules, and a semantic diff. You choose which files an AI tool receives.
 
-`ID` is Git-like infrastructure for portable human-AI identity context.
-<!-- mcp-name: io.github.markoblogo/id -->
+## Start with one profile
 
-Git versions code. `ID` versions the reviewed context that tells AI tools how to work with a person.
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+Run in a private working directory:
 
-It is not another assistant. It is the profile, contract, and release layer that can travel across tools.
-
-```text
-profile.*  -> source
-soul.md    -> build artifact
-context.compact.json -> release bundle
-idctl diff -> semantic identity diff
-validate   -> CI gate
-provenance -> blame surface
-freshness  -> stale detection
-```
-
-## What It Covers
-
-- canonical owner-managed profile files
-- compact derived `soul.md` for fast agent bootstrap
-- portable interop artifacts (`context.compact`, `interop.v1`, `mcp`)
-- validation, freshness, and publish-safety checks
-- semantic identity diffs via `idctl diff`
-- integration points for `SET`, `agentsgen`, and other repo workflows
-
-## Works Across Tools
-
-```text
-Claude Code
-     |
-     v
-profile.* + soul.md + context.compact.json
-     |
-     v
-ChatGPT / Gemini / Cursor / Continue / OpenAI API
-```
-
-The value is simple: create one reviewed profile, then reuse it across tools without rebuilding user context from scratch.
-
-See `docs/WILD.md` for concrete cross-tool workflows.
-
-## Start In 5 Minutes
-
-Install:
-
-```bash
+```sh
 uv tool install id-protocol
+idctl init --owner-id demo
 ```
 
-Bootstrap:
+Edit `profiles/demo/profile.minimal.md`: language, level of detail, working rules,
+and what a good result means to you. The starter is **provisional** until you review it.
+Use an owner ID such as `demo` or `my-work-profile`; a real name is unnecessary.
 
-```bash
-idctl init --owner-id <owner-id>
-idctl refresh-soul --owner-id <owner-id>
-make validate
-make compact
+```sh
+idctl validate --owner-id demo
+idctl refresh-soul --owner-id demo
+idctl export-interop --owner-id demo
+idctl export-compact --owner-id demo
+idctl validate-compact --owner-id demo
 ```
 
-You end up with:
+These commands work from an installed package, outside this repository. No Makefile,
+API key, central registry, or paid service is required.
+Validation checks structure and freshness; it cannot decide whether the profile reflects you.
 
-- `profile.minimal.md` as the first owner checkpoint
-- `soul.md` as the short reviewed handoff layer
-- `context.compact.json` as the portable compact artifact
+## What you get
 
-Check what changed before sharing or switching tools:
+| File | Purpose |
+| --- | --- |
+| `profile.minimal.md` | Owner-edited starting point |
+| `privacy-policy.v1.json` | Rules for filtered exports |
+| `handshake.md` | Instructions for confirming context |
+| `soul.md` | Short derived bootstrap; refresh after source edits |
+| `context.compact.json` | Portable, policy-filtered context |
 
-```bash
-idctl diff --owner-id <owner-id> --since 7d
+Add `profile.core.md` and `profile.extended.md` when you need more detail.
+If core exists, it takes precedence over minimal for interop exports.
+The extended profile is optional. Init refuses to overwrite existing starter files.
+
+## Review before sharing
+
+```sh
+idctl diff --owner-id demo --since 7d
 ```
 
-## Core Files
+Diff uses Git history; commit reviewed source changes if you want version comparisons.
+`interop.v1.json` and `soul.md` are local derived context, **not privacy-filtered sharing bundles**.
+Review your policy and the resulting compact export before giving it to another tool.
+Missing, invalid, or mismatched policies block compact/MCP export. The explicit
+`--allow-unfiltered` option permits a missing policy for a reviewed legacy workflow;
+it does not bypass an invalid policy.
 
-Source of truth:
+Generating or exporting a file does not upload it. Source profiles remain under your control.
 
-- `profiles/<owner>/profile.minimal.md`
-- `profiles/<owner>/profile.core.md`
-- `profiles/<owner>/profile.extended.md`
-- `profiles/<owner>/CHANGELOG.md`
+## Use with agentsgen and SET
 
-Derived layers:
-
-- `profiles/<owner>/soul.md`
-- `profiles/<owner>/context.compact.json`
-- `profiles/<owner>/interop.v1.json`
-- `profiles/<owner>/mcp.context.resource.json`
-
-## Why This Exists
-
-- system prompts are fragile and usually copied by hand
-- chat-native memory is product-siloed and hard to audit
-- repo instructions help per repo, not across tools or roles
-- `ID` keeps user context explicit, versioned, reviewable, and portable
-
-`soul.md` exists because the full profile stack is often too heavy for the first pass. It gives agents a short bootstrap surface without replacing the canonical profile files.
-
-## Ecosystem Role
-
-- `ID` owns portable human context
-- `agentsgen` owns repo-scoped agent context
-- `SET` can orchestrate both layers
-
-Practical rule:
-
-- use `ID` for the human
-- use `agentsgen` for the repository
-- use `SET` when you want orchestration around both
-
-## Quick Paths
-
-- `Lite`: `docs/LITE.md`
-- `Share`: `docs/SHARE.md`
-- `Bench`: `docs/BENCH.md`
-- `Wild`: `docs/WILD.md`
-- `Identity Diff`: `docs/IDENTITY_DIFF.md`
-- `Soul`: `docs/SOUL.md`
-- `Integrations`: `docs/INTEGRATIONS.md`
-- `Releases`: `docs/RELEASES.md`
-- full docs index: `docs/README.md`
-
-<!-- METRICS_SNIPPET_START -->
-### Live Public Metrics
-
-Runs analyzed: `4`
-
-| Metric | Value | Meaning |
+| Product | Owns | Tested release |
 | --- | --- | --- |
-| onboarding latency | 1.15 | Less is better |
-| clarification turns | 0.85 | Less hand-offs |
-| task success | 0.6 | Higher is better |
-| alignment index | 18.3 | Higher is better |
+| ID | Human preferences and operating constraints | 0.5.0 |
+| [agentsgen](https://github.com/markoblogo/AGENTS.md_generator) | Repository commands and instructions | 0.5.0 |
+| [SET](https://github.com/markoblogo/SET) | Workflow presets and planning exports | 0.3.1 |
+| [abvx-agent-skills](https://github.com/markoblogo/abvx-agent-skills) | Optional reusable agent workflows | 0.14.0, optional pairing |
 
-Profile freshness score (owner `markoblogo`): `0.0`
+All remain separate products. ID does not install the others automatically.
+The first three versions are exercised together in release CI; skills are an optional
+workflow reference and are not part of the executable compatibility test.
 
-```
-Key artifacts:
-- profiles/markoblogo/profile.core.md: score=0.0 age=98 ttl=14
-- profiles/markoblogo/profile.extended.md: score=0.0 age=97 ttl=30
-```
+For a repository that already has ID profiles:
 
-<!-- METRICS_SNIPPET_END -->
-
-## Current CLI Surface
-
-```bash
-idctl init --owner-id <owner-id>
-idctl refresh-soul --owner-id <owner-id>
-idctl validate
-idctl diff --owner-id <owner-id>
-idctl export-compact --owner-id <owner-id>
-idctl export-interop --owner-id <owner-id>
-idctl export-mcp --owner-id <owner-id>
+```sh
+idctl install-set-hook --path .
 ```
 
-## Current Status
+This creates a small repo-local adapter for SET. It requires `idctl` on PATH,
+preserves an existing custom hook, and resolves bootstrap files inside the selected
+owner directory. [Complete SET setup](integrations/set/README.md).
 
-Today `ID` functions as:
+## Evidence and compatibility
 
-- a protocol/spec reference
-- a validated tooling reference
-- a compact onboarding path
-- a Git-like diff/review surface for AI identity context
-- an installable CLI package on PyPI/Homebrew
+[Three reproducible demos](docs/RELEASE_DEMOS.md) verify installed onboarding,
+privacy-policy omissions, and the agentsgen/SET handoff with synthetic profiles.
+They measure CLI behavior and runtime, not AI task quality.
 
-Latest release: `v0.4.0` adds `idctl diff`, wild workflows, and Git-like identity context positioning.
+AI-client loading depends on each client's configuration. ID exports files for
+manual attachment or an adapter; it does not automatically synchronize ChatGPT,
+Claude, Cursor, or other clients. `export-mcp` creates resource JSON for an adapter;
+this package does not run an MCP stdio or HTTP server.
+
+Historical benchmark runs are available as a [dated snapshot](docs/benchmark-snapshot.md).
+They are a small sample, not a general performance guarantee.
+
+## Explore or contribute
+
+- [Core protocol](spec/) and [full documentation](docs/README.md).
+- [Profile layers](docs/SOUL.md), [sharing](docs/SHARE.md), and [semantic diffs](docs/IDENTITY_DIFF.md).
+- [Integration boundaries](docs/INTEGRATIONS.md) and [release notes](docs/RELEASES.md).
+- [Contributing](CONTRIBUTING.md): include a synthetic reproduction, package version, and expected/actual output.
+
+For source development: install `.[dev]`, then run `make validate` and `make coverage`.
+Keep real private profiles outside this public repository.

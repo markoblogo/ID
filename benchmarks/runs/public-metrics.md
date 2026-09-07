@@ -33,8 +33,8 @@ Average deltas:
 
 - owner: markoblogo
 - overall_score: 0.0
-- profiles/markoblogo/profile.core.md: score=0.0 age_days=98 ttl=14
-- profiles/markoblogo/profile.extended.md: score=0.0 age_days=97 ttl=30
+- profiles/markoblogo/profile.core.md: score=0.0 age_days=160 ttl=14
+- profiles/markoblogo/profile.extended.md: score=0.0 age_days=159 ttl=30
 
 ## Not Yet Instrumented
 

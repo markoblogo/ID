@@ -46,6 +46,10 @@ def write_policy(owner_dir: Path) -> None:
     payload = {
         "policy_version": "1.0.0",
         "owner_id": "demo",
+        "updated_at": "2026-04-01",
+        "default_access": "always_share",
+        "task_classes": ["coding"],
+        "rules": [],
         "always_share": [
             "profiles.core.communication",
             "profiles.core.rules.always_do",

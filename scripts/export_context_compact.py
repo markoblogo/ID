@@ -25,6 +25,7 @@ def parse_args() -> argparse.Namespace:
         "--task-class",
         help="Optional task class for policy-aware inclusion of task_class_scoped fields",
     )
+    parser.add_argument("--allow-unfiltered", action="store_true", help="Explicitly allow export without a privacy policy; review output before sharing")
     return parser.parse_args()
 
 
@@ -112,6 +113,15 @@ def main() -> int:
 
     interop = load_json(interop_path)
     policy = load_policy(profiles_root, args.owner_id)
+    if policy is None and not args.allow_unfiltered:
+        print("ERROR: privacy-policy.v1.json is required; use --allow-unfiltered only for an explicitly reviewed unfiltered export")
+        return 1
+    if policy is not None:
+        from validate_privacy_policy import find_errors
+        errors = find_errors(policy)
+        if errors or policy.get("owner_id") != args.owner_id:
+            print("ERROR: invalid or mismatched privacy policy")
+            return 1
     context = build_context(interop, policy, args.task_class)
 
     output_path = Path(args.output) if args.output else profiles_root / args.owner_id / "context.compact.json"

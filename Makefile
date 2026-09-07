@@ -1,6 +1,9 @@
 .PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage mcp-manifest-sync soul
 
 PYTHON ?= python3
+# Checked-in benchmark artifacts are a dated, reproducible snapshot.
+ID_REFERENCE_DATE ?= $(shell cat benchmarks/reference-date.txt)
+export ID_REFERENCE_DATE
 PROJECT_VERSION := $(shell $(PYTHON) -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text(encoding='utf-8'))['project']['version'])")
 REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 OWNERS := $(shell \
@@ -56,7 +59,7 @@ metrics:
 	$(PYTHON) scripts/benchmark_public_report.py
 
 metrics-readme:
-	$(PYTHON) scripts/generate_metrics_readme.py
+	$(PYTHON) scripts/generate_metrics_readme.py --readme docs/benchmark-snapshot.md
 
 release-build:
 	rm -rf dist build *.egg-info

@@ -7,3 +7,8 @@ data/processed/redaction-report.json
 dist/
 build/
 *.egg-info/
+
+.coverage
+coverage.xml
+htmlcov/
+.hypothesis/

@@ -8,6 +8,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path
+from runtime_paths import resource_path
 from typing import Any
 
 
@@ -22,7 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", help="Path to context.compact.json")
     parser.add_argument(
         "--schema",
-        default="schemas/context-compact-v0.schema.json",
+        default=str(resource_path("schemas/context-compact-v0.schema.json")),
         help="Schema path",
     )
     return parser.parse_args()

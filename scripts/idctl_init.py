@@ -30,6 +30,8 @@ def resolve_value(name: str, value: str | None, interactive: bool, fallback: str
             return response
         if fallback is not None:
             return fallback
+    if fallback is not None:
+        return fallback
     raise SystemExit(f"--{name.lower().replace(' ', '-') if ' ' not in name else name.replace(' ', '-')} is required")
 
 

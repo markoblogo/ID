@@ -1,26 +1,48 @@
-# SET Integration
+# ID 0.5.0 with SET 0.3.1 and agentsgen 0.5.0
 
-## Purpose
+ID owns reviewed human context. agentsgen owns repo instructions. SET orchestrates
+both and exports bootstrap pointers. A pointer is not permission to read unrelated files.
 
-Use orchestration gates so profile freshness and changelog discipline are enforced automatically.
+## Local setup
 
-## Required Gates
+Install `id-protocol==0.5.0`, create and review a profile, and refresh its soul.
+Install `agentsgen==0.5.0` separately, then run in the target repository:
 
-- pre-run: `pre_task` hook
-- post-run: `post_task` hook
-- weekly: `weekly_review` hook
-
-## Suggested CI/Automation Calls
-
-```bash
-scripts/run_integration_hook.sh pre_task --owner-id markoblogo --target set
+```sh
+agentsgen init . --defaults --autodetect
+agentsgen pack . --autodetect
+idctl install-set-hook --path .
+bash scripts/run_integration_hook.sh pre_task --owner-id demo --target set
 ```
 
-```bash
-scripts/run_integration_hook.sh weekly_review --owner-id markoblogo
+The hook supports a minimal-only profile. It returns existing owner-local paths,
+preferably soul, then core (or minimal), then handshake. Profile content is not
+printed by the hook. Malformed or out-of-owner bootstrap paths are rejected.
+Do not commit private source profiles to a public repository.
+
+## GitHub Actions
+
+Only use reviewed, appropriately scoped profiles in CI. The following steps assume
+those files and the adapter are already available in the checked-out repository:
+
+```yaml
+- uses: actions/checkout@v5
+- uses: actions/setup-python@v6
+  with:
+    python-version: '3.11'
+- run: python -m pip install id-protocol==0.5.0
+- uses: markoblogo/SET@v0.3.1
+  with:
+    workflow_preset: repo-docs
+    id_enabled: 'true'
+    id_pre_task: 'true'
+    id_owner_id: demo
+    id_target: set
 ```
 
-## Policy Notes
+SET produces `docs/ai/id-bootstrap.json` and `id-bootstrap.prompt.md` containing
+pointers. Preserve or upload only artifacts approved for the workflow's audience.
+Pin reviewed commit SHAs when immutable dependencies are required.
 
-- Non-critical long runs should be blocked if profile is stale beyond TTL.
-- Override is allowed only with explicit reduced-confidence marker.
+The ID release workflow tests the installed packages together and separately
+runs this SET composite Action on synthetic fixture data.

@@ -8,6 +8,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path
+from runtime_paths import resource_path
 from typing import Any
 
 SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
@@ -21,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", help="Path to privacy-policy.v1.json")
     parser.add_argument(
         "--schema",
-        default="schemas/privacy-policy-v1.schema.json",
+        default=str(resource_path("schemas/privacy-policy-v1.schema.json")),
         help="Schema path",
     )
     return parser.parse_args()

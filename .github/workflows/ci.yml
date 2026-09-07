@@ -8,13 +8,16 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python }}
 
       - name: Install project + test deps
         run: |
@@ -30,9 +33,51 @@ jobs:
       - name: Coverage
         run: make coverage
 
+      - name: Test installed package and pinned integrations
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check dist/*
+          python -m venv /tmp/id-wheel
+          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.3.1
+          PATH="/tmp/id-wheel/bin:$PATH" /tmp/id-wheel/bin/python scripts/id_release_smoke.py
+
       - name: Upload coverage
         if: always()
         uses: codecov/codecov-action@v5
         with:
           files: coverage.xml
           fail_ci_if_error: false
+
+  set-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install ID and prepare synthetic owner
+        run: |
+          python -m pip install .
+          mkdir /tmp/id-set-fixture
+          cd /tmp/id-set-fixture
+          idctl init --owner-id demo
+          idctl refresh-soul --owner-id demo
+          idctl install-set-hook
+      - uses: markoblogo/SET@v0.3.1
+        with:
+          path: /tmp/id-set-fixture
+          workflow_preset: repo-docs
+          id_enabled: 'true'
+          id_pre_task: 'true'
+          id_owner_id: demo
+          id_target: set
+      - name: Verify bootstrap pointers
+        run: |
+          python - <<'PYCODE'
+          import json, pathlib
+          root = pathlib.Path('/tmp/id-set-fixture')
+          packet = json.loads((root/'docs/ai/id-bootstrap.json').read_text())
+          assert packet['id']['primary_human_bootstrap'] == 'profiles/demo/soul.md'
+          assert all((root/path).is_file() for path in packet['id']['preferred_human_bootstrap'])
+          PYCODE
