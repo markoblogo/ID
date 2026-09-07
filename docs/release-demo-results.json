@@ -1,7 +1,7 @@
 {
   "version": 1,
   "packages": {
-    "id-protocol": "0.5.0",
+    "id-protocol": "0.5.1",
     "agentsgen": "0.5.0",
     "abvx-set": "0.3.1"
   },
@@ -10,18 +10,19 @@
     {
       "demo": "installed-minimal-profile",
       "passed": true,
-      "seconds": 0.546
+      "seconds": 1.029
     },
     {
       "demo": "policy-omission",
       "passed": true,
-      "seconds": 0.128
+      "legacy_compatibility": true,
+      "seconds": 0.328
     },
     {
       "demo": "agentsgen-0.5.0-set-0.3.1",
       "passed": true,
       "source_profile_preserved": true,
-      "seconds": 0.935
+      "seconds": 0.494
     }
   ]
 }
