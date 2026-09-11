@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     versions = {name: version(name) for name in ("id-protocol", "agentsgen", "abvx-set")}
-    assert versions == {"id-protocol": "0.5.1", "agentsgen": "0.5.0", "abvx-set": "0.3.1"}, versions
+    assert versions == {"id-protocol": "0.5.2", "agentsgen": "0.5.0", "abvx-set": "0.4.0"}, versions
     rows = []
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -81,7 +81,7 @@ def main():
         assert plan['dry_run'] is True
         assert not (root/'.github/workflows/set.yml').exists()
         assert hashlib.sha256(profile.read_bytes()).hexdigest() == original_hash
-        rows.append({'demo':'agentsgen-0.5.0-set-0.3.1', 'passed':True,'source_profile_preserved':True,'seconds':round(time.perf_counter()-start,3)})
+        rows.append({'demo':'agentsgen-0.5.0-set-0.4.0', 'passed':True,'source_profile_preserved':True,'seconds':round(time.perf_counter()-start,3)})
     report = {'version':1,'packages':versions,'measurement':'Local CLI wall time; synthetic data; not an AI quality benchmark','results':rows}
     output = json.dumps(report, indent=2)+'\n'
     if args.output:

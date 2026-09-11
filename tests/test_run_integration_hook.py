@@ -37,6 +37,10 @@ class RunIntegrationHookTests(unittest.TestCase):
             "preferred_human_bootstrap=profiles/markoblogo/soul.md|profiles/markoblogo/profile.core.md|profiles/markoblogo/handshake.md",
             completed.stdout,
         )
+        self.assertIn(
+            "integration_guide=https://github.com/markoblogo/ID/blob/main/integrations/agentsmd/README.md",
+            completed.stdout,
+        )
 
 
 if __name__ == "__main__":

@@ -66,15 +66,14 @@ Each profile file must include:
 
 ## 4. Handshake Contract
 
-Any AI consuming profile must execute this sequence:
+Any AI consuming a profile must:
 
 1. Confirm profile version and update date.
-2. Summarize understanding in 5-10 bullets.
-3. List assumptions and uncertainty.
-4. Ask for correction if confidence is low.
-5. Follow profile constraints in all outputs.
+2. Apply the relevant profile constraints without restating them by default.
+3. Surface only assumptions or uncertainty that can change the result.
+4. Ask for correction only when blocked or when confidence is too low to act safely.
 
-If profile is stale (`today - updated_at > freshness_ttl_days`), AI must warn about degradation risk.
+If the profile is stale (`today - updated_at > freshness_ttl_days`) and freshness matters to the task, the AI must warn briefly about reduced confidence.
 
 ## 5. Trust Levels
 
@@ -133,7 +132,7 @@ Default order:
 3. `soul.md` when the host needs a short human-readable bootstrap.
 4. `profile.minimal.md` when only plain prompt text is available.
 
-Consumers must not silently pretend they consumed unsupported layers. If an artifact is ignored or lossy, the agent should say so during handshake.
+Consumers must not silently claim support for layers they ignored. Report a lossy handoff only when it affects the task.
 
 ## 10. Non-Goals
 

@@ -28,15 +28,15 @@ idctl init --owner-id <owner-id>
 ### 1. Validate privacy policy
 
 ```bash
-make privacy-policy
+idctl validate-privacy --owner-id <owner-id>
 ```
 
 ### 2. Export portable artifacts
 
 ```bash
-make interop
-make compact
-make mcp
+idctl export-interop --owner-id <owner-id>
+idctl export-compact --owner-id <owner-id>
+idctl export-mcp --owner-id <owner-id>
 ```
 
 ### 3. Choose the right share surface
@@ -51,7 +51,7 @@ make mcp
 ### 4. Use safe-share / redaction when needed
 
 ```bash
-python3 scripts/redact_for_sharing.py
+idctl redact --input-dir <input-dir> --output-dir <output-dir> --report <report.json>
 ```
 
 ## Best Use Cases

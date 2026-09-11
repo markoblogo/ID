@@ -60,6 +60,8 @@ class BootstrapOwnerTests(unittest.TestCase):
         self.assertIn('owner_alias: "demo-alias"', minimal)
         self.assertEqual(policy["owner_id"], "demo")
         self.assertIn("confirm the active profile source and freshness", handshake)
+        self.assertIn("apply relevant constraints without repeating them", handshake)
+        self.assertNotIn("5-10 bullets", handshake)
 
     def test_bootstrap_refuses_overwrite_without_force(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

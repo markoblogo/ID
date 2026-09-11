@@ -1,5 +1,8 @@
 name: id-protocol-ci
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: ["main"]
@@ -10,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.11", "3.12"]
+        python: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
 
@@ -39,12 +42,12 @@ jobs:
           python -m build
           python -m twine check dist/*
           python -m venv /tmp/id-wheel
-          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.3.1
+          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.4.0
           PATH="/tmp/id-wheel/bin:$PATH" /tmp/id-wheel/bin/python scripts/id_release_smoke.py
 
       - name: Upload coverage
         if: always()
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: coverage.xml
           fail_ci_if_error: false
@@ -52,8 +55,8 @@ jobs:
   set-action:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Install ID and prepare synthetic owner
@@ -64,7 +67,7 @@ jobs:
           idctl init --owner-id demo
           idctl refresh-soul --owner-id demo
           idctl install-set-hook
-      - uses: markoblogo/SET@v0.3.1
+      - uses: markoblogo/SET@v0.4.0
         with:
           path: /tmp/id-set-fixture
           workflow_preset: repo-docs

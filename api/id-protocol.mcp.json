@@ -1,8 +1,10 @@
 {
   "name": "id-protocol",
-  "version": "0.2.4",
+  "contractVersion": "0.2.4",
+  "status": "design-only",
+  "runtimeIncluded": false,
   "protocolVersion": "2025-03-26",
-  "description": "MCP resource contracts exposed by ID profile workflows.",
+  "description": "Design reference for adapters that expose ID profile resources. The id-protocol package does not provide an MCP server.",
   "tools": [
     {
       "name": "id_read_profile",
