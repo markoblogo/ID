@@ -22,6 +22,7 @@ COMMANDS: dict[str, list[str]] = {
     "integration-hook": ["scripts/run_integration_hook.sh"],
     "install-set-hook": [],
     "refresh-soul": [],
+    "redact": ["scripts/redact_for_sharing.py"],
     "init": ["scripts/idctl_init.py"],
     "migrate": ["scripts/migrate.py"],
     "validate": ["scripts/validate_profile.py"],

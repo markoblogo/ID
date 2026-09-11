@@ -8,10 +8,10 @@ Goals:
 - give contributors a clear place for compatibility and RFC work.
 
 Current version:
-- `v0.2`: [spec/v0.2/README.md](spec/v0.2/README.md)
+- `v0.2`: [spec/v0.2/README.md](v0.2/README.md)
 
 Earlier baseline:
-- `v0.1`: [spec/v0.1/README.md](spec/v0.1/README.md)
+- `v0.1`: [spec/v0.1/README.md](v0.1/README.md)
 
 Supporting documents:
 - changelog: `spec/CHANGELOG.md`

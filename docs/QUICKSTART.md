@@ -21,12 +21,6 @@ Decision point:
 idctl init --owner-id <owner-id>
 ```
 
-Equivalent:
-
-```bash
-make bootstrap-owner OWNER=<owner-id> OWNER_ALIAS=<owner-alias>
-```
-
 Result:
 - `profiles/<owner-id>/profile.minimal.md`
 - `profiles/<owner-id>/handshake.md`
@@ -45,13 +39,13 @@ idctl init --interactive
   - task rules and quality bar
   - priority domains and tool notes
 - `profiles/<owner-id>/handshake.md`
-  - one-page execution checklist for every task
+  - concise rules for applying the profile without a repeated preamble
 
 ## 3. Validate and generate first artifacts
 
 ```bash
-make validate
-make compact
+idctl validate --owner-id <owner-id>
+idctl export-compact --owner-id <owner-id>
 ```
 
 Expected output:
@@ -69,13 +63,11 @@ This reports changed sections, semantic groups, and stale profile metadata.
 ## 4. Scale to next path
 
 - `Lite`: stop here if you just need AI-ready context.
-- `Share`: add `profile.core.md`, then run:
-  - `make interop`
-  - `make mcp`
-  - `make privacy-policy`
-- `Bench`: add benchmark runs and run:
-  - `idctl metrics`
-  - `make trend`
+- `Share`: add `profile.core.md`, then validate and export only the formats you need:
+  - `idctl validate-privacy --owner-id <owner-id>`
+  - `idctl export-interop --owner-id <owner-id>`
+  - `idctl export-mcp --owner-id <owner-id>` for an external MCP adapter
+- `Bench`: clone the repository and use its benchmark targets; they are maintainer tools rather than installed CLI commands.
 
 ## 5. First useful workflow
 

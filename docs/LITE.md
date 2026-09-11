@@ -38,13 +38,13 @@ Only fill:
 ### 3. Validate
 
 ```bash
-make validate
+idctl validate --owner-id <owner-id>
 ```
 
 ### 4. Export the compact form
 
 ```bash
-make compact
+idctl export-compact --owner-id <owner-id>
 ```
 
 Use:

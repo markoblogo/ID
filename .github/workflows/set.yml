@@ -1,5 +1,8 @@
 name: SET
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
@@ -7,8 +10,8 @@ jobs:
   set:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: markoblogo/SET@main
+      - uses: actions/checkout@v7
+      - uses: markoblogo/SET@v0.4.0
         with:
           agentsgen: "true"
           autodetect: "true"

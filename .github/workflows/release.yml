@@ -14,9 +14,9 @@ jobs:
       actions: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -45,7 +45,7 @@ jobs:
       - name: Test installed release and pinned companions
         run: |
           python -m venv /tmp/id-wheel
-          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.3.1
+          /tmp/id-wheel/bin/pip install dist/*.whl agentsgen==0.5.0 abvx-set==0.4.0
           PATH="/tmp/id-wheel/bin:$PATH" /tmp/id-wheel/bin/python scripts/id_release_smoke.py
 
       - name: Publish GitHub release

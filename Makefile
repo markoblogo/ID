@@ -1,10 +1,9 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage mcp-manifest-sync soul
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage soul
 
 PYTHON ?= python3
 # Checked-in benchmark artifacts are a dated, reproducible snapshot.
 ID_REFERENCE_DATE ?= $(shell cat benchmarks/reference-date.txt)
 export ID_REFERENCE_DATE
-PROJECT_VERSION := $(shell $(PYTHON) -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text(encoding='utf-8'))['project']['version'])")
 REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 OWNERS := $(shell \
 	if test -d profiles; then \
@@ -121,6 +120,3 @@ drift-check:
 		test -f "$$path" || { echo "missing artifact: $$path"; exit 1; }; \
 	done
 	git diff --exit-code -- $(INTEROP_ARTIFACTS) $(COMPACT_ARTIFACTS) $(MCP_ARTIFACTS) $(PUBLIC_METRICS_ARTIFACTS) benchmarks/runs/trends.json benchmarks/runs/trends.md
-
-mcp-manifest-sync:
-	$(PYTHON) scripts/publish_mcp_manifest.py --version "$(PROJECT_VERSION)"

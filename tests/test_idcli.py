@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -25,6 +26,7 @@ class IdCliTest(unittest.TestCase):
         self.assertIn("migrate", completed.stdout)
         self.assertIn("export-compact", completed.stdout)
         self.assertIn("refresh-soul", completed.stdout)
+        self.assertIn("redact", completed.stdout)
 
     def test_validate_observed_passes(self) -> None:
         completed = subprocess.run(
@@ -39,6 +41,34 @@ class IdCliTest(unittest.TestCase):
             "VALID: evidence/observed-behavior/chatgpt.family.v1.json",
             completed.stdout,
         )
+
+    def test_redact_command_processes_a_synthetic_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "input"
+            source.mkdir()
+            (source / "note.txt").write_text("Contact demo@example.com", encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(IDCLI),
+                    "redact",
+                    "--input-dir",
+                    str(source),
+                    "--output-dir",
+                    str(root / "output"),
+                    "--report",
+                    str(root / "report.json"),
+                ],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            redacted = (root / "output" / "note.txt").read_text(encoding="utf-8")
+
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertEqual(redacted, "Contact [REDACTED_EMAIL]")
 
 
 if __name__ == "__main__":

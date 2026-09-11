@@ -107,9 +107,9 @@ def build_handshake(owner_id: str) -> str:
             "",
             "Before acting:",
             "1. confirm the active profile source and freshness",
-            "2. summarize understanding in 5-10 bullets",
-            "3. list uncertainty and assumptions",
-            "4. ask for correction if confidence is low",
+            "2. apply relevant constraints without repeating them",
+            "3. surface only uncertainty that can change the result",
+            "4. ask a question only when blocked",
             "",
         ]
     )

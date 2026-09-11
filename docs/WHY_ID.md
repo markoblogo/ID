@@ -1,131 +1,34 @@
 # Why ID
 
-## Short Answer
+AI tools remember context in different ways. Moving to another client or repository often means copying prompts, rebuilding preferences, and trusting context you cannot inspect.
 
-`ID` makes human-AI working context:
-- portable
-- versioned
-- privacy-aware
-- measurable
+ID keeps durable working context in owner-controlled files. You review the source, see semantic changes in git, and export only fields allowed by a per-profile privacy policy.
 
-That matters because most alternatives solve only one part of the problem.
+## When it helps
 
-## What It Beats
+Use ID when you need one or more of these:
 
-### Better than ad-hoc prompts
+- the same working preferences across several AI tools;
+- a reviewable boundary between personal context and repository instructions;
+- compact, policy-filtered handoffs to agentsgen, SET, or a custom adapter;
+- explicit freshness and trust metadata;
+- reproducible checks for generated context artifacts.
 
-Ad-hoc prompts are easy to start with, but they degrade fast:
-- copied by hand
-- rewritten inconsistently
-- hard to audit
-- hard to compare across tools
+For a single short-lived prompt, ID may add more structure than you need. It also cannot make different AI clients interpret context identically, and the owner must keep canonical profiles current.
 
-`ID` turns stable guidance into maintained source files and generated transport artifacts.
+## Where it sits
 
-### Better than chat-native memory alone
+| Layer | Owner | Example |
+| --- | --- | --- |
+| Human context | ID | communication preferences, constraints, privacy policy |
+| Repository context | agentsgen | `AGENTS.md`, commands, architecture pointers |
+| Workflow orchestration | SET | review-first plans, hooks, exports |
+| Client adapter | external tool | MCP resource, prompt, or client-specific import |
 
-Chat-native memory is convenient, but usually:
-- product-local
-- hard to export
-- hard to diff
-- hard to validate
+ID remains useful without the other tools. Its Markdown profiles are the source of truth; JSON files are generated transport views.
 
-`ID` keeps the source of truth outside any one vendor product.
+## What can be verified
 
-### Better than repo instructions alone
+The repository tests profile validation, policy-filtered omission, legacy-policy compatibility, semantic diffs, and installed-package handoffs. These checks demonstrate data handling and interoperability. They do not prove that an AI answer will be better in every client.
 
-Repo instructions help for one codebase, but they do not generalize well to:
-- writing
-- research
-- analysis
-- multi-tool handoff
-
-`ID` covers the person/tool interaction layer, not just the repo layer.
-
-## What Makes It Different
-
-`ID` is not only:
-- a profile format
-- a prompt template
-- a benchmark pack
-- a privacy note
-
-It combines all of them into one protocol surface:
-- markdown source of truth
-- generated interop and compact artifacts
-- privacy-policy layer
-- benchmark and public metrics layer
-- observed-behavior evidence
-
-## What You Get
-
-### 1. Faster onboarding
-
-A new tool can start from:
-- `profile.core.md`
-- `context.compact.json`
-- a handshake
-
-instead of reconstructing preferences from scattered chat history.
-
-### 2. Better portability
-
-You can move between:
-- chat tools
-- coding agents
-- local orchestrators
-- MCP-style wrappers
-
-without pretending every tool has the same memory model.
-
-### 3. Stronger trust boundaries
-
-`ID` makes freshness, trust, privacy, and loss visible.
-
-That is better than hidden memory, silent drift, or undocumented context loss.
-
-### 4. Measurable usefulness
-
-This repo does not stop at “seems better”.
-
-It tracks:
-- onboarding latency
-- clarification turns
-- task success rate
-- alignment index
-- with-vs-without-ID deltas
-- prompt length reduction
-
-## Current Best Fit
-
-`ID` is strongest today when you need:
-- cross-tool continuity
-- explicit privacy boundaries
-- measurable workflow quality
-- auditable generated artifacts
-
-It is especially strong for:
-- coding workflows
-- protocol/research work
-- structured writing/editorial workflows
-- local agent orchestration
-
-## Current Limits
-
-`ID` does not eliminate:
-- lossy exports
-- vendor-specific behavior differences
-- the need to maintain source profiles
-- the need for human judgment on semantic changes
-
-It is a protocol for disciplined portability, not magic memory.
-
-## Bottom Line
-
-If you want context that is:
-- portable across tools
-- explicit about trust and privacy
-- benchmarkable
-- reviewable in git
-
-then `ID` is more durable than prompts, more portable than memory, and more auditable than one-tool instructions.
+Start with the [five-minute quickstart](QUICKSTART.md) or inspect the [three release demos](RELEASE_DEMOS.md).

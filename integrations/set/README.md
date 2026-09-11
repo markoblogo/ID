@@ -1,11 +1,11 @@
-# ID 0.5.0 with SET 0.3.1 and agentsgen 0.5.0
+# ID 0.5.2 with SET 0.4.0 and agentsgen 0.5.0
 
 ID owns reviewed human context. agentsgen owns repo instructions. SET orchestrates
 both and exports bootstrap pointers. A pointer is not permission to read unrelated files.
 
 ## Local setup
 
-Install `id-protocol==0.5.0`, create and review a profile, and refresh its soul.
+Install `id-protocol==0.5.2`, create and review a profile, and refresh its soul.
 Install `agentsgen==0.5.0` separately, then run in the target repository:
 
 ```sh
@@ -26,12 +26,12 @@ Only use reviewed, appropriately scoped profiles in CI. The following steps assu
 those files and the adapter are already available in the checked-out repository:
 
 ```yaml
-- uses: actions/checkout@v5
-- uses: actions/setup-python@v6
+- uses: actions/checkout@v7
+- uses: actions/setup-python@v7
   with:
     python-version: '3.11'
-- run: python -m pip install id-protocol==0.5.0
-- uses: markoblogo/SET@v0.3.1
+- run: python -m pip install id-protocol==0.5.2
+- uses: markoblogo/SET@v0.4.0
   with:
     workflow_preset: repo-docs
     id_enabled: 'true'

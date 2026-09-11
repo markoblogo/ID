@@ -1,8 +1,10 @@
-# MCP Wrapper Example
+# MCP Adapter Example
 
 ## Purpose
 
 Show how `ID` compact context can be carried into an MCP-oriented wrapper without pretending that MCP itself defines profile semantics.
+
+`id-protocol` does not ship or register an MCP server. This directory documents a payload contract for a separate adapter.
 
 ## Reference Payload
 
@@ -36,18 +38,17 @@ Known loss: extended workflows and historical context omitted
 Generate a policy-aware MCP resource payload with:
 
 ```bash
-python3 scripts/export_mcp_resource.py --owner-id <owner-id>
+idctl export-mcp --owner-id <owner-id>
 ```
 
 For task-scoped exports:
 
 ```bash
-python3 scripts/export_mcp_resource.py --owner-id <owner-id> --task-class coding
+idctl export-mcp --owner-id <owner-id> --task-class coding
 ```
 
 Validate the generated artifact with:
 
 ```bash
-python3 scripts/validate_mcp_resource.py --owner-id <owner-id>
-make mcp
+idctl validate-mcp --owner-id <owner-id>
 ```

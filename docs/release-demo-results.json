@@ -1,28 +1,28 @@
 {
   "version": 1,
   "packages": {
-    "id-protocol": "0.5.1",
+    "id-protocol": "0.5.2",
     "agentsgen": "0.5.0",
-    "abvx-set": "0.3.1"
+    "abvx-set": "0.4.0"
   },
   "measurement": "Local CLI wall time; synthetic data; not an AI quality benchmark",
   "results": [
     {
       "demo": "installed-minimal-profile",
       "passed": true,
-      "seconds": 1.029
+      "seconds": 0.901
     },
     {
       "demo": "policy-omission",
       "passed": true,
       "legacy_compatibility": true,
-      "seconds": 0.328
+      "seconds": 0.388
     },
     {
-      "demo": "agentsgen-0.5.0-set-0.3.1",
+      "demo": "agentsgen-0.5.0-set-0.4.0",
       "passed": true,
       "source_profile_preserved": true,
-      "seconds": 0.494
+      "seconds": 1.062
     }
   ]
 }

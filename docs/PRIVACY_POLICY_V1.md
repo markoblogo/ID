@@ -20,7 +20,7 @@ Per-owner policy artifact:
 Validation command:
 
 ```bash
-python3 scripts/validate_privacy_policy.py --owner-id <owner>
+idctl validate-privacy --owner-id <owner>
 ```
 
 ## Core Fields
@@ -68,8 +68,8 @@ Each rule defines:
 - `rationale`
 - `allowed_task_classes` when `access=task_class_scoped`
 
-## Current Scope
+## Enforcement
 
-This v1 policy layer is validation-first.
+Compact and MCP resource exporters require a valid policy with a matching `owner_id`. Rules are applied per field, and unlisted fields remain local-only. Invalid policies block export instead of falling back to an unfiltered payload.
 
-It does not yet automatically gate exporters. That is the next integration step.
+Supported legacy list policies are normalized in memory. Their source files are not rewritten during validation or export.

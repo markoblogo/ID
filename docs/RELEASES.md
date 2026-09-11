@@ -1,5 +1,14 @@
 # Releases
 
+## 0.5.2 — current integrations and honest MCP boundary
+
+- Verify installed-package handoffs with agentsgen 0.5.0 and SET 0.4.0 on Python 3.11–3.14.
+- Replace a stale versioned integration-guide URL with the stable `main` documentation URL.
+- Remove obsolete MCP registry publication files; keep the JSON contract as a design reference for external adapters.
+- Reduce mandatory handshake narration and load only task-relevant owner context.
+- Expose the packaged safe-share redactor through `idctl redact`.
+- Add security guidance, dependency updates, and clearer installed-user documentation.
+
 ## 0.5.1 — legacy privacy policy compatibility
 
 - Automatically normalize the old list-based policy format during validation and compact/MCP export.

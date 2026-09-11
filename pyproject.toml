@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "id-protocol"
-version = "0.5.1"
-description = "Git-like protocol and tooling for portable human-AI identity context"
+version = "0.5.2"
+description = "Owner-controlled, privacy-filtered context for AI tools"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "markoblogo" }]
@@ -17,6 +17,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -46,3 +47,6 @@ scripts = ["*.sh"]
 Homepage = "https://github.com/markoblogo/ID"
 Documentation = "https://github.com/markoblogo/ID/tree/main/docs"
 Issues = "https://github.com/markoblogo/ID/issues"
+Changelog = "https://github.com/markoblogo/ID/blob/main/docs/RELEASES.md"
+Security = "https://github.com/markoblogo/ID/blob/main/SECURITY.md"
+Source = "https://github.com/markoblogo/ID"

@@ -22,8 +22,7 @@
 
 - `schemas/README.md` — machine-readable artifact contracts
 - `api/id-protocol.openapi.yaml` — optional service contract
-- `api/id-protocol.mcp.json` — MCP tool/resource contract sketch
-- `mcp-manifest.json` — optional registry-facing manifest
+- `api/id-protocol.mcp.json` — design-only MCP adapter contract; no runtime server
 
 ## Ecosystem and integration
 

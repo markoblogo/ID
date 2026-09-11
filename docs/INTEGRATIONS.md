@@ -1,8 +1,8 @@
 # Supported integration releases
 
-ID 0.5.0 is tested with [agentsgen 0.5.0](https://github.com/markoblogo/AGENTS.md_generator)
-and [SET 0.3.1](https://github.com/markoblogo/SET). Use the [installed SET adapter](../integrations/set/README.md).
-[abvx-agent-skills 0.14.0](https://github.com/markoblogo/abvx-agent-skills) is an optional
+ID 0.5.2 is tested with [agentsgen 0.5.0](https://github.com/markoblogo/AGENTS.md_generator)
+and [SET 0.4.0](https://github.com/markoblogo/SET). Use the [installed SET adapter](../integrations/set/README.md).
+[abvx-agent-skills 0.15.0](https://github.com/markoblogo/abvx-agent-skills) is an optional
 workflow companion; ID neither installs skills nor grants their tools permissions.
 
 The detailed integration contracts below describe boundaries; they are not a claim

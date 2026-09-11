@@ -1,116 +1,98 @@
-# ID — portable context for AI tools
+<p align="center">
+  <img src="images/IDlogo.png" width="128" alt="ID Protocol logo">
+</p>
 
-Keep your working preferences in reviewed files. Reuse them across projects and AI tools, and inspect what changed before sharing.
+# ID Protocol — portable context for AI tools
 
 [![CI](https://github.com/markoblogo/ID/actions/workflows/ci.yml/badge.svg)](https://github.com/markoblogo/ID/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/id-protocol)](https://pypi.org/project/id-protocol/)
+[![Python](https://img.shields.io/pypi/pyversions/id-protocol)](https://pypi.org/project/id-protocol/)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-ID gives you a small owner profile, a derived `soul.md`, portable JSON exports,
-privacy rules, and a semantic diff. You choose which files an AI tool receives.
+Keep your working preferences in files you control. ID turns a reviewed profile into compact, privacy-filtered context that can move between AI tools and repositories.
 
-## Start with one profile
+## Try it in five minutes
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
-Run in a private working directory:
+Requires Python 3.11 or newer.
 
 ```sh
 uv tool install id-protocol
+mkdir my-id-profile && cd my-id-profile
 idctl init --owner-id demo
 ```
 
-Edit `profiles/demo/profile.minimal.md`: language, level of detail, working rules,
-and what a good result means to you. The starter is **provisional** until you review it.
-Use an owner ID such as `demo` or `my-work-profile`; a real name is unnecessary.
+Edit `profiles/demo/profile.minimal.md`, then build and inspect the portable output:
 
 ```sh
 idctl validate --owner-id demo
 idctl refresh-soul --owner-id demo
-idctl export-interop --owner-id demo
 idctl export-compact --owner-id demo
-idctl validate-compact --owner-id demo
-```
-
-These commands work from an installed package, outside this repository. No Makefile,
-API key, central registry, or paid service is required.
-Validation checks structure and freshness; it cannot decide whether the profile reflects you.
-
-## What you get
-
-| File | Purpose |
-| --- | --- |
-| `profile.minimal.md` | Owner-edited starting point |
-| `privacy-policy.v1.json` | Rules for filtered exports |
-| `handshake.md` | Instructions for confirming context |
-| `soul.md` | Short derived bootstrap; refresh after source edits |
-| `context.compact.json` | Portable, policy-filtered context |
-
-Add `profile.core.md` and `profile.extended.md` when you need more detail.
-If core exists, it takes precedence over minimal for interop exports.
-The extended profile is optional. Init refuses to overwrite existing starter files.
-
-## Review before sharing
-
-```sh
 idctl diff --owner-id demo --since 7d
 ```
 
-Diff uses Git history; commit reviewed source changes if you want version comparisons.
-`interop.v1.json` and `soul.md` are local derived context, **not privacy-filtered sharing bundles**.
-Review your policy and the resulting compact export before giving it to another tool.
-Legacy list policies (`always_share`, `local_only`, `task_class_scoped`) are
-converted in memory during validation and export; your source file stays unchanged.
-Unlisted fields remain local-only. Scoped entries map field paths to task-class lists.
-Mixed formats, conflicting rules, invalid types, and owner mismatches still block export.
-Missing policies also block compact/MCP export. The explicit
-`--allow-unfiltered` option permits a missing policy for a reviewed legacy workflow;
-it does not bypass an invalid policy.
+The starter profile is provisional until you review it. Use an alias such as `demo` or `my-work-profile`; a legal name is unnecessary. ID does not upload generated files.
 
-Generating or exporting a file does not upload it. Source profiles remain under your control.
+## Files and ownership
 
-## Use with agentsgen and SET
+| File | Role |
+| --- | --- |
+| `profile.minimal.md` | Small owner-edited starting profile |
+| `profile.core.md` | Canonical profile when a fuller source is needed |
+| `profile.extended.md` | Optional detailed workflows and context |
+| `privacy-policy.v1.json` | Per-field export permissions |
+| `handshake.md` | Concise rules for applying context |
+| `soul.md` | Short derived bootstrap for an agent |
+| `context.compact.json` | Privacy-filtered portable context |
+| `mcp.context.resource.json` | Resource payload for an external MCP adapter |
 
-| Product | Owns | Tested release |
+Markdown profiles remain the source of truth. Generated JSON is a transport view and may omit nuance. The package is a local CLI; it does not provide an MCP server or synchronize vendor accounts.
+
+## Privacy behavior
+
+Compact and MCP resource exports require a valid policy whose `owner_id` matches the requested profile. Unlisted fields stay local-only. Missing, malformed, mixed, conflicting, or owner-mismatched policies block export.
+
+Legacy list policies from earlier releases are normalized in memory during validation and export. Their source files remain unchanged and their restrictions remain effective. `--allow-unfiltered` only permits a missing policy in a reviewed legacy workflow; it cannot bypass an invalid policy.
+
+Review the resulting export before attaching it to another tool. See the [privacy model](docs/PRIVACY.md), [policy schema](docs/PRIVACY_POLICY_V1.md), and [threat model](docs/THREAT_MODEL.md).
+
+## ABVX toolchain
+
+| Product | Responsibility | Tested release |
 | --- | --- | --- |
-| ID | Human preferences and operating constraints | 0.5.1 |
-| [agentsgen](https://github.com/markoblogo/AGENTS.md_generator) | Repository commands and instructions | 0.5.0 |
-| [SET](https://github.com/markoblogo/SET) | Workflow presets and planning exports | 0.3.1 |
-| [abvx-agent-skills](https://github.com/markoblogo/abvx-agent-skills) | Optional reusable agent workflows | 0.14.0, optional pairing |
+| ID | Human preferences and operating constraints | 0.5.2 |
+| [agentsgen](https://github.com/markoblogo/AGENTS.md_generator) | Repository instructions and commands | 0.5.0 |
+| [SET](https://github.com/markoblogo/SET) | Review-first workflow planning and exports | 0.4.0 |
+| [abvx-agent-skills](https://github.com/markoblogo/abvx-agent-skills) | Optional reusable workflows | 0.15.0 |
 
-All remain separate products. ID does not install the others automatically.
-The first three versions are exercised together in release CI; skills are an optional
-workflow reference and are not part of the executable compatibility test.
+These remain independently installable. ID does not install companions or grant tool permissions.
 
-For a repository that already has ID profiles:
+For a repository that already contains a reviewed ID profile:
 
 ```sh
 idctl install-set-hook --path .
 ```
 
-This creates a small repo-local adapter for SET. It requires `idctl` on PATH,
-preserves an existing custom hook, and resolves bootstrap files inside the selected
-owner directory. [Complete SET setup](integrations/set/README.md).
+The adapter returns owner-local bootstrap pointers to SET and preserves an existing custom hook. See the [SET integration guide](integrations/set/README.md).
 
-## Evidence and compatibility
+## Evidence
 
-[Three reproducible demos](docs/RELEASE_DEMOS.md) verify installed onboarding,
-privacy-policy omissions, and the agentsgen/SET handoff with synthetic profiles.
-They measure CLI behavior and runtime, not AI task quality.
+[Three reproducible demos](docs/RELEASE_DEMOS.md) exercise installed onboarding, policy-filtered omission, legacy-policy compatibility, and the agentsgen/SET handoff with synthetic data. They measure local CLI behavior and runtime, not AI answer quality.
 
-AI-client loading depends on each client's configuration. ID exports files for
-manual attachment or an adapter; it does not automatically synchronize ChatGPT,
-Claude, Cursor, or other clients. `export-mcp` creates resource JSON for an adapter;
-this package does not run an MCP stdio or HTTP server.
+The [historical benchmark snapshot](docs/benchmark-snapshot.md) is a small checked-in sample with explicit limits. AI-client behavior still depends on each client's configuration and context rules.
 
-Historical benchmark runs are available as a [dated snapshot](docs/benchmark-snapshot.md).
-They are a small sample, not a general performance guarantee.
+## Develop
 
-## Explore or contribute
+```sh
+git clone https://github.com/markoblogo/ID.git
+cd ID
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install ".[dev]" build twine
+make validate
+make drift-check
+make coverage
+make release-build
+make release-check
+```
 
-- [Core protocol](spec/) and [full documentation](docs/README.md).
-- [Profile layers](docs/SOUL.md), [sharing](docs/SHARE.md), and [semantic diffs](docs/IDENTITY_DIFF.md).
-- [Integration boundaries](docs/INTEGRATIONS.md) and [release notes](docs/RELEASES.md).
-- [Contributing](CONTRIBUTING.md): include a synthetic reproduction, package version, and expected/actual output.
-
-For source development: install `.[dev]`, then run `make validate` and `make coverage`.
-Keep real private profiles outside this public repository.
+Start with the [documentation index](docs/README.md), [protocol](docs/PROTOCOL.md), [integration boundaries](docs/INTEGRATIONS.md), and [contributing guide](CONTRIBUTING.md). Use synthetic profiles in public issues and pull requests.

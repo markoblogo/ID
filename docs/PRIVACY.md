@@ -1,96 +1,40 @@
-# Privacy and Redaction Policy (MVP)
+# Privacy and redaction
 
-## 1. Scope
+ID is private-first. Keep canonical profiles and raw source material outside public repositories unless they were deliberately prepared for publication.
 
-This policy defines how personal data should be handled in ID Protocol repositories.
+## Data classes
 
-Default mode: private-first.
+- Direct identifiers: legal names, email, phone, addresses, government identifiers, account handles.
+- Sensitive context: health, family, finances, private conversations, detailed location and infrastructure.
+- Operational preferences: communication style, workflow constraints, quality criteria, and tool habits.
 
-## 2. Data Classes
+Low-risk fields can become identifying in combination. Review every export for its actual recipient and purpose.
 
-### Class A: Direct identifiers (high risk)
+## Policy model
 
-- full legal names (if unnecessary for task)
-- emails
-- phone numbers
-- exact home/work addresses
-- government IDs, passport/tax numbers
-- account handles and profile URLs when identity disclosure is not required
+Each owner directory uses `privacy-policy.v1.json`. The current format defines:
 
-### Class B: Sensitive context (medium risk)
+- `default_access`: the fallback for unlisted fields; generated starters use `local_only`;
+- `task_classes`: allowed workflow scopes;
+- `rules`: field paths with `always_share`, `local_only`, or `task_class_scoped` access;
+- `allowed_task_classes`: required for scoped rules.
 
-- precise geolocation trails
-- personal finance details
-- private family/health records
-- full chat transcripts with third-party personal details
+Validate it with:
 
-### Class C: Operational preferences (low risk)
-
-- communication style preferences
-- workflow constraints
-- quality criteria
-- tool usage habits
-
-## 3. Storage Rules
-
-- `data/raw/`: never publish to public repositories.
-- `data/normalized/`: keep private unless redacted.
-- `data/processed/redacted/`: safe-share candidate layer.
-
-## 4. Redaction Rules (MVP)
-
-Must mask in shareable text:
-- email addresses -> `[REDACTED_EMAIL]`
-- phone-like sequences -> `[REDACTED_PHONE]`
-- URLs -> `[REDACTED_URL]`
-- likely account handles (`@name`) -> `[REDACTED_HANDLE]`
-- IPv4 addresses -> `[REDACTED_IP]`
-
-Optional manual masking before publication:
-- unique personal names
-- exact dates tied to sensitive events
-- location granularity below city-level
-
-## 5. Safe-Share Package
-
-Goal: publish profile behavior and protocol usage without disclosing raw personal traces.
-
-Recommended contents:
-- profile templates
-- profile core/extended with sensitive details removed
-- protocol/operations docs
-- redacted excerpts only (if evidence snippets are required)
-
-## 6. Verification Before Publish
-
-Checklist:
-- no files from `data/raw/` are staged
-- no direct identifiers remain in exported redacted text
-- README and docs do not contain accidental secrets
-
-## 7. Incident Rule
-
-If sensitive data is committed by mistake:
-1. stop further distribution,
-2. rotate exposed secrets (if any),
-3. rewrite git history if needed,
-4. document incident and mitigation.
-
-## 8. Machine-Readable Policy Layer
-
-Use `profiles/<owner>/privacy-policy.v1.json` as the machine-readable companion to this document.
-
-Validation command:
-
-```bash
-python3 scripts/validate_privacy_policy.py --owner-id <owner-id>
+```sh
+idctl validate-privacy --owner-id <owner-id>
 ```
 
-This layer defines explicit `always_share`, `local_only`, and `task_class_scoped` rules for profile and data paths.
+Compact and MCP resource exports fail when the policy is missing or invalid. A supported legacy list policy is normalized only in memory; ID preserves the original file and keeps unlisted fields local-only.
 
-## 9. Threat Model Link
+## Before sharing
 
-Privacy policy is only one part of the trust story.
+1. Confirm the owner and task class.
+2. Validate the profile and privacy policy.
+3. Generate a new compact or MCP resource export.
+4. Search the output for direct identifiers and sensitive combinations.
+5. Share only the reviewed generated artifact.
 
-For stale-profile risk, policy drift, lossy export, and benchmark overclaim boundaries, see:
-- `docs/THREAT_MODEL.md`
+Generating a file does not upload it. The receiving tool's retention, training, and access policies remain outside ID's control.
+
+If sensitive data is published, stop distribution, rotate exposed credentials, remove the data from the current branch, assess whether history rewrite is needed, and record the response without repeating the sensitive material.

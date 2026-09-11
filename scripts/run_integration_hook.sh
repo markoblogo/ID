@@ -175,7 +175,7 @@ case "$HOOK" in
       echo "primary_human_bootstrap=$CORE"
       echo "preferred_human_bootstrap=$CORE|$HANDSHAKE"
     fi
-    echo "integration_guide=https://github.com/markoblogo/ID/tree/v0.5.0/integrations/${TARGET}"
+    echo "integration_guide=https://github.com/markoblogo/ID/blob/main/integrations/${TARGET}/README.md"
     ;;
 
   post_task)
