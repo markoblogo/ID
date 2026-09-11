@@ -33,7 +33,7 @@ packages = ["scripts"]
 [project.optional-dependencies]
 dev = [
   "coverage>=7.8.0",
-  "hypothesis>=6.133.0",
+  "hypothesis>=6.167.1",
 ]
 
 [tool.setuptools.package-data]
