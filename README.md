@@ -96,3 +96,13 @@ make release-check
 ```
 
 Start with the [documentation index](docs/README.md), [protocol](docs/PROTOCOL.md), [integration boundaries](docs/INTEGRATIONS.md), and [contributing guide](CONTRIBUTING.md). Use synthetic profiles in public issues and pull requests.
+
+<!-- ABVX:ECOSYSTEM:BEGIN -->
+## ABVX ecosystem
+
+- [AGENTS.md_generator](https://agentsmd.abvx.xyz/) — Exports reviewed context for repository guidance. Current release: `v0.5.1`.
+- [AGENTS.md_generator](https://agentsmd.abvx.xyz/) — Keeps repository guidance and machine-readable context current. Current release: `v0.5.1`.
+- [abvx-agent-skills](https://abvx.xyz/work/abvx-agent-skills) — Uses shared, reviewable agent capabilities during maintenance. Current release: `v0.15.0`.
+
+_This block is generated from the reviewed ABVX ecosystem registry._
+<!-- ABVX:ECOSYSTEM:END -->
