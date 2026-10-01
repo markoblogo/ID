@@ -67,7 +67,7 @@ jobs:
           idctl init --owner-id demo
           idctl refresh-soul --owner-id demo
           idctl install-set-hook
-      - uses: markoblogo/SET@v0.4.0
+      - uses: markoblogo/SET@v0.5.0
         with:
           path: /tmp/id-set-fixture
           workflow_preset: repo-docs
