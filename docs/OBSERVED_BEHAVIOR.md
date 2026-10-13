@@ -142,3 +142,7 @@ Update this document when:
 - a benchmark/control pattern materially changes expected behavior
 - a new artifact becomes the clearly preferred transport for a tool family
 - observed degradation differs from intended mapping in a stable way
+
+## Snapshot checks and live freshness
+
+`make validate` checks the dated repository evidence through `make observed-behavior-snapshot`, using `benchmarks/reference-date.txt`. Tests pass explicit dates so valid fixtures do not expire as the calendar advances. `make observed-behavior` and `idctl validate-observed` still use the real current date and reject evidence older than 180 days. Snapshot success does not establish that old observations are current; refresh them only after a new reviewed observation.

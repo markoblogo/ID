@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import json
+from contextlib import redirect_stdout
+from datetime import date, timedelta
+from io import StringIO
+from unittest.mock import patch
 import subprocess
 import sys
 import tempfile
@@ -37,7 +41,7 @@ class ValidateObservedBehaviorTests(unittest.TestCase):
             path = Path(tmp) / "chatgpt.family.v1.json"
             path.write_text(json.dumps(valid_note(), indent=2) + "\n", encoding="utf-8")
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "--input", str(path)],
+                [sys.executable, str(VALIDATOR), "--input", str(path), "--today", "2026-04-01"],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -53,7 +57,7 @@ class ValidateObservedBehaviorTests(unittest.TestCase):
             path = Path(tmp) / "chatgpt.family.v1.json"
             path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
             result = subprocess.run(
-                [sys.executable, str(VALIDATOR), "--input", str(path)],
+                [sys.executable, str(VALIDATOR), "--input", str(path), "--today", "2026-04-01"],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -84,6 +88,25 @@ class ValidateObservedBehaviorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("observed_at is stale", result.stdout)
 
+
+    def test_freshness_boundary_keeps_180_day_limit(self) -> None:
+        from scripts.validate_observed_behavior import find_errors
+        observed = date.fromisoformat(valid_note()["observed_at"])
+        for age, stale in ((180, False), (181, True)):
+            with self.subTest(age=age):
+                errors = find_errors(valid_note(), today=observed + timedelta(days=age), max_age_days=180)
+                self.assertEqual(any("observed_at is stale" in error for error in errors), stale)
+
+    def test_default_validator_still_uses_live_date(self) -> None:
+        from scripts import validate_observed_behavior as validator
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "note.json"
+            path.write_text(json.dumps(valid_note()), encoding="utf-8")
+            output = StringIO()
+            with patch.object(validator, "date", wraps=date) as clock, patch.object(sys, "argv", [str(VALIDATOR), "--input", str(path)]), redirect_stdout(output):
+                clock.today.return_value = date(2030, 1, 1)
+                self.assertEqual(validator.main(), 1)
+        self.assertIn("observed_at is stale", output.getvalue())
 
 if __name__ == "__main__":
     unittest.main()
