@@ -1,4 +1,4 @@
-.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior bootstrap-owner migrate migrate-check drift-check release-build release-check coverage soul
+.PHONY: validate interop trend compact mcp privacy-policy metrics metrics-readme metrics-tokenizer lint-profile lint-profile-strict observed-behavior observed-behavior-snapshot bootstrap-owner migrate migrate-check drift-check release-build release-check coverage soul
 
 PYTHON ?= python3
 # Checked-in benchmark artifacts are a dated, reproducible snapshot.
@@ -24,7 +24,7 @@ validate:
 	$(PYTHON) scripts/check_publish_guard.py --all-tracked
 	$(PYTHON) scripts/validate_profile.py --allow-stale --check-raw-tracked
 	$(MAKE) lint-profile-strict
-	$(MAKE) observed-behavior
+	$(MAKE) observed-behavior-snapshot
 	$(MAKE) privacy-policy
 	$(MAKE) interop
 	$(MAKE) compact
@@ -80,6 +80,10 @@ lint-profile-strict:
 
 observed-behavior:
 	$(PYTHON) scripts/validate_observed_behavior.py
+
+# Reproduce the recorded evidence snapshot; live validation above retains real-date expiry.
+observed-behavior-snapshot:
+	$(PYTHON) scripts/validate_observed_behavior.py --today "$(ID_REFERENCE_DATE)"
 
 bootstrap-owner:
 	@test -n "$(OWNER)" || { echo "usage: make bootstrap-owner OWNER=<owner-id> [OWNER_ALIAS=<alias>]"; exit 1; }

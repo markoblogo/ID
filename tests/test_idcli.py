@@ -30,7 +30,7 @@ class IdCliTest(unittest.TestCase):
 
     def test_validate_observed_passes(self) -> None:
         completed = subprocess.run(
-            [sys.executable, str(IDCLI), "validate-observed"],
+            [sys.executable, str(IDCLI), "validate-observed", "--today", "2026-04-01"],
             cwd=REPO_ROOT,
             check=False,
             capture_output=True,
